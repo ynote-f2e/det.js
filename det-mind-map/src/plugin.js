@@ -1,21 +1,22 @@
-'use strict';
+var DetMindMap;
 
-var mindMap = {
-    name : 'det-mind',
-    init : initPlugin
-}
+(function (window) {
+    'use strict';
 
-function initPlugin(toolkit) {
-    toolkit.factory('det-min-map/diagram', DiagramCtrl)
-        .factory('det-mind-map/node', NodeCtrl)
-        .factory('det-mind-map/connection', ConnectionCtrl);
-}
+    DetMindMap = function (toolkit) {
+        toolkit.factory('det-mind/diagram', DiagramCtrl)
+            .factory('det-mind/node', NodeCtrl)
+            .factory('det-mind/link', LinkCtrl);
+    };
 
-/*global define*/
-if (typeof define === 'function' && define.amd) {
-    define('det-mind', [], function() {
-        return mindMap;
-    });
-} else {
-    window.detMindMap = mindMap;
-}
+    /*global define*/
+    if (typeof define === 'function' && define.amd) {
+        define('det-mind', [], function () {
+            return DetMindMap;
+        });
+    } else {
+        window.DetMindMap = DetMindMap;
+    }
+
+}(window));
+

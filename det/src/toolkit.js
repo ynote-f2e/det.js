@@ -1,12 +1,14 @@
 function Toolkit() {
 
+    'use strict';
+
     var plugins = {},
         ctrls = {};
 
     function registerPlugin(plugin) {
-        if (plugins.hasOwnProperty(plugin.name)){
+        if (plugins.hasOwnProperty(plugin.name)) {
             throw 'Plugin ' + plugin.name + ' is already exists.';
-        };
+        }
         plugins[plugin.name] = plugin;
     }
 
@@ -18,14 +20,10 @@ function Toolkit() {
     }
 
     function render(el, model) {
-        var xtype = model.xtype,
-            ctrl,
+        var root,
             graph;
-        if (!xtype || !ctrls[xtype]) {
-            throw 'Model type ' + xtype + ' cannot be found.'
-        }
-        ctrl = new ctrls[xtype](model);
-        graph = ctrl.getGraph();
+        root = new Context(null, 'root', model, ctrls);
+        graph = root.getGraph();
         //render graph to el
     }
 
