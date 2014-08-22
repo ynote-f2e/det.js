@@ -1,12 +1,21 @@
+/**
+ * 思维导图的主题节点对应的控制器
+ */
 var MindNodeCtrl = (function (GraphCtrl) {
     'use strict';
 
     return GraphCtrl.derive({
 
+        /**
+         * @Override
+         * */
         createFigure : function () {
             var svg = this.getSVG(),
                 paper = svg.paper,
-                model = this.getModel();
+                model = this.getModel(),
+                parentCtrl = this.getParent(),
+                parentModel = parentCtrl.getModel(),
+                parentFigure = parentCtrl.getFigure();
             return paper.group(paper.rect(model.get('x'),
                 model.get('y'),
                 model.get('width'),
@@ -14,6 +23,9 @@ var MindNodeCtrl = (function (GraphCtrl) {
                 paper.text(model.get('x'), model.get('y'), model.get('text')));
         },
 
+        /**
+         * @Override
+         * */
         refreshFigure : function () {
             var figure = this.getFigure(),
                 model = this.getModel();
@@ -24,6 +36,9 @@ var MindNodeCtrl = (function (GraphCtrl) {
             */
         },
 
+        /**
+         * @Override
+         * */
         getModelChildren : function () {
             var model = this.getModel();
             return model.nodes;

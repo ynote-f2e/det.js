@@ -1,3 +1,6 @@
+/**
+ * 思维导图的根节点对应的模型
+ */
 var MindDiagram = (function (Model) {
     'use strict';
 
@@ -14,7 +17,7 @@ var MindDiagram = (function (Model) {
         },
         setBackground : function (bg) {
             this.data.bg = bg;
-            this.triggerChanged();
+            this.trigger();
         }
     }, {
         BG_CHANGE : 'bg-change'

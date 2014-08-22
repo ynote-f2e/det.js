@@ -1,3 +1,6 @@
+/**
+ * 思维导图的主题节点对应的模型
+ */
 var MindNode = (function (Model) {
     'use strict';
 

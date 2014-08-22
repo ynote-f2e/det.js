@@ -1,3 +1,7 @@
+/**
+ * @class
+ *
+ */
 det.BaseCtrl = (function (EventSupport, Model) {
     'use strict';
 
@@ -10,7 +14,11 @@ det.BaseCtrl = (function (EventSupport, Model) {
         this.children = [];
     }, {
 
-        /* 增加一个子 ctrl 节点 */
+        /**
+         * @accept protected
+         * @param childCtrl
+         * @param index
+         */
         addChild : function (childCtrl, index) {
             this.children.splice(index, 0, childCtrl);
             childCtrl.setParent(this);
