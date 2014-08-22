@@ -1,21 +1,20 @@
-var DetMindMap;
+var detMindMap;
 
 (function (window) {
     'use strict';
 
-    DetMindMap = function (toolkit) {
-        toolkit.factory('det-mind/diagram', DiagramCtrl)
-            .factory('det-mind/node', NodeCtrl)
-            .factory('det-mind/link', LinkCtrl);
+    detMindMap = function (toolkit) {
+        toolkit.factory(MindDiagram, MindDiagramCtrl);
+        toolkit.factory(MindNode, MindNodeCtrl);
     };
 
     /*global define*/
     if (typeof define === 'function' && define.amd) {
         define('det-mind', [], function () {
-            return DetMindMap;
+            return detMindMap;
         });
     } else {
-        window.DetMindMap = DetMindMap;
+        window.detMindMap = detMindMap;
     }
 
 }(window));

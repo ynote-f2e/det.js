@@ -1,5 +1,0 @@
-function LinkCtrl(context) {
-
-
-
-}

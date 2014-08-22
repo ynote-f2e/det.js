@@ -1,60 +1,46 @@
-function GraphCtrl(model, parent) {
-    /*global define*/
-    var drawer = draw2D,
-        children = [],
-        selected = false,
-        graph;
+det.GraphCtrl = (function (BaseCtrl) {
+    'use strict';
 
-    /* public */
-    this.getModel = getModel;
-    this.getDrawer = getDrawer;
-    this.getGraph = getGraph;
-    this.getParent = getParent;
-    this.getChildren = getChildren;
-    this.select = select;
-    this.deselect = deselect;
-    this.isSelected = isSelected;
+    return BaseCtrl.derive({
 
-    /* tobe override */
-    this.getModelChildren = noop;
-    this.createGraph = noop;
-    this.refresh = noop;
+        getDiagram : function () {
+            if (!this.parent) {
+                return null;
+            }
+            return this.parent.getDiagram();
+        },
 
-    function getChildren() {
-        return children;
-    }
+        getFigure : function () {
+            if (!this.figure) {
+                this.figure = this.createFigure();
+            }
+            return this.figure;
+        },
 
-    function getParent() {
-        return parent;
-    }
+        getSVG : function () {
+            var diagram = this.getDiagram();
+            if (!diagram) {
+                return null;
+            }
+            return diagram.getSVG();
+        },
 
-    function getGraph() {
-        if (!graph) {
-            graph = this.createGraph();
-        }
-        return graph;
-    }
+        onAttach : function () {
+            this.getModel().bindChange(this.refresh, this);
+            this.figure = this.createFigure();
+        },
 
-    function getModel() {
-        return model;
-    }
+        onDetach : function () {
+            this.getModel().unbindChange(this.refresh);
+            this.figure.remove();
+        },
 
-    function getDrawer() {
-        return drawer;
-    }
+        createFigure : det.noop,
 
-    function select() {
-        selected = true;
-    }
+        getSourceLink : det.noop,
 
-    function deselect() {
-        selected = false;
-    }
+        getTargetLink : det.noop
 
-    function isSelected() {
-        return selected;
-    }
+    });
 
-}
-
-det.ctrl.Graph = GraphCtrl;
+}(det.GraphCtrl));

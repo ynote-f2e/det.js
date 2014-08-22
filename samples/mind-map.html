@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<svg id="diagram" style="width:500px;height:500px;"></svg>
+</body>
+<script src="../det/src/det.js"></script>
+<script src="../det/src/toolkit.js"></script>
+<script src="../det/src/events.js"></script>
+<script src="../det/src/model.js"></script>
+<script src="../det/src/stack.js"></script>
+<script src="../det/src/ctrl/base.js"></script>
+<script src="../det/src/ctrl/graph.js"></script>
+<script src="../det/src/ctrl/diagram.js"></script>
+<script src="../det/src/ctrl/link.js"></script>
+<script src="../det-mind-map/src/plugin.js"></script>
+<script src="../det-mind-map/src/ctrl/diagram.js"></script>
+<script src="../det-mind-map/src/ctrl/node.js"></script>
+<script src="../det-mind-map/src/model/diagram.js"></script>
+<script src="../det-mind-map/src/model/node.js"></script>
+<script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
+<script>
+    var toolkit = det.create(), diagram;
+    toolkit.plugin(detMindMap);
+    diagram = new detMindMap.MindDiagram({
+        title : '我的图',
+        root : {
+            text : '中心主题',
+            nodes : [{
+                id : 'node-1',
+                text : '中心主题'
+            }, {
+                id : 'node-2',
+                text : '子主题'
+            }, {
+                id : 'node-3',
+                text : '子主题'
+            }]
+        }
+    });
+    toolkit.render(document.getElementById('diagram'), diagram);
+</script>
+</html>

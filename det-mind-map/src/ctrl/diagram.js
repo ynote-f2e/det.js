@@ -1,21 +1,19 @@
 var MindDiagramCtrl = (function (DiagramCtrl) {
     'use strict';
 
-    return DiagramCtrl.derive(function () {
+    return DiagramCtrl.derive({
 
-    }, {
-        onCreate : function () {
-
+        createFigure : function () {
+            return this.getSVG();
         },
-        onRender : function () {
 
-        },
-        onRefresh : function () {
-
-        },
-        onDestroy : function () {
-
+        getModelChildren : function () {
+            var model = this.getModel();
+            return [model.root];
         }
+
     });
 
-}(det.ctrl.DiagramCtrl));
+}(det.DiagramCtrl));
+
+detMindMap.MindDiagramCtrl = MindDiagramCtrl;

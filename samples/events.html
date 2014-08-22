@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+</body>
+<script src="../det/src/det.js"></script>
+<script src="../det/src/events.js"></script>
+<script>
+    var MyObject, instance;
+
+    (function (EventSupport) {
+        MyObject = EventSupport.derive(function () {
+            EventSupport.call(this);
+        });
+    }(det.EventSupport));
+
+    instance = new MyObject();
+    instance.on('some', function (evt) {
+        alert(evt);
+    });
+    instance.trigger('some', 123);
+
+</script>
+</html>

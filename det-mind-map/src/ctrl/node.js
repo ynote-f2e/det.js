@@ -1,17 +1,19 @@
-function NodeCtrl(context) {
+var MindNodeCtrl = (function (GraphCtrl) {
     'use strict';
 
-    var node = context.model();
+    return GraphCtrl.derive({
 
-    context.bind(DetMindMap.MOVE, move);
-    context.bind(DetMindMap.EDIT, edit);
-    context.bind(DetMindMap.REMOVE, removeThis);
+        onAttach : function () {
+            GraphCtrl.prototype.onAttach.call(this);
+        },
 
-    function removeThis(context) {
-        return context.parent()
-            .perform(DetMindMap.REMOVE, {
-                items : [node]
-            });
-    }
+        getModelChildren : function () {
+            var model = this.getModel();
+            return model.nodes;
+        }
 
-}
+    });
+
+}(det.GraphCtrl));
+
+detMindMap.MindNodeCtrl = MindNodeCtrl;

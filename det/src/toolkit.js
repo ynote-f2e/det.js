@@ -1,33 +1,1 @@
-function Toolkit() {
-
-    'use strict';
-
-    var plugins = {},
-        ctrls = {};
-
-    function registerPlugin(plugin) {
-        if (plugins.hasOwnProperty(plugin.name)) {
-            throw 'Plugin ' + plugin.name + ' is already exists.';
-        }
-        plugins[plugin.name] = plugin;
-    }
-
-    function getOrSetController(modelType, ctrlType) {
-        if (!ctrlType) {
-            return ctrls[modelType];
-        }
-        ctrls[modelType] = ctrlType;
-    }
-
-    function render(el, model) {
-        var root,
-            graph;
-        root = new Context(null, 'root', model, ctrls);
-        graph = root.getGraph();
-        //render graph to el
-    }
-
-    this.render = render;
-    this.plugin = registerPlugin;
-    this.ctrl = getOrSetController;
-}
+det.Toolkit = (function (det) {    'use strict';    det.create = function () {        return new det.Toolkit();    };    return det.derive(function () {        this.loaded = false;        this.plugins = [];        this.ctrls = {            model : [],            ctrl : []        };    }, {        render : function render(el, model) {            var DiagramClass,                diagram;            if (!this.loaded) {                this.plugins.forEach(function (plugin) {                    plugin(this);                }.bind(this));            }            DiagramClass = this.factory(model.constructor);            diagram = new DiagramClass();            diagram.setModel(model);            diagram.render(new Snap(el));        },        plugin : function registerPlugin(plugin) {            if (this.plugins.indexOf(plugin) !== -1) {                return this;            }            this.plugins.push(plugin);        },        factory : function getOrSetCtrlClass(modelClass, ctrlClass) {            var ctrls = this.ctrls;            function getCtrlClass(modelClass) {                var index = ctrls.model.indexOf(modelClass);                if (index == -1) {                    return null;                }                return ctrls.ctrl[index];            }            function setCtrlMapping(modelClass, ctrlClass) {                var index = ctrls.model.indexOf(modelClass);                if (index == -1) {                    ctrls.model.push(modelClass);                    ctrls.ctrl.push(ctrlClass);                } else {                    ctrls.model[index] = modelClass;                    ctrls.ctrl[index] = ctrlClass;                }            }            if (ctrlClass) {                return setCtrlMapping(modelClass, ctrlClass);            }            return getCtrlClass(modelClass);        }    });}(det));
