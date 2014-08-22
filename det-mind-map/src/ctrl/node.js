@@ -3,8 +3,24 @@ var MindNodeCtrl = (function (GraphCtrl) {
 
     return GraphCtrl.derive({
 
-        onAttach : function () {
-            GraphCtrl.prototype.onAttach.call(this);
+        createFigure : function () {
+            var svg = this.getSVG(),
+                paper = svg.paper,
+                model = this.getModel();
+            return paper.rect(model.get('x'),
+                model.get('y'),
+                model.get('width'),
+                model.get('height'));
+        },
+
+        refreshFigure : function () {
+            var figure = this.getFigure(),
+                model = this.getModel();
+            figure.attr('x', model.get('x'))
+                .attr('y', model.get('y'))
+                .attr('width', model.get('width'))
+                .attr('height', model.get('height'));
+
         },
 
         getModelChildren : function () {

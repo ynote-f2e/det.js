@@ -2,17 +2,43 @@ det.Model = (function (EventSupport) {
     'use strict';
 
     return EventSupport.derive({
-        triggerChanged : function () {
-            this.trigger(det.Model.CHANGED, this);
+
+        trigger : function (name, value) {
+            if (name && value) {
+                EventSupport.prototype.trigger
+                    .call(this, name, value);
+                return;
+            }
+            this.trigger(det.Model.EVENT_CHANGED, this);
         },
-        bindChange : function (listener, scope) {
-            this.on(det.Model.CHANGED, listener, scope);
+
+        bind : function (name, listener, scope) {
+            if (typeof name === 'string') {
+                EventSupport.prototype.bind
+                    .call(this, name, listener, scope);
+                return;
+            }
+            scope = listener;
+            listener = name;
+            name = det.Model.EVENT_CHANGED;
+            EventSupport.prototype.bind
+                .call(this, name, listener, scope);
         },
-        unbindChange : function (listener) {
-            this.off(det.Model.CHANGED, listener);
+
+        unbind : function (name, listener) {
+            if (typeof name === 'string') {
+                EventSupport.prototype.unbind
+                    .call(this, name, listener);
+                return;
+            }
+            listener = name;
+            name = det.Model.EVENT_CHANGED;
+            EventSupport.prototype.bind
+                .call(this, name, listener);
         }
+
     }, {
-        CHANGED : 'propertychanged'
+        EVENT_CHANGED : 'propertychanged'
     });
 
 }(det.EventSupport));

@@ -1,10 +1,12 @@
 det.DiagramCtrl = (function (GraphCtrl) {
     'use strict';
 
-    return GraphCtrl.derive(function () {
-        GraphCtrl.call(this);
-        this.svg = null;
+    return GraphCtrl.derive(function (model, factory) {
+        this.factory = factory;
+        GraphCtrl.call(this, model);
     }, {
+
+        /* 根据模型构造 ctrl 节点 */
 
         render : function (svg) {
             this.svg = svg;
@@ -17,6 +19,10 @@ det.DiagramCtrl = (function (GraphCtrl) {
 
         getDiagram : function () {
             return this;
+        },
+
+        getFactory : function (model) {
+            return this.factory;
         }
 
     });

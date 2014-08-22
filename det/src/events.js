@@ -8,19 +8,26 @@ det.EventSupport = (function (det) {
             if (!this.events[eventName]) {
                 this.events[eventName] = [];
             }
-            if (this.events[eventName].indexOf(listener) >= 0) {
-                return;
+            if (this.events[eventName].every(function (event) {
+                    return event.fn !== listener;
+                })) {
+                this.events[eventName].push({
+                    fn : listener,
+                    scope : scope
+                });
             }
-            listener.scope = scope;
-            this.events[eventName].push(listener);
         },
         unbind : function (eventName, listener) {
-            var index;
+            var index = -1;
             if (!this.events[eventName]) {
                 return;
             }
-            index = this.events[eventName].indexOf(listener);
-            if (index == -1) {
+            this.events[eventName].forEach(function (event, pos) {
+                if (event.fn == index) {
+                    index = pos;
+                }
+            });
+            if (index === -1) {
                 return;
             }
             this.events[eventName].splice(index, 1);
@@ -31,15 +38,16 @@ det.EventSupport = (function (det) {
         off : function () {
             return this.unbind.apply(this, arguments);
         },
-        trigger : function (eventName, event) {
+        trigger : function (eventName, value) {
             if (!this.events[eventName]) {
                 return;
             }
-            this.events[eventName].forEach(function (listener) {
-                if (listener.scope) {
-                    listener.call(listener.scope, event);
+            this.events[eventName].forEach(function (event) {
+                if (event.scope) {
+                    event.fn.call(event.scope, value);
+                } else {
+                    event.fn(value);
                 }
-                listener(event);
             });
         }
     });

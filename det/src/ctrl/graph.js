@@ -26,12 +26,12 @@ det.GraphCtrl = (function (BaseCtrl) {
         },
 
         onAttach : function () {
-            this.getModel().bindChange(this.refresh, this);
+            this.getModel().bind(this.refresh, this);
             this.figure = this.createFigure();
         },
 
         onDetach : function () {
-            this.getModel().unbindChange(this.refresh);
+            this.getModel().unbind(this.refresh);
             this.figure.remove();
         },
 
@@ -43,4 +43,4 @@ det.GraphCtrl = (function (BaseCtrl) {
 
     });
 
-}(det.GraphCtrl));
+}(det.BaseCtrl));

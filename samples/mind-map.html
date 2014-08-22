@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset='utf-8'>
     <title></title>
 </head>
 <body>
@@ -22,24 +23,33 @@
 <script src="../det-mind-map/src/model/node.js"></script>
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
-    var toolkit = det.create(), diagram;
+    var toolkit = det.create(), diagram, rootCtrl;
     toolkit.plugin(detMindMap);
     diagram = new detMindMap.MindDiagram({
         title : '我的图',
         root : {
             text : '中心主题',
+            x : 100,
+            y : 100,
+            width : 50,
+            height : 30,
             nodes : [{
-                id : 'node-1',
-                text : '中心主题'
-            }, {
                 id : 'node-2',
-                text : '子主题'
+                x : 200,
+                y : 100,
+                text : '子主题',
+                width : 50,
+                height : 30
             }, {
                 id : 'node-3',
-                text : '子主题'
+                x : 200,
+                y : 150,
+                text : '子主题',
+                width : 50,
+                height : 30
             }]
         }
     });
-    toolkit.render(document.getElementById('diagram'), diagram);
+    rootCtrl = toolkit.render(document.getElementById('diagram'), diagram);
 </script>
 </html>

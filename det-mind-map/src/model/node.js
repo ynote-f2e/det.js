@@ -4,14 +4,23 @@ var MindNode = (function (Model) {
     return Model.derive(function (data) {
         Model.call(this);
         this.data = data;
+        this.nodes = (data.nodes || []).map(function (node) {
+            return new MindNode(node);
+        });
     }, {
-        getBackground : function () {
-            return this.data.bg;
+        set : function (name, value) {
+            var originValue = this.data[name];
+            if (originValue === value) {
+                return;
+            }
+            this.data[name] = value;
+            this.trigger();
         },
-        setBackground : function (bg) {
-            this.data.bg = bg;
-            this.triggerChanged();
+
+        get : function (name) {
+            return this.data[name];
         }
+
     });
 
 }(det.Model));

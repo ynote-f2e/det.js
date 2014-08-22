@@ -1,33 +1,38 @@
 det.BaseCtrl = (function (EventSupport, Model) {
     'use strict';
 
-    return EventSupport.derive(function () {
+    return EventSupport.derive(function (model) {
         EventSupport.call(this);
+        this.model = model;
         this.selected = false;
         this.attached = false;
         this.parent = null;
-        this.model = null;
         this.children = [];
-        this.refreshChildren();
     }, {
 
         /* 增加一个子 ctrl 节点 */
         addChild : function (childCtrl, index) {
             this.children.splice(index, 0, childCtrl);
+            childCtrl.setParent(this);
             this.trigger(det.BaseCtrl.CHILD_ADD, childCtrl);
         },
 
         attach : function () {
-            this.attached = true;
             this.onAttach();
+            this.refreshChildren();
             this.children.forEach(function (childCtrl) {
                 childCtrl.attach();
             });
+            this.attached = true;
         },
 
         /* 根据模型构造 ctrl 节点 */
         createChild : function (model) {
-            return parent.createChild(model);
+            var diagram = this.getDiagram();
+            if (!diagram) {
+                return null;
+            }
+            return diagram.getFactory()(model);
         },
 
         detach : function () {
@@ -63,7 +68,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
 
         /* 执行一个外部的请求，在请求内执行更新 model 的逻辑 */
         perform : function (action, args) {
-            var command = this.onPerform(action, args);
+            var command = this.createCommand(action, args);
             if (!command) {
                 return;
             }
@@ -71,11 +76,33 @@ det.BaseCtrl = (function (EventSupport, Model) {
         },
 
         refresh : function () {
-            this.onRefresh();
+            this.refreshFigure();
         },
 
         refreshChildren : function () {
-
+            var modelChildren = this.getModelChildren(),
+                children = this.getChildren(),
+                newModels = [],
+                removedCtrls = [];
+            children.forEach(function (childCtrl) {
+                var model = childCtrl.getModel();
+                if (modelChildren.indexOf(model) == -1) {
+                    removedCtrls.push(childCtrl);
+                }
+            });
+            modelChildren.forEach(function (model) {
+                if (children.every(function (childCtrl) {
+                        return childCtrl.getModel() != model;
+                    })) {
+                    newModels.push(model);
+                }
+            });
+            removedCtrls.forEach(function (childCtrl) {
+                this.removeChild(childCtrl);
+            }.bind(this));
+            newModels.forEach(function (model) {
+                this.addChild(this.createChild(model));
+            }.bind(this));
         },
 
         removeChild : function (childCtrl) {
@@ -83,17 +110,19 @@ det.BaseCtrl = (function (EventSupport, Model) {
             if (pos === -1) {
                 return;
             }
+            childCtrl.setParent(null);
             this.children.splice(pos, 1);
             this.trigger(det.BaseCtrl.CHILD_REMOVE, childCtrl);
-        },
-
-        setModel : function (model) {
-            this.model = model;
         },
 
         setParent : function (parent) {
             this.parent = parent;
         },
+
+        /**
+         * 将一个请求转换为一个 command ，包括 exec undo redo 方法
+         */
+        createCommand : det.noop,
 
         /**
          * 返回根节点的 ctrl
@@ -106,7 +135,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
         getFigure : det.noop,
 
         /**
-         * 获得绘图接口
+         * 获得绘图接口，对应一个 Snap 实例
          */
         getSVG : det.noop,
 
@@ -129,12 +158,8 @@ det.BaseCtrl = (function (EventSupport, Model) {
         /**
          * 当模型发生变化，需要对视图进行刷新时会被调用
          */
-        onRefresh : det.noop,
+        refreshFigure : det.noop
 
-        /**
-         * 执行一个请求，修改模型
-         */
-        onPerform : det.noop
     }, {
         CHILD_ADD : 'child-add',
         CHILD_REMOVE : 'child-remove'

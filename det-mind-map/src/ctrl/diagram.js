@@ -7,6 +7,10 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
             return this.getSVG();
         },
 
+        refreshFigure : function () {
+
+        },
+
         getModelChildren : function () {
             var model = this.getModel();
             return [model.root];
