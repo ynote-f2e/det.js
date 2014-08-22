@@ -51,5 +51,9 @@
         }
     });
     rootCtrl = toolkit.render(document.getElementById('diagram'), diagram);
+    setTimeout(function () {
+        var rootNode = diagram.root;
+        rootNode.set('y', 200)
+    }, 2000);
 </script>
 </html>

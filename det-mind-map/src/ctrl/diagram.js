@@ -8,7 +8,7 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
         },
 
         refreshFigure : function () {
-
+            // maybe resize the svg
         },
 
         getModelChildren : function () {
