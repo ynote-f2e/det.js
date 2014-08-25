@@ -1,6 +1,7 @@
 {
     "name" : "det.js",
     "dependencies" : {
+        "underscore": "1.4.4",
         "Snap.svg" : ">=0.3.0"
     }
 }
