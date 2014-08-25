@@ -31,5 +31,3 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
     });
 
 }(det.DiagramCtrl));
-
-detMindMap.MindDiagramCtrl = MindDiagramCtrl;

@@ -34,6 +34,14 @@ det.GraphCtrl = (function (BaseCtrl) {
             return diagram.getSVG();
         },
 
+        getCommandStack : function () {
+            var diagram = this.getDiagram();
+            if (!diagram) {
+                return null;
+            }
+            return diagram.getCommandStack();
+        },
+
         onAttach : function () {
             this.getModel().bind(this.refresh, this);
             this.figure = this.getFigure();

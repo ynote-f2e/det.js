@@ -6,6 +6,10 @@
 </head>
 <body>
 <svg id="diagram" style="width:500px;height:500px;"></svg>
+<p>
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+</p>
 </body>
 <script src="../det/src/det.js"></script>
 <script src="../det/src/toolkit.js"></script>
@@ -19,6 +23,7 @@
 <script src="../det/src/feature/base.js"></script>
 <script src="../det/src/feature/dragdrop.js"></script>
 <script src="../det-mind-map/src/plugin.js"></script>
+<script src="../det-mind-map/src/cmd/move.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
 <script src="../det-mind-map/src/ctrl/node.js"></script>
 <script src="../det-mind-map/src/model/diagram.js"></script>
@@ -54,5 +59,14 @@
         }
     });
     rootCtrl = toolkit.render(document.getElementById('diagram'), diagram);
+
+    function undo() {
+        rootCtrl.getCommandStack().undo();
+    }
+
+    function redo() {
+        rootCtrl.getCommandStack().redo();
+    }
+
 </script>
 </html>

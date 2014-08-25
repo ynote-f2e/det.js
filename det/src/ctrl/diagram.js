@@ -1,8 +1,9 @@
-det.DiagramCtrl = (function (GraphCtrl) {
+det.DiagramCtrl = (function (GraphCtrl, CommandStack) {
     'use strict';
 
     return GraphCtrl.derive(function (model, factory) {
         this.factory = factory;
+        this.stack = new CommandStack();
         GraphCtrl.call(this, model);
     }, {
 
@@ -17,6 +18,10 @@ det.DiagramCtrl = (function (GraphCtrl) {
             return this.svg;
         },
 
+        getCommandStack : function () {
+            return this.stack;
+        },
+
         getDiagram : function () {
             return this;
         },
@@ -27,4 +32,4 @@ det.DiagramCtrl = (function (GraphCtrl) {
 
     });
 
-}(det.GraphCtrl));
+}(det.GraphCtrl, CommandStack));
