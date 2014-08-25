@@ -16,11 +16,12 @@ var MindNodeCtrl = (function (GraphCtrl) {
                 parentCtrl = this.getParent(),
                 parentModel = parentCtrl.getModel(),
                 parentFigure = parentCtrl.getFigure();
-            return paper.group(paper.rect(model.get('x'),
+            this.rect = paper.rect(model.get('x'),
                 model.get('y'),
                 model.get('width'),
-                model.get('height')), paper.text(),
-                paper.text(model.get('x'), model.get('y'), model.get('text')));
+                model.get('height'));
+            this.text = paper.text(model.get('x'), model.get('y'), model.get('text'));
+            return paper.group(this.rect, this.text);
         },
 
         /**
@@ -29,11 +30,12 @@ var MindNodeCtrl = (function (GraphCtrl) {
         refreshFigure : function () {
             var figure = this.getFigure(),
                 model = this.getModel();
-            /*figure.attr('x', model.get('x'))
+            this.rect.attr('x', model.get('x'))
                 .attr('y', model.get('y'))
                 .attr('width', model.get('width'))
                 .attr('height', model.get('height'));
-            */
+            this.text.attr('x', model.get('x'))
+                .attr('y', model.get('y'));
         },
 
         /**
@@ -42,6 +44,16 @@ var MindNodeCtrl = (function (GraphCtrl) {
         getModelChildren : function () {
             var model = this.getModel();
             return model.nodes;
+        },
+
+        isDraggable : function () {
+            return true;
+        },
+
+        moveBy : function (offsetX, offsetY) {
+            var model = this.getModel();
+            model.set('x', model.get('x') + offsetX);
+            model.set('y', model.get('y') + offsetY);
         }
 
     });

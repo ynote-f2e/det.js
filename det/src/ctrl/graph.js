@@ -14,6 +14,11 @@ det.GraphCtrl = (function (BaseCtrl) {
         getFigure : function () {
             if (!this.figure) {
                 this.figure = this.createFigure();
+                if (this.isDraggable()) {
+                    this.figure.drag(this.onDragMove.bind(this),
+                        null,
+                        this.onDragEnd.bind(this));
+                }
             }
             return this.figure;
         },
@@ -28,7 +33,7 @@ det.GraphCtrl = (function (BaseCtrl) {
 
         onAttach : function () {
             this.getModel().bind(this.refresh, this);
-            this.figure = this.createFigure();
+            this.figure = this.getFigure();
         },
 
         onDetach : function () {
@@ -36,11 +41,27 @@ det.GraphCtrl = (function (BaseCtrl) {
             this.figure.remove();
         },
 
+        onDragMove : function (dx, dy, x, y) {
+            this.dragOffsetX = dx;
+            this.dragOffsetY = dy;
+            this.figure.transform('translate(' +
+                dx + ',' + dy + ')');
+        },
+
+        onDragEnd : function () {
+            this.figure.transform('');
+            this.moveBy(this.dragOffsetX, this.dragOffsetY);
+        },
+
         createFigure : det.noop,
 
         getSourceLink : det.noop,
 
-        getTargetLink : det.noop
+        getTargetLink : det.noop,
+
+        isDraggable : det.noop,
+
+        moveBy : det.noop
 
     });
 
