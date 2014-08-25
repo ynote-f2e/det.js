@@ -4,10 +4,11 @@ det.GraphCtrl = (function (BaseCtrl) {
     return BaseCtrl.derive({
 
         getDiagram : function () {
-            if (!this.parent) {
+            var parentCtrl = this.getParent();
+            if (!this.parentCtrl) {
                 return null;
             }
-            return this.parent.getDiagram();
+            return this.parentCtrl.getDiagram();
         },
 
         getFigure : function () {

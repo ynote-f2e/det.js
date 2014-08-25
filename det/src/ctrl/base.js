@@ -10,7 +10,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
         this.model = model;
         this.selected = false;
         this.attached = false;
-        this.parent = null;
+        this.parentCtrl = null;
         this.children = [];
     }, {
 
@@ -66,7 +66,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
         },
 
         getParent : function () {
-            return parent;
+            return this.parentCtrl;
         },
 
         /* 判断一个 ctrl 是否在视图中 */
@@ -123,8 +123,8 @@ det.BaseCtrl = (function (EventSupport, Model) {
             this.trigger(det.BaseCtrl.CHILD_REMOVE, childCtrl);
         },
 
-        setParent : function (parent) {
-            this.parent = parent;
+        setParent : function (parentCtrl) {
+            this.parentCtrl = parentCtrl;
         },
 
         /**
