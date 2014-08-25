@@ -16,6 +16,8 @@
 <script src="../det/src/ctrl/graph.js"></script>
 <script src="../det/src/ctrl/diagram.js"></script>
 <script src="../det/src/ctrl/link.js"></script>
+<script src="../det/src/feature/base.js"></script>
+<script src="../det/src/feature/dragdrop.js"></script>
 <script src="../det-mind-map/src/plugin.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
 <script src="../det-mind-map/src/ctrl/node.js"></script>
@@ -51,9 +53,5 @@
         }
     });
     rootCtrl = toolkit.render(document.getElementById('diagram'), diagram);
-    setTimeout(function () {
-        var rootNode = diagram.root;
-        rootNode.set('y', 200)
-    }, 2000);
 </script>
 </html>

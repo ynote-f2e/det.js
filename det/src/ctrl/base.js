@@ -12,6 +12,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
         this.attached = false;
         this.parentCtrl = null;
         this.children = [];
+        this.features = [];
     }, {
 
         /**
@@ -31,6 +32,9 @@ det.BaseCtrl = (function (EventSupport, Model) {
             this.children.forEach(function (childCtrl) {
                 childCtrl.attach();
             });
+            this.features.forEach(function (feature) {
+                feature.active(this);
+            }.bind(this));
             this.attached = true;
         },
 
@@ -49,6 +53,9 @@ det.BaseCtrl = (function (EventSupport, Model) {
             this.children.forEach(function (childCtrl) {
                 childCtrl.detach();
             });
+            this.features.forEach(function (feature) {
+                feature.deactive(this);
+            }.bind(this));
         },
 
         execute : function (command) {
@@ -67,6 +74,13 @@ det.BaseCtrl = (function (EventSupport, Model) {
 
         getParent : function () {
             return this.parentCtrl;
+        },
+
+        installFeature : function (feature) {
+            if (this.features.indexOf(feature) !== -1) {
+                return;
+            }
+            this.features.push(feature);
         },
 
         /* 判断一个 ctrl 是否在视图中 */
@@ -125,6 +139,14 @@ det.BaseCtrl = (function (EventSupport, Model) {
 
         setParent : function (parentCtrl) {
             this.parentCtrl = parentCtrl;
+        },
+
+        uninstallFeature : function (feature) {
+            var index = this.features.indexOf(feature);
+            if (index === -1) {
+                return;
+            }
+            this.features.splice(index, 1);
         },
 
         /**

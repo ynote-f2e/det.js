@@ -1,10 +1,33 @@
 /**
  * 思维导图的主题节点对应的控制器
  */
-var MindNodeCtrl = (function (GraphCtrl) {
+var MindNodeCtrl = (function (GraphCtrl, DragDropFeature) {
     'use strict';
 
     return GraphCtrl.derive({
+
+        /**
+         * @Override
+         */
+        createFeatures : function () {
+            this.installFeature(new DragDropFeature({
+
+                moveFigure : function (offsetX, offsetY) {
+                    var figure = this.getFigure();
+                    figure.transform('translate(' +
+                        offsetX + ',' + offsetY + ')');
+                }.bind(this),
+
+                postMove : function (offsetX, offsetY) {
+                    var figure = this.getFigure(),
+                        model = this.getModel();
+                    figure.transform('');
+                    model.set('x', model.get('x') + offsetX);
+                    model.set('y', model.get('y') + offsetY);
+                }.bind(this)
+
+            }));
+        },
 
         /**
          * @Override
@@ -44,20 +67,10 @@ var MindNodeCtrl = (function (GraphCtrl) {
         getModelChildren : function () {
             var model = this.getModel();
             return model.nodes;
-        },
-
-        isDraggable : function () {
-            return true;
-        },
-
-        moveBy : function (offsetX, offsetY) {
-            var model = this.getModel();
-            model.set('x', model.get('x') + offsetX);
-            model.set('y', model.get('y') + offsetY);
         }
 
     });
 
-}(det.GraphCtrl));
+}(det.GraphCtrl, det.DragDropFeature));
 
 detMindMap.MindNodeCtrl = MindNodeCtrl;
