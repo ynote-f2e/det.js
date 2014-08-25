@@ -4,6 +4,10 @@ det.DragDropFeature = (function (BaseFeature) {
 
     return BaseFeature.derive({
 
+        dx : 0,
+
+        dy : 0,
+
         onActive : function () {
             var figure = this.getCtrl().getFigure();
             figure.drag(this.onMove.bind(this),
@@ -25,8 +29,8 @@ det.DragDropFeature = (function (BaseFeature) {
 
         onEnd : function () {
             this.postMove(this.dx, this.dy);
-            delete this.dx;
-            delete this.dy;
+            this.dx = 0;
+            this.dy = 0;
         },
 
         moveFigure : det.noop,
