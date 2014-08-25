@@ -28,7 +28,8 @@ det.DragDropFeature = (function (BaseFeature) {
         },
 
         onEnd : function () {
-            this.postMove(this.dx, this.dy);
+            var moveCommand = this.postMove(this.dx, this.dy);
+            this.getCtrl().getCommandStack().execute(moveCommand);
             this.dx = 0;
             this.dy = 0;
         },
