@@ -152,6 +152,17 @@ var MindNodeCtrl = (
                 return model.nodes;
             },
 
+
+            onAttach : function () {
+                GraphCtrl.prototype.onAttach.call(this);
+                this.getParent().getModel().bind(this.refreshFigure, this);
+            },
+
+            onDetach : function () {
+                GraphCtrl.prototype.onDetach.call(this);
+                this.getParent().getModel().unbind(this.refreshFigure, this);
+            },
+
             setLineTarget : function(px, py) {
                 var model = this.getModel(),
                     parentModel = this.getParent().getModel();
