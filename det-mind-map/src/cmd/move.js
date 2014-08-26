@@ -1,4 +1,4 @@
-var MoveCommand = (function (det) {
+detMindMap.MoveCommand = (function (det) {
 
     'use strict';
 

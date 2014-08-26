@@ -62,7 +62,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
         },
 
         execute : function (command) {
-            return this.getRoot().execute(command);
+            return this.getCommandStack().execute(command);
         },
 
         /* 返回自身的 children 列表 */
@@ -89,15 +89,6 @@ det.BaseCtrl = (function (EventSupport, Model) {
         /* 判断一个 ctrl 是否在视图中 */
         isAttached : function () {
             return this.attached;
-        },
-
-        /* 执行一个外部的请求，在请求内执行更新 model 的逻辑 */
-        perform : function (action, args) {
-            var command = this.createCommand(action, args);
-            if (!command) {
-                return;
-            }
-            this.execute(command);
         },
 
         refresh : function () {

@@ -1,15 +1,7 @@
 det.GraphCtrl = (function (BaseCtrl) {
     'use strict';
 
-    return BaseCtrl.derive(function (model) {
-        BaseCtrl.call(this, model);
-        var features = this.createFeatures();
-        if (features) {
-            features.forEach(function (feature) {
-                this.installFeature(feature);
-            }.bind(this));
-        }
-    }, {
+    return BaseCtrl.derive({
 
         getDiagram : function () {
             var parentCtrl = this.getParent();
@@ -55,8 +47,6 @@ det.GraphCtrl = (function (BaseCtrl) {
         },
 
         createFigure : det.noop,
-
-        createFeatures : det.noop,
 
         getSourceLink : det.noop,
 

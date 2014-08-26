@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-<svg id="diagram" style="width:500px;height:500px;"></svg>
+<svg id="diagram" width="800" height="480"></svg>
 <p>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
@@ -29,6 +29,7 @@
 <script src="../det-mind-map/src/ctrl/node.js"></script>
 <script src="../det-mind-map/src/model/diagram.js"></script>
 <script src="../det-mind-map/src/model/node.js"></script>
+<script src="../det-mind-map/src/feature/dragdrop.js"></script>
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
     var toolkit = det.create(), diagram, rootCtrl;
@@ -59,18 +60,6 @@
         }
     });
     rootCtrl = toolkit.render(document.getElementById('diagram'), diagram);
-
-    setTimeout(function () {
-        var root = diagram.root;
-        root.add(new MindNode({
-            id : 'node-4',
-            x : 200,
-            y : 200,
-            text : '子主题',
-            width : 50,
-            height : 30
-        }))
-    }, 2000);
 
     function undo() {
         rootCtrl.getCommandStack().undo();

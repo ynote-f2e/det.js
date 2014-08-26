@@ -6,22 +6,20 @@ det.SelectionFeature = (function (BaseFeature) {
 
         onActive : function () {
             var figure = this.getCtrl().getFigure();
-            figure.mouseover(this.onMouseOver.bind(this));
-            figure.mouseout(this.onMouseOut.bind(this));
+            figure.mousedown(this.onMouseDown.bind(this));
         },
 
-        onDeactive : function () {
-            var figure = this.getCtrl().getFigure();
+        onMouseDown : function (e) {
+
         },
 
-        onMouseOver : function (e) {
-            this.hovered = true;
-            console.log('mouseover', e);
-        },
+        onSelect : det.noop,
 
-        onMouseOut : function (e) {
-            console.log('mouseout', e);
-        }
+        onDeselect : det.noop,
+
+        onHover : det.noop,
+
+        unHover : det.noop
 
     });
 
