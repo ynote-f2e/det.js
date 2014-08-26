@@ -19,7 +19,7 @@ var DragDrop = detMindMap.DragDrop =
                     offsetX + ',' + offsetY + ')');
                 this.offsetX = offsetX;
                 this.offsetY = offsetY;
-                if (parentCtrl.getModel() instanceof MindNode) {
+                if (!ctrl.isRoot()) {
                     ctrl.setLinePosition(
                         model.get('x') + offsetX,
                         model.get('y') + offsetY,
@@ -63,4 +63,4 @@ var DragDrop = detMindMap.DragDrop =
         });
 
 
-    } (det.DragDropFeature, detMindMap.MoveCommand));
+    }(det.DragDropFeature, detMindMap.MoveCommand));

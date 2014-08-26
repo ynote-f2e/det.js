@@ -80,7 +80,7 @@ var MindNodeCtrl = (
                     x: x,
                     y: y
                 });
-                if (parentModel.get) {
+                if (parentModel instanceof MindNode) {
                     this.setLinePosition(x, y, width, height,
                                     parentModel.get('x'),
                                     parentModel.get('y'),
