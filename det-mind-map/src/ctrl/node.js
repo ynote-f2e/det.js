@@ -10,10 +10,38 @@ var MindNodeCtrl = (
 
             moveFigure : function (offsetX, offsetY) {
                 var ctrl = this.getCtrl(),
+                    parentCtrl = ctrl.getParent(),
+                    model = ctrl.getModel(),
+                    parentModel = parentCtrl.getModel(),
                     figure = ctrl.getFigure(),
                     children = ctrl.getChildren();
                 figure.transform('translate(' +
                     offsetX + ',' + offsetY + ')');
+                if (parentCtrl.getModel() instanceof MindNode) {
+                    ctrl.setLinePosition(
+                        model.get('x') + offsetX,
+                        model.get('y') + offsetY,
+                        model.get('width'),
+                        model.get('height'),
+                        parentModel.get('x'),
+                        parentModel.get('y'),
+                        parentModel.get('width'),
+                        parentModel.get('height')
+                    );
+                }
+                children.forEach(function (childCtrl) {
+                    var childModel = childCtrl.getModel();
+                    childCtrl.setLinePosition(
+                        childModel.get('x'),
+                        childModel.get('y'),
+                        childModel.get('width'),
+                        childModel.get('height'),
+                        model.get('x') + offsetX,
+                        model.get('y') + offsetY,
+                        model.get('width'),
+                        model.get('height')
+                    );
+                });
             },
 
             postMove : function (offsetX, offsetY) {
@@ -124,22 +152,12 @@ var MindNodeCtrl = (
                 return model.nodes;
             },
 
-            onAttach : function () {
-                GraphCtrl.prototype.onAttach.call(this);
-                var model = this.getParent().getModel();
-                if (!(model instanceof MindNode)) {
-                    return;
-                }
-                model.bind(this.refreshFigure, this);   //on parent move
-            },
-
-            onDetach : function () {
-                GraphCtrl.prototype.onDetach.call(this);
-                var model = this.getParent().getModel();
-                if (!(model instanceof MindNode)) {
-                    return;
-                }
-                model.unbind(this.refreshFigure, this);   //on parent move
+            setLineTarget : function(px, py) {
+                var model = this.getModel(),
+                    parentModel = this.getParent().getModel();
+                this.setLinePosition(model.get('x'), model.get('y'),
+                    model.get('width'), model.get('height'),
+                    px, py, parentModel.get('width'), parentModel.get('height'));
             },
 
             setLinePosition: function(x, y, w, h, px, py, pw, ph) {
