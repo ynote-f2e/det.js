@@ -50,7 +50,7 @@ var MindNodeCtrl = (
                 strokeWidth = 3;
 
             this.rect = paper.rect(x, y, width, height);
-            if (_.isFunction(parentModel.get)) {
+            if (parentModel.get) {
                 this.line = paper.line(x, 
                             y,
                             parentModel.get('x'),
@@ -101,7 +101,7 @@ var MindNodeCtrl = (
                 x: x,
                 y: y
             });
-            if (_.isFunction(parentModel.get)) {
+            if (parentModel.get) {
                 this.setLinePosition(x, y, width, height,
                                 parentModel.get('x'),
                                 parentModel.get('y'),
