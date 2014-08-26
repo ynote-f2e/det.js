@@ -59,6 +59,18 @@
     });
     rootCtrl = toolkit.render(document.getElementById('diagram'), diagram);
 
+    setTimeout(function () {
+        var root = diagram.root;
+        root.add(new MindNode({
+            id : 'node-4',
+            x : 200,
+            y : 200,
+            text : '子主题',
+            width : 50,
+            height : 30
+        }))
+    }, 2000);
+
     function undo() {
         rootCtrl.getCommandStack().undo();
     }

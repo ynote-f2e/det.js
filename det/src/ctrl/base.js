@@ -21,8 +21,11 @@ det.BaseCtrl = (function (EventSupport, Model) {
          * @param index
          */
         addChild : function (childCtrl, index) {
-            this.children.splice(index, 0, childCtrl);
+            this.children.splice(index || 0, 0, childCtrl);
             childCtrl.setParent(this);
+            if (this.attached) {
+                childCtrl.attach();
+            }
             this.trigger(det.BaseCtrl.CHILD_ADD, childCtrl);
         },
 
@@ -131,6 +134,9 @@ det.BaseCtrl = (function (EventSupport, Model) {
             var pos = this.children.indexOf(childCtrl);
             if (pos === -1) {
                 return;
+            }
+            if (this.attached) {
+                childCtrl.detach();
             }
             childCtrl.setParent(null);
             this.children.splice(pos, 1);

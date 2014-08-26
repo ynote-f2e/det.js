@@ -22,6 +22,20 @@ var MindNode = (function (Model) {
 
         get : function (name) {
             return this.data[name];
+        },
+
+        add : function (node) {
+            this.nodes.push(node);
+            this.triggerChildren();
+        },
+
+        remove : function (node) {
+            var index = this.nodes.indexOf(node);
+            if (index === -1) {
+                return;
+            }
+            this.nodes.splice(index, 1);
+            this.triggerChildren();
         }
 
     });

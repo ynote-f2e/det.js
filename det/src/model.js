@@ -12,6 +12,10 @@ det.Model = (function (EventSupport) {
             this.trigger(det.Model.EVENT_CHANGED, this);
         },
 
+        triggerChildren : function () {
+            this.trigger(det.Model.EVENT_CHILD_CHANGED, this);
+        },
+
         bind : function (name, listener, scope) {
             if (typeof name === 'string') {
                 EventSupport.prototype.bind
@@ -25,6 +29,10 @@ det.Model = (function (EventSupport) {
                 .call(this, name, listener, scope);
         },
 
+        bindChildren : function (listener, scope) {
+            this.bind(det.Model.EVENT_CHILD_CHANGED, listener, scope);
+        },
+
         unbind : function (name, listener) {
             if (typeof name === 'string') {
                 EventSupport.prototype.unbind
@@ -35,10 +43,15 @@ det.Model = (function (EventSupport) {
             name = det.Model.EVENT_CHANGED;
             EventSupport.prototype.bind
                 .call(this, name, listener);
+        },
+
+        unbindChildren : function (listener) {
+            this.unbind(det.Model.EVENT_CHILD_CHANGED, listener);
         }
 
     }, {
-        EVENT_CHANGED : 'propertychanged'
+        EVENT_CHANGED : 'propertychanged',
+        EVENT_CHILD_CHANGED : 'childchanged'
     });
 
 }(det.EventSupport));

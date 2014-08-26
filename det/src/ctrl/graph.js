@@ -44,11 +44,13 @@ det.GraphCtrl = (function (BaseCtrl) {
 
         onAttach : function () {
             this.getModel().bind(this.refresh, this);
+            this.getModel().bindChildren(this.refreshChildren, this);
             this.figure = this.getFigure();
         },
 
         onDetach : function () {
             this.getModel().unbind(this.refresh);
+            this.getModel().bindChildren(this.refreshChildren, this);
             this.figure.remove();
         },
 
