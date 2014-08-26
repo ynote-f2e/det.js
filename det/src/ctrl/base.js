@@ -197,8 +197,8 @@ det.BaseCtrl = (function (EventSupport, Model) {
         refreshFigure : det.noop
 
     }, {
-        CHILD_ADD : 'child-add',
-        CHILD_REMOVE : 'child-remove'
+        CHILD_ADD : 'childadd',
+        CHILD_REMOVE : 'childremove'
     });
 
 }(det.EventSupport, det.Model));
