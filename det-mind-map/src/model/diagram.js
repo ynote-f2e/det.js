@@ -12,13 +12,23 @@ var MindDiagram = (function (Model) {
         getRoot : function () {
             return this.root;
         },
-        getBackground : function () {
-            return this.data.bg;
+        setRoot : function (root) {
+            this.root = root;
+            this.triggerChildren();
         },
-        setBackground : function (bg) {
-            this.data.bg = bg;
+        set : function (name, value) {
+            var originValue = this.data[name];
+            if (originValue === value) {
+                return;
+            }
+            this.data[name] = value;
             this.trigger();
+        },
+
+        get : function (name) {
+            return this.data[name];
         }
+
     }, {
         BG_CHANGE : 'bg-change'
     });

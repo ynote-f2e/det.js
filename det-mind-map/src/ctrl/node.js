@@ -29,7 +29,7 @@ var MindNodeCtrl = (
                     strokeWidth = 3;
 
                 this.rect = paper.rect(x, y, width, height);
-                if (parentModel.get) {
+                if (parentModel instanceof MindNode) {
                     this.line = paper.line(x,
                                 y,
                                 parentModel.get('x'),
@@ -97,6 +97,14 @@ var MindNodeCtrl = (
                 return model.nodes;
             },
 
+            isRoot : function () {
+                var model = this.getModel(),
+                    diagram = this.getDiagram();
+                if (!diagram) {
+                    return false;
+                }
+                return model === diagram.getModel().getRoot();
+            },
 
             onAttach : function () {
                 GraphCtrl.prototype.onAttach.call(this);
