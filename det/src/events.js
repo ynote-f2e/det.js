@@ -23,7 +23,7 @@ det.EventSupport = (function (det) {
                 return;
             }
             this.events[eventName].forEach(function (event, pos) {
-                if (event.fn == index) {
+                if (event.fn == listener) {
                     index = pos;
                 }
             });
