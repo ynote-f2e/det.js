@@ -1,15 +1,8 @@
-det.BaseFeature = (function (det) {
+det.BaseFeature = (function (EventSupport) {
 
     'use strict';
 
-    return det.derive(function (config) {
-        var name;
-        for (name in config) {
-            if (config.hasOwnProperty(name)) {
-                this[name] = config[name];
-            }
-        }
-    }, {
+    return EventSupport.derive({
 
         getCtrl : function () {
             return this.ctrl;
@@ -31,4 +24,4 @@ det.BaseFeature = (function (det) {
 
     });
 
-}(det));
+}(det.EventSupport));

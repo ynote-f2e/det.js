@@ -9,7 +9,7 @@ det.EventSupport = (function (det) {
                 this.events[eventName] = [];
             }
             if (this.events[eventName].every(function (event) {
-                    return event.fn !== listener;
+                    return event.fn !== listener || event.scope !== scope;
                 })) {
                 this.events[eventName].push({
                     fn : listener,
