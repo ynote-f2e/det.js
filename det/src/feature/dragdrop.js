@@ -10,8 +10,8 @@ det.DragDropFeature = (function (BaseFeature) {
 
         onActive : function () {
             var figure = this.getCtrl().getFigure();
-            figure.drag(this.onMove.bind(this),
-                this.onStart.bind(this), this.onEnd.bind(this));
+            figure.drag(this.onDragMove.bind(this),
+                this.onDragStart.bind(this), this.onDragEnd.bind(this));
         },
 
         onDeactive : function () {
@@ -19,24 +19,11 @@ det.DragDropFeature = (function (BaseFeature) {
             figure.undrag();
         },
 
-        onStart : function (x, y) {},
+        onDragStart : det.noop,
 
-        onMove : function (dx, dy) {
-            this.dx = dx;
-            this.dy = dy;
-            this.moveFigure(dx, dy);
-        },
+        onDragMove : det.noop,
 
-        onEnd : function () {
-            var moveCommand = this.postMove(this.dx, this.dy);
-            this.getCtrl().getCommandStack().execute(moveCommand);
-            this.dx = 0;
-            this.dy = 0;
-        },
-
-        moveFigure : det.noop,
-
-        postMove : det.noop
+        onDragEnd : det.noop
 
     });
 

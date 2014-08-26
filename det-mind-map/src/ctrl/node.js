@@ -2,13 +2,16 @@
  * 思维导图的主题节点对应的控制器
  */
 var MindNodeCtrl = (
-    function (GraphCtrl, DragDropFeature,
+    function (GraphCtrl, DragDropFeature, SelectionFeature,
           MoveCommand) {
         'use strict';
 
         var DragDrop = DragDropFeature.derive({
 
-            moveFigure : function (offsetX, offsetY) {
+            offsetX : 0,
+            offsetY : 0,
+
+            onDragMove : function (offsetX, offsetY) {
                 var ctrl = this.getCtrl(),
                     parentCtrl = ctrl.getParent(),
                     model = ctrl.getModel(),
@@ -17,6 +20,8 @@ var MindNodeCtrl = (
                     children = ctrl.getChildren();
                 figure.transform('translate(' +
                     offsetX + ',' + offsetY + ')');
+                this.offsetX = offsetX;
+                this.offsetY = offsetY;
                 if (parentCtrl.getModel() instanceof MindNode) {
                     ctrl.setLinePosition(
                         model.get('x') + offsetX,
@@ -44,15 +49,21 @@ var MindNodeCtrl = (
                 });
             },
 
-            postMove : function (offsetX, offsetY) {
+            onDragEnd : function () {
                 var ctrl = this.getCtrl(),
                     figure = ctrl.getFigure(),
-                    model = ctrl.getModel();
+                    model = ctrl.getModel(),
+                    offsetX = this.offsetX,
+                    offsetY = this.offsetY,
+                    cmd = new MoveCommand(model,
+                        model.get('x') + offsetX,
+                        model.get('y') + offsetY);
                 figure.transform('');
-                return new MoveCommand(model,
-                    model.get('x') + offsetX,
-                    model.get('y') + offsetY);
+                this.offsetX = this.offsetY = 0;
+                ctrl.getCommandStack().execute(cmd);
             }
+
+        }), Selection = SelectionFeature.derive({
 
         });
 
@@ -64,6 +75,7 @@ var MindNodeCtrl = (
              */
             createFeatures : function () {
                 this.installFeature(new DragDrop());
+                this.installFeature(new Selection());
             },
 
             /**
@@ -107,7 +119,7 @@ var MindNodeCtrl = (
                     width: (this.text.node.clientWidth),
                     stroke: "#bada55",
                     strokeWidth: strokeWidth
-                })
+                });
 
                 return paper.group(this.rect, this.text);
             },
@@ -163,7 +175,7 @@ var MindNodeCtrl = (
                 this.getParent().getModel().unbind(this.refreshFigure, this);
             },
 
-            setLineTarget : function(px, py) {
+            setLineTarget : function (px, py) {
                 var model = this.getModel(),
                     parentModel = this.getParent().getModel();
                 this.setLinePosition(model.get('x'), model.get('y'),
@@ -171,7 +183,7 @@ var MindNodeCtrl = (
                     px, py, parentModel.get('width'), parentModel.get('height'));
             },
 
-            setLinePosition: function(x, y, w, h, px, py, pw, ph) {
+            setLinePosition: function (x, y, w, h, px, py, pw, ph) {
                 var center = {
                         x: x + w / 2,
                         y: y + h / 2
@@ -247,6 +259,8 @@ var MindNodeCtrl = (
                     }
                 }
             }
-    });
+        });
 
-}(det.GraphCtrl, det.DragDropFeature, MoveCommand));
+    }(det.GraphCtrl, det.DragDropFeature, det.SelectionFeature,
+        MoveCommand)
+);
