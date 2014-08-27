@@ -4,13 +4,22 @@ det.SelectionFeature = (function (BaseFeature) {
 
     return BaseFeature.derive({
 
-        onActive : function () {
+        selected : false,
+
+        onAttach : function () {
             var figure = this.getCtrl().getFigure();
             figure.mousedown(this.onMouseDown.bind(this));
         },
 
-        onMouseDown : function (e) {
+        onDetach : function () {
 
+        },
+
+        onMouseDown : function (e) {
+            if (this.selected) {
+                return;
+            }
+            this.onSelect();
         },
 
         onSelect : det.noop,

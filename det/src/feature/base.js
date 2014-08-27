@@ -10,17 +10,17 @@ det.BaseFeature = (function (EventSupport) {
 
         active : function (ctrl) {
             this.ctrl = ctrl;
-            this.onActive();
+            this.onAttach();
         },
 
         deactive : function () {
-            this.onDeactive();
+            this.onDetach();
             delete this.ctrl;
         },
 
-        onActive : det.noop,
+        onAttach : det.noop,
 
-        onDeactive : det.noop
+        onDetach : det.noop
 
     });
 

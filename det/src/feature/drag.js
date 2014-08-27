@@ -1,4 +1,4 @@
-det.DragDropFeature = (function (BaseFeature) {
+det.DragFeature = (function (BaseFeature) {
 
     'use strict';
 
@@ -8,13 +8,13 @@ det.DragDropFeature = (function (BaseFeature) {
 
         dy : 0,
 
-        onActive : function () {
+        onAttach : function () {
             var figure = this.getCtrl().getFigure();
             figure.drag(this.onDragMove.bind(this),
                 this.onDragStart.bind(this), this.onDragEnd.bind(this));
         },
 
-        onDeactive : function () {
+        onDetach : function () {
             var figure = this.getCtrl().getFigure();
             figure.undrag();
         },

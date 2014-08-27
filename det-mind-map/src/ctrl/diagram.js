@@ -10,7 +10,17 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
          * @Override
          * */
         createFigure : function () {
-            return this.getSVG();
+            var svg = this.getSVG(),
+                paper = svg.paper,
+                viewWidth = svg.node.offsetWidth,
+                viewHeight = svg.node.offsetHeight;
+            return paper.rect({
+                x : 0,
+                y : 0,
+                width : viewWidth,
+                height : viewHeight,
+                fill : '#eeeef6'
+            });
         },
 
         /**

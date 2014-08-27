@@ -1,9 +1,9 @@
 
-var DragDrop = detMindMap.DragDrop =
-    (function (DragDropFeature, MoveCommand) {
+var DragMove = detMindMap.DragMove =
+    (function (DragFeature, MoveCommand) {
         'use strict';
 
-        return DragDropFeature.derive({
+        return DragFeature.derive({
 
             offsetX : 0,
             offsetY : 0,
@@ -15,6 +15,9 @@ var DragDrop = detMindMap.DragDrop =
                     parentModel = parentCtrl.getModel(),
                     figure = ctrl.getFigure(),
                     children = ctrl.getChildren();
+                if (ctrl.isRoot()) {
+                    return;
+                }
                 figure.transform('translate(' +
                     offsetX + ',' + offsetY + ')');
                 this.offsetX = offsetX;
@@ -55,6 +58,9 @@ var DragDrop = detMindMap.DragDrop =
                     cmd = new MoveCommand(model,
                         model.get('x') + offsetX,
                         model.get('y') + offsetY);
+                if (ctrl.isRoot()) {
+                    return;
+                }
                 figure.transform('');
                 this.offsetX = this.offsetY = 0;
                 ctrl.execute(cmd);
@@ -63,4 +69,4 @@ var DragDrop = detMindMap.DragDrop =
         });
 
 
-    }(det.DragDropFeature, detMindMap.MoveCommand));
+    }(det.DragFeature, detMindMap.MoveCommand));

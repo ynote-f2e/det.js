@@ -21,7 +21,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
          * @param index
          */
         addChild : function (childCtrl, index) {
-            this.children.splice(index || 0, 0, childCtrl);
+            this.children.splice(index || this.children.length, 0, childCtrl);
             childCtrl.setParent(this);
             if (this.attached) {
                 childCtrl.attach();
@@ -30,15 +30,15 @@ det.BaseCtrl = (function (EventSupport, Model) {
         },
 
         attach : function () {
+            this.attached = true;
             this.onAttach();
+            this.features.forEach(function (feature) {
+                feature.active(this);
+            }.bind(this));
             this.refreshChildren();
             this.children.forEach(function (childCtrl) {
                 childCtrl.attach();
             });
-            this.features.forEach(function (feature) {
-                feature.active(this);
-            }.bind(this));
-            this.attached = true;
         },
 
         /* 根据模型构造 ctrl 节点 */
@@ -51,14 +51,14 @@ det.BaseCtrl = (function (EventSupport, Model) {
         },
 
         detach : function () {
-            this.attached = false;
-            this.onDetach();
             this.children.forEach(function (childCtrl) {
                 childCtrl.detach();
             });
             this.features.forEach(function (feature) {
                 feature.deactive(this);
             }.bind(this));
+            this.attached = false;
+            this.onDetach();
         },
 
         execute : function (command) {
@@ -84,6 +84,9 @@ det.BaseCtrl = (function (EventSupport, Model) {
                 return;
             }
             this.features.push(feature);
+            if (this.attached) {
+                feature.onAttach();
+            }
         },
 
         /* 判断一个 ctrl 是否在视图中 */

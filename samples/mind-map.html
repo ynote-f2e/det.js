@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-<svg id="diagram" width="800" height="480"></svg>
+<svg id="diagram" width="800" height="600"></svg>
 <p>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
@@ -21,15 +21,16 @@
 <script src="../det/src/ctrl/diagram.js"></script>
 <script src="../det/src/ctrl/link.js"></script>
 <script src="../det/src/feature/base.js"></script>
-<script src="../det/src/feature/dragdrop.js"></script>
-<script src="../det/src/feature/selection.js"></script>
+<script src="../det/src/feature/drag.js"></script>
+<script src="../det/src/feature/select.js"></script>
 <script src="../det-mind-map/src/plugin.js"></script>
 <script src="../det-mind-map/src/cmd/move.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
 <script src="../det-mind-map/src/ctrl/node.js"></script>
 <script src="../det-mind-map/src/model/diagram.js"></script>
 <script src="../det-mind-map/src/model/node.js"></script>
-<script src="../det-mind-map/src/feature/dragdrop.js"></script>
+<script src="../det-mind-map/src/feature/layout.js"></script>
+<script src="../det-mind-map/src/feature/move.js"></script>
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
     var toolkit = det.create(), diagram, rootCtrl;
@@ -38,24 +39,38 @@
         title : '我的图',
         root : {
             text : '中心主题',
-            x : 100,
-            y : 100,
-            width : 50,
-            height : 30,
             nodes : [{
-                id : 'node-2',
-                x : 200,
-                y : 100,
-                text : '子主题',
-                width : 50,
-                height : 30
+                text : '子主题1',
+                nodes : [{
+                    text : '子主题1-1'
+                }, {
+                    text : '子主题1-2'
+                }, {
+                    text : '子主题1-3'
+                }, {
+                    text : '子主题1-4'
+                }, {
+                    text : '子主题1-5'
+                }, {
+                    text : '子主题1-6'
+                }]
             }, {
-                id : 'node-3',
-                x : 200,
-                y : 150,
-                text : '子主题',
-                width : 50,
-                height : 30
+                text : '子主题2'
+            }, {
+                text : '子主题3'
+            }, {
+                text : '子主题4',
+                nodes : [{
+                    text : '子主题4-1'
+                }, {
+                    text : '子主题4-2'
+                }, {
+                    text : '子主题4-3'
+                }]
+            }, {
+                text : '子主题5'
+            }, {
+                text : '子主题6'
             }]
         }
     });

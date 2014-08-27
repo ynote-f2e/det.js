@@ -6,87 +6,36 @@ var MindNodeCtrl = (
           MoveCommand) {
         'use strict';
 
+        var PADDING = {
+            X : 20,
+            Y : 12
+        };
+
         return GraphCtrl.derive(function (model) {
             GraphCtrl.call(this, model);
-            this.installFeature(new DragDrop());
+            //this.installFeature(new DragMove());
+            this.installFeature(this.layout = new MindLayout());
         }, {
 
             /**
              * @Override
              * */
             createFigure : function () {
-                var svg = this.getSVG(),
-                    paper = svg.paper,
-                    model = this.getModel(),
-                    parentCtrl = this.getParent(),
-                    parentModel = parentCtrl.getModel(),
-                    parentFigure = parentCtrl.getFigure(),
-                    x = model.get('x'),
-                    y = model.get('y'),
-                    width = model.get('width'),
-                    height = model.get('height'),
-                    text = model.get('text'),
-                    strokeWidth = 3;
-
-                this.rect = paper.rect(x, y, width, height);
-                if (parentModel instanceof MindNode) {
-                    this.line = paper.line(x,
-                                y,
-                                parentModel.get('x'),
-                                parentModel.get('y') + parentModel.get('height') / 2);
-                    this.line.attr({
-                        stroke: '#00ADEF'
-                    });
-                    this.setLinePosition(x, y, width, height,
-                                    parentModel.get('x'),
-                                    parentModel.get('y'),
-                                    parentModel.get('width'),
-                                    parentModel.get('height'));
+                if (this.isRoot()) {
+                    return this.createAsRoot();
                 }
-
-                this.text = paper.text(x, y + height - strokeWidth - 2, text);
-
-                //model.set('width', this.text.node.clientWidth);
-                this.rect.attr({
-                    'fill-opacity': 0,
-                    width: (this.text.node.clientWidth),
-                    stroke: "#bada55",
-                    strokeWidth: strokeWidth
-                });
-
-                return paper.group(this.rect, this.text);
+                return this.createAsChild();
             },
 
             /**
              * @Override
              * */
             refreshFigure : function () {
-                var figure = this.getFigure(),
-                    model = this.getModel(),
-                    parentCtrl = this.getParent(),
-                    parentModel = parentCtrl.getModel(),
-                    x = model.get('x'),
-                    y = model.get('y'),
-                    width = model.get('width'),
-                    height = model.get('height'),
-                    text = model.get('text'),
-                    strokeWidth = 3;
-                this.text.attr({
-                    x: x,
-                    y: y  + height - strokeWidth - 2
-                });
-                this.rect.attr({
-                    'fill-opacity': 0,
-                    x: x,
-                    y: y
-                });
-                if (parentModel instanceof MindNode) {
-                    this.setLinePosition(x, y, width, height,
-                                    parentModel.get('x'),
-                                    parentModel.get('y'),
-                                    parentModel.get('width'),
-                                    parentModel.get('height'));
+                this.applyAll();
+                if (!this.isRoot()) {
+                    return;
                 }
+                this.layout.doLayout();
             },
 
             /**
@@ -97,109 +46,92 @@ var MindNodeCtrl = (
                 return model.nodes;
             },
 
-            isRoot : function () {
-                var model = this.getModel(),
-                    diagram = this.getDiagram();
-                if (!diagram) {
-                    return false;
-                }
-                return model === diagram.getModel().getRoot();
-            },
-
+            /**
+             * @Override
+             * */
             onAttach : function () {
                 GraphCtrl.prototype.onAttach.call(this);
                 this.getParent().getModel().bind(this.refreshFigure, this);
             },
 
+            /**
+             * @Override
+             * */
             onDetach : function () {
                 GraphCtrl.prototype.onDetach.call(this);
                 this.getParent().getModel().unbind(this.refreshFigure, this);
             },
 
-            setLineTarget : function (px, py) {
-                var model = this.getModel(),
-                    parentModel = this.getParent().getModel();
-                this.setLinePosition(model.get('x'), model.get('y'),
-                    model.get('width'), model.get('height'),
-                    px, py, parentModel.get('width'), parentModel.get('height'));
+            createAsRoot : function () {
+                var svg = this.getSVG(),
+                    paper = svg.paper,
+                    model = this.getModel(),
+                    text = model.get('text');
+                this.text = paper.text(0, 0, text);
+                this.rect = paper.rect(0, 0, 0, 0);
+                this.applyAll();
+                return svg.group(this.rect, this.text);
             },
 
-            setLinePosition: function (x, y, w, h, px, py, pw, ph) {
-                var center = {
-                        x: x + w / 2,
-                        y: y + h / 2
-                    },
-                    pcenter = {
-                        x: px + pw / 2,
-                        y: py + ph / 2
-                    };
+            createAsChild : function () {
+                var svg = this.getSVG(),
+                    paper = svg.paper,
+                    model = this.getModel(),
+                    text = model.get('text');
+                this.rect = paper.rect(0, 0, 0, 0);
+                this.text = paper.text(0, 0, text);
+                this.line = paper.line(0, 0, 0, 0);
+                this.applyAll();
+                return svg.group(this.rect, this.text);
+            },
 
-                if (center.x >= pcenter.x && center.y >= pcenter.y) {
-                    if (center.x - pcenter.x >= center.y - pcenter.y) {
-                        this.line.attr({
-                            x1: px + pw,
-                            y1: py + ph / 2,
-                            x2: x,
-                            y2: y + h / 2
-                        });
-                    } else {
-                        this.line.attr({
-                            x1: px + pw / 2,
-                            y1: py + ph,
-                            x2: x,
-                            y2: y + h / 2
-                        });
-                    }
-                } else if (center.x >= pcenter.x && center.y < pcenter.y) {
-                    if (center.x - pcenter.x >= pcenter.y - center.y) {
-                        this.line.attr({
-                            x1: px + pw,
-                            y1: py + ph / 2,
-                            x2: x,
-                            y2: y + h / 2
-                        });
-                    } else {
-                        this.line.attr({
-                            x1: px + pw / 2,
-                            y1: py,
-                            x2: x,
-                            y2: y + h / 2
-                        });
-                    }
-                } else if (center.x < pcenter.x && center.y >= pcenter.y) {
-                    if (pcenter.x - center.x >= center.y - pcenter.y) {
-                        this.line.attr({
-                            x1: px,
-                            y1: py + ph / 2,
-                            x2: x + w,
-                            y2: y + h / 2
-                        });
-                    } else {
-                        this.line.attr({
-                            x1: px + pw / 2,
-                            y1: py + ph,
-                            x2: x + w,
-                            y2: y + h / 2
-                        });
-                    }
-                } else {
-                    if (pcenter.x - center.x >= pcenter.y - center.y) {
-                        this.line.attr({
-                            x1: px,
-                            y1: py + ph / 2,
-                            x2: x + w,
-                            y2: y + h / 2
-                        });
-                    } else {
-                        this.line.attr({
-                            x1: px + pw / 2,
-                            y1: py,
-                            x2: x + w,
-                            y2: y + h / 2
-                        });
-                    }
+            applyAll : function () {
+                var model = this.getModel(),
+                    textNode = this.text.node,
+                    width,
+                    height,
+                    textBox;
+                textNode.textContent = model.get('text');
+                textBox = this.text.getBBox();
+                width = textBox.width + PADDING.X * 2;
+                height = textBox.height + PADDING.Y * 2;
+                this.rect.attr({
+                    fill : '#fff',
+                    stroke : "#666",
+                    strokeWidth : '1',
+                    rx : 8,
+                    ry : 8,
+                    width : width,
+                    height : height
+                });
+                this.text.attr({
+                    'x' : width / 2,
+                    'y' : height - PADDING.Y,
+                    'text-anchor' : 'middle'
+                });
+            },
+
+            isRoot : function () {
+                var model = this.getModel(),
+                    diagramCtrl = this.getDiagram();
+                if (!diagramCtrl) {
+                    return false;
                 }
+                return model === diagramCtrl.getModel().getRoot();
+            },
+
+            getRootCtrl : function () {
+                var diagramCtrl = this.getDiagram();
+                if (!diagramCtrl) {
+                    return null;
+                }
+                return diagramCtrl.getChildren()[0];
+            },
+
+            getLayout : function () {
+                return this.layout;
             }
+
         });
 
     }(det.GraphCtrl, det.DragDropFeature, det.SelectionFeature,
