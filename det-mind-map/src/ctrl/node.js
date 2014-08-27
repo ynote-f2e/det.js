@@ -2,8 +2,7 @@
  * 思维导图的主题节点对应的控制器
  */
 var MindNodeCtrl = (
-    function (GraphCtrl, DragDropFeature, SelectionFeature,
-          MoveCommand) {
+    function (GraphCtrl, BaseCtrl) {
         'use strict';
 
         var PADDING = {
@@ -13,29 +12,61 @@ var MindNodeCtrl = (
 
         return GraphCtrl.derive(function (model) {
             GraphCtrl.call(this, model);
-            //this.installFeature(new DragMove());
-            this.installFeature(this.layout = new MindLayout());
+            this.on(BaseCtrl.CHILD_ADD, this.doLayout, this);
+            this.on(BaseCtrl.CHILD_REMOVE, this.doLayout, this);
         }, {
 
             /**
              * @Override
              * */
             createFigure : function () {
-                if (this.isRoot()) {
-                    return this.createAsRoot();
-                }
-                return this.createAsChild();
+                var svg = this.getSVG(),
+                    paper = svg.paper,
+                    model = this.getModel(),
+                    text = model.get('text');
+                this.rect = paper.rect(0, 0, 0, 0);
+                this.text = paper.text(0, 0, text);
+                this.line = paper.line(0, 0, 0, 0);
+                this.refreshFigure();
+                this.text.attr({
+                    x : PADDING.X,
+                    y : this.rect.getBBox().height - PADDING.Y - 4
+                })
+                return svg.group(this.rect, this.text);
             },
 
             /**
              * @Override
              * */
             refreshFigure : function () {
-                this.applyAll();
-                if (!this.isRoot()) {
+                var model = this.getModel(),
+                    textNode = this.text.node,
+                    width,
+                    height,
+                    textBox;
+                textNode.textContent = model.get('text');
+                textBox = this.text.getBBox();
+                width = textBox.width + PADDING.X * 2;
+                height = textBox.height + PADDING.Y * 2;
+                this.rect.attr({
+                    fill : '#fff',
+                    stroke : "#666",
+                    strokeWidth : '1',
+                    rx : 8,
+                    ry : 8,
+                    width : width,
+                    height : height
+                });
+                this.text.attr({
+                    'text-anchor' : 'start'
+                });
+                if (this.isRoot()) {
                     return;
                 }
-                this.layout.doLayout();
+                this.line.attr({
+                    stroke : "#666",
+                    strokeWidth : '1'
+                });
             },
 
             /**
@@ -62,55 +93,6 @@ var MindNodeCtrl = (
                 this.getParent().getModel().unbind(this.refreshFigure, this);
             },
 
-            createAsRoot : function () {
-                var svg = this.getSVG(),
-                    paper = svg.paper,
-                    model = this.getModel(),
-                    text = model.get('text');
-                this.text = paper.text(0, 0, text);
-                this.rect = paper.rect(0, 0, 0, 0);
-                this.applyAll();
-                return svg.group(this.rect, this.text);
-            },
-
-            createAsChild : function () {
-                var svg = this.getSVG(),
-                    paper = svg.paper,
-                    model = this.getModel(),
-                    text = model.get('text');
-                this.rect = paper.rect(0, 0, 0, 0);
-                this.text = paper.text(0, 0, text);
-                this.line = paper.line(0, 0, 0, 0);
-                this.applyAll();
-                return svg.group(this.rect, this.text);
-            },
-
-            applyAll : function () {
-                var model = this.getModel(),
-                    textNode = this.text.node,
-                    width,
-                    height,
-                    textBox;
-                textNode.textContent = model.get('text');
-                textBox = this.text.getBBox();
-                width = textBox.width + PADDING.X * 2;
-                height = textBox.height + PADDING.Y * 2;
-                this.rect.attr({
-                    fill : '#fff',
-                    stroke : "#666",
-                    strokeWidth : '1',
-                    rx : 8,
-                    ry : 8,
-                    width : width,
-                    height : height
-                });
-                this.text.attr({
-                    'x' : width / 2,
-                    'y' : height - PADDING.Y,
-                    'text-anchor' : 'middle'
-                });
-            },
-
             isRoot : function () {
                 var model = this.getModel(),
                     diagramCtrl = this.getDiagram();
@@ -128,12 +110,44 @@ var MindNodeCtrl = (
                 return diagramCtrl.getChildren()[0];
             },
 
-            getLayout : function () {
-                return this.layout;
+            doLayout : function () {
+                this.getDiagram().doLayout();
+            },
+
+            setXY : function (x, y) {
+                var parentBox,
+                    box;
+                this.rect.attr({
+                    x : x,
+                    y : y
+                });
+                this.text.attr({
+                    x : x + PADDING.X,
+                    y : y + this.rect.getBBox().height - PADDING.Y - 4
+                });
+                if (this.isRoot()) {
+                    return;
+                }
+                parentBox = this.getParent().getFigure().getBBox();
+                box = this.getFigure().getBBox();
+                if (parentBox.x < box.x) {
+                    this.line.attr({
+                        x1 : x,
+                        y1 : y + box.height /2,
+                        x2 : parentBox.x + parentBox.width,
+                        y2 : parentBox.y + parentBox.height / 2
+                    });
+                } else {
+                    this.line.attr({
+                        x1 : x + box.width,
+                        y1 : y + box.height /2,
+                        x2 : parentBox.x,
+                        y2 : parentBox.y + parentBox.height / 2
+                    });
+                }
             }
 
         });
 
-    }(det.GraphCtrl, det.DragDropFeature, det.SelectionFeature,
-        detMindMap.MoveCommand)
+    }(det.GraphCtrl, det.BaseCtrl)
 );

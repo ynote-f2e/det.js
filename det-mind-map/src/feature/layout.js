@@ -2,37 +2,16 @@ var MindLayout = (function (BaseFeature) {
 
     'use strict';
 
+    var MARGIN = 8;
+
     return BaseFeature.derive({
 
-        onAttach : function () {
-            var ctrl = this.getCtrl(),
-                model = ctrl.getModel();
-            if (ctrl.isRoot()) {
-                model.bind(this.doLayout, this);
-            }
-            model.bindChildren(this.doLayout, this);
-            this.doLayout();
-        },
+        onAttach : function () {},
 
-        onDetach : function () {
-            var ctrl = this.getCtrl(),
-                model = ctrl.getModel();
-            if (ctrl.isRoot()) {
-                model.unbind(this.doLayout, this);
-            }
-            model.unbindChildren(this.doLayout, this);
-        },
+        onDetach : function () {},
 
-        /**
-         * 子节点把 layout 请求委派到根节点
-         */
         doLayout : function () {
-            var ctrl = this.getCtrl();
-            if (ctrl.isRoot()) {
-                this.bufferedLayout();
-            } else {
-                ctrl.getRootCtrl().getLayout().doLayout();
-            }
+            this.bufferedLayout();
         },
 
         bufferedLayout : function () {
@@ -40,37 +19,99 @@ var MindLayout = (function (BaseFeature) {
                 clearTimeout(this.layoutTimeout);
             }
             this.layoutTimeout = setTimeout(
-                this.startLayout.bind(this)
-            );
+                this.startLayout.bind(this), 0);
         },
 
         /**
          * 只会被根节点的 layout 调用
          */
         startLayout : function () {
-            var ctrl = this.getCtrl(),
-                svg = ctrl.getSVG();
+            var rootCtrl = this.getCtrl().getRootCtrl(),
+                rootFigure = rootCtrl.getFigure(),
+                svgBox = rootCtrl.getSVG().getBBox();
 
             layoutRoot();
-            layoutNested();
+            layoutChildren();
 
             function layoutRoot() {
-                var svgBox = ctrl.getSVG().getBBox(),
-                    figure = ctrl.getFigure(),
-                    box = figure.getBBox();
-                figure.transform('translate(' +
-                    ((svgBox.width - box.width) / 2) +
-                    ',' +
-                    ((svgBox.height - box.height) / 2) + ')');
+                var rootBox = rootFigure.getBBox();
+                rootCtrl.setXY((svgBox.width - rootBox.width) / 2,
+                    (svgBox.height - rootBox.height) / 2);
             }
 
-            function layoutNested() {
-                var children = ctrl.getChildren(),
+            function layoutChildren() {
+                var children = rootCtrl.getChildren(),
+                    rootBox = rootFigure.getBBox(),
                     heights = [],
-                    leftChildren = [],
-                    rightChildren = [];
-                children.forEach(function (mainChild, index) {
+                    rightChildren,
+                    rightHeight,
+                    leftChildren,
+                    leftHeight,
+                    partIndex;
+                children.forEach(function (mainChild) {
                     heights.push(measure(mainChild));
+                });
+                partIndex = splitTwoParts(heights);
+
+                rightChildren = children.slice(0, partIndex);
+                rightHeight = heights.slice(0, partIndex)
+                    .reduce(sum, 0);
+
+                leftChildren = children.slice(partIndex, children.length);
+                leftHeight = heights.slice(partIndex, heights.length)
+                    .reduce(sum, 0);
+
+                rightChildren.forEach(function (childCtrl, index) {
+                    var relatedTop = heights.slice(0, index)
+                        .reduce(function (sum, value) {
+                            return sum + value;
+                        }, 0);
+                    layoutNestedRight(childCtrl,
+                        (svgBox.width + rootBox.width) / 2 + 50,
+                        (svgBox.height - rightHeight) /2 + relatedTop
+                    );
+                });
+
+                leftChildren.reverse();
+
+                leftChildren.forEach(function (childCtrl, index) {
+                    var relatedTop = heights.slice(heights.length - index,
+                            heights.length)
+                        .reduce(function (sum, value) {
+                            return sum + value;
+                        }, 0);
+                    layoutNestedLeft(childCtrl,
+                            (svgBox.width - rootBox.width) / 2 - 50,
+                            (svgBox.height - leftHeight) /2 + relatedTop
+                    );
+                });
+            }
+
+            function sum(pv, v) {
+                return pv + v;
+            }
+
+            function layoutNestedRight(childCtrl, x, y) {
+                var height = measure(childCtrl),
+                    width = childCtrl.getFigure().getBBox().width,
+                    children = childCtrl.getChildren();
+                childCtrl.setXY(x, y + height / 2);
+                children.forEach(function (childCtrl) {
+                    layoutNestedRight(childCtrl,
+                        x + width + 30, y);
+                    y += measure(childCtrl);
+                });
+            }
+
+            function layoutNestedLeft(childCtrl, x, y) {
+                var height = measure(childCtrl),
+                    width = childCtrl.getFigure().getBBox().width,
+                    children = childCtrl.getChildren();
+                childCtrl.setXY(x - width, y + height / 2);
+                children.forEach(function (childCtrl) {
+                    layoutNestedLeft(childCtrl,
+                            x - width - 30, y);
+                    y += measure(childCtrl);
                 });
             }
 
@@ -78,7 +119,8 @@ var MindLayout = (function (BaseFeature) {
                 var children = childCtrl.getChildren(),
                     height = 0;
                 if (children.length == 0) {
-                    return childCtrl.getFigure().getBBox().height;
+                    return childCtrl.getFigure()
+                        .getBBox().height + MARGIN;
                 }
                 children.forEach(function (childCtrl) {
                     height += measure(childCtrl);
@@ -86,36 +128,27 @@ var MindLayout = (function (BaseFeature) {
                 return height;
             }
 
-            function findSplit(heights) {
-                var i = 0, j = heights.length - 1;
+            function splitTwoParts(heights) {
+                var i = 0,
+                    j = heights.length - 1,
+                    leftTotal,
+                    rightTotal;
                 if (heights.length < 3) {
                     return heights.length;
                 }
+                rightTotal = heights[i];
+                leftTotal = heights[j];
                 while (i !== j) {
-                    if (heights[i] < heights[j]) {
-
+                    if (rightTotal <= leftTotal) {
+                        i++;
+                        rightTotal += heights[i];
+                    } else if (rightTotal > leftTotal) {
+                        j--;
+                        leftTotal += heights[j];
                     }
                 }
                 return i;
             }
-
-/*
-            this.rect.attr({
-                'x' : (svgWidth - width) / 2,
-                'y' : (svgHeight - height) / 2,
-                'width' : width,
-                'height' : height,
-                'fill' : '#fff',
-                'stroke' : "#666",
-                'strokeWidth' : '1',
-                'rx' : 8,
-                'ry' : 8
-            });
-            this.text.attr({
-                'x' : svgWidth / 2,
-                'y' : (svgHeight + textHeight) / 2 - 2,
-                'text-anchor' : 'middle'
-            });*/
         }
 
     });

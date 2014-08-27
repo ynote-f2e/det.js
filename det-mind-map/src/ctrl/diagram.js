@@ -4,7 +4,10 @@
 var MindDiagramCtrl = (function (DiagramCtrl) {
     'use strict';
 
-    return DiagramCtrl.derive({
+    return DiagramCtrl.derive(function (model, factory) {
+        DiagramCtrl.call(this, model, factory);
+        this.installFeature(this.layout = new MindLayout());
+    }, {
 
         /**
          * @Override
@@ -27,7 +30,7 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
          * @Override
          * */
         refreshFigure : function () {
-            // maybe resize the svg
+            this.doLayout();
         },
 
         /**
@@ -36,8 +39,15 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
         getModelChildren : function () {
             var model = this.getModel();
             return [model.root];
-        }
+        },
 
+        doLayout : function () {
+            this.layout.doLayout();
+        },
+
+        getRootCtrl : function () {
+            return this.children[0];
+        }
     });
 
 }(det.DiagramCtrl));
