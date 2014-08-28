@@ -7,6 +7,7 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
     return DiagramCtrl.derive(function (model, factory) {
         DiagramCtrl.call(this, model, factory);
         this.installFeature(this.layout = new MindLayout());
+        this.installFeature(new MindSelection());
     }, {
 
         /**

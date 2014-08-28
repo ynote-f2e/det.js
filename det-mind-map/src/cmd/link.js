@@ -1,3 +1,0 @@
-function link(from, to) {
-
-}

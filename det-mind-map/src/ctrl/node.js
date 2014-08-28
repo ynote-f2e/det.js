@@ -12,7 +12,7 @@ var MindNodeCtrl = (
 
         return GraphCtrl.derive(function (model, factory) {
             GraphCtrl.call(this, model, factory);
-            this.installFeature(new MindNodeSelection());
+            this.installFeature(new MindSelection());
         }, {
 
             /**
@@ -86,7 +86,6 @@ var MindNodeCtrl = (
              * */
             onAttach : function () {
                 GraphCtrl.prototype.onAttach.call(this);
-                this.getParent().getModel().bind(this.refreshFigure, this);
                 this.bind(BaseCtrl.CHILD_ADD, this.doLayout, this);
                 this.bind(BaseCtrl.CHILD_REMOVE, this.doLayout, this);
             },
@@ -96,7 +95,7 @@ var MindNodeCtrl = (
              * */
             onDetach : function () {
                 GraphCtrl.prototype.onDetach.call(this);
-                this.getParent().getModel().unbind(this.refreshFigure, this);
+                this.line.remove();
                 this.unbind(BaseCtrl.CHILD_ADD, this.doLayout);
                 this.unbind(BaseCtrl.CHILD_REMOVE, this.doLayout);
             },
@@ -159,6 +158,14 @@ var MindNodeCtrl = (
                         y1 : y + box.height / 2,
                         x2 : parentBox.x,
                         y2 : parentBox.y + parentBox.height / 2
+                    });
+                }
+                if (this.selectRect) {
+                    this.selectRect.attr({
+                        x : box.x - 4,
+                        y : box.y - 4,
+                        width : box.width + 8,
+                        height : box.height + 8
                     });
                 }
             },

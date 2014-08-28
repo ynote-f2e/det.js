@@ -1,4 +1,4 @@
-var MindNodeSelection = (function (BaseFeature) {
+var MindSelection = (function (BaseFeature) {
     'use strict';
 
     return BaseFeature.derive({
@@ -6,7 +6,17 @@ var MindNodeSelection = (function (BaseFeature) {
         onAttach : function () {
             var ctrl = this.getCtrl(),
                 figure = ctrl.getFigure();
-            figure.mousedown(this.select.bind(this));
+            if (!this.binded) {
+                this.select = this.select.bind(this);
+                this.binded = true;
+            }
+            figure.mousedown(this.select);
+        },
+
+        onDetach : function () {
+            var ctrl = this.getCtrl(),
+                figure = ctrl.getFigure();
+            figure.unmousedown(this.select);
         },
 
         select : function () {

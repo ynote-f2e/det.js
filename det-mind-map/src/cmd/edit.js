@@ -1,12 +1,26 @@
-function edit(context, action) {
+detMindMap.EditCommand = (function (det) {
+
     'use strict';
 
-    var name = action.name,
-        value = action.value,
-        model = context.model(),
-        originalValue = model[name];
-    model[name] = value;
-    return function rollback() {
-        model[name] = originalValue;
-    };
-}
+    return det.derive(function (model, name, value) {
+        this.model = model;
+        this.name = name;
+        this.value = value;
+    }, {
+
+        execute : function () {
+            this.original = this.model.get(this.name);
+            this.model.set(this.name, this.value);
+        },
+
+        undo : function () {
+            this.model.set(this.name, this.original);
+        },
+
+        redo : function () {
+            this.model.set(this.name, this.value);
+        }
+
+    });
+
+}(det));
