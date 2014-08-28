@@ -59,7 +59,7 @@ var MindNodeCtrl = (
                     x : PADDING.X,
                     y : this.rect.getBBox().height - PADDING.Y - 4
                 });
-                return svg.group(this.rect, this.text);
+                return svg.group(this.rect, this.text, this.line);
             },
 
             refreshFigure : function () {
@@ -113,8 +113,8 @@ var MindNodeCtrl = (
              * */
             onAttach : function () {
                 GraphCtrl.prototype.onAttach.call(this);
-                this.bind(BaseCtrl.CHILD_ADD, this.doLayout, this);
-                this.bind(BaseCtrl.CHILD_REMOVE, this.doLayout, this);
+                this.bind('append', this.doLayout, this);
+                this.bind('remove', this.doLayout, this);
             },
 
             /**
@@ -122,9 +122,8 @@ var MindNodeCtrl = (
              * */
             onDetach : function () {
                 GraphCtrl.prototype.onDetach.call(this);
-                this.line.remove();
-                this.unbind(BaseCtrl.CHILD_ADD, this.doLayout);
-                this.unbind(BaseCtrl.CHILD_REMOVE, this.doLayout);
+                this.unbind('append', this.doLayout);
+                this.unbind('remove', this.doLayout);
             },
 
             isRoot : function () {
@@ -148,14 +147,6 @@ var MindNodeCtrl = (
                 this.getDiagram().doLayout();
             },
 
-            getSize : function () {
-                var box = this.text.getBBox();
-                return {
-                    width : box.width + PADDING.X * 2,
-                    height : box.height + PADDING.Y * 2
-                };
-            },
-
             setXY : function (x, y) {
                 var parentBox,
                     box;
@@ -170,8 +161,8 @@ var MindNodeCtrl = (
                 if (this.isRoot()) {
                     return;
                 }
-                parentBox = this.getParent().getFigure().getBBox();
-                box = this.getFigure().getBBox();
+                parentBox = this.getParent().rect.getBBox();
+                box = this.rect.getBBox();
                 if (parentBox.x < box.x) {
                     this.line.attr({
                         x1 : x,
@@ -199,7 +190,7 @@ var MindNodeCtrl = (
 
             onSelect : function () {
                 var paper = this.getSVG().paper,
-                    box = this.getFigure().getBBox();
+                    box = this.rect.getBBox();
                 this.selectRect = paper.rect({
                     x : box.x - 4,
                     y : box.y - 4,

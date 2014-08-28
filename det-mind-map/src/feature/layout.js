@@ -26,7 +26,7 @@ var MindLayout = (function (BaseFeature) {
 
             function layoutChildren() {
                 var children = rootCtrl.getChildren(),
-                    rootBox = rootFigure.getBBox(),
+                    rootBox = rootCtrl.rect.getBBox(),
                     heights = [],
                     rightChildren,
                     rightHeight,
@@ -78,7 +78,7 @@ var MindLayout = (function (BaseFeature) {
 
             function layoutNestedRight(childCtrl, x, y) {
                 var height = measure(childCtrl),
-                    width = childCtrl.getFigure().getBBox().width,
+                    width = childCtrl.rect.getBBox().width,
                     children = childCtrl.getChildren();
                 childCtrl.setXY(x, y + height / 2);
                 children.forEach(function (childCtrl) {
@@ -90,7 +90,7 @@ var MindLayout = (function (BaseFeature) {
 
             function layoutNestedLeft(childCtrl, x, y) {
                 var height = measure(childCtrl),
-                    width = childCtrl.getFigure().getBBox().width,
+                    width = childCtrl.rect.getBBox().width,
                     children = childCtrl.getChildren();
                 childCtrl.setXY(x - width, y + height / 2);
                 children.forEach(function (childCtrl) {
@@ -104,7 +104,7 @@ var MindLayout = (function (BaseFeature) {
                 var children = childCtrl.getChildren(),
                     height = 0;
                 if (children.length == 0) {
-                    return childCtrl.getSize().height + MARGIN;
+                    return childCtrl.rect.getBBox().height + MARGIN;
                 }
                 children.forEach(function (childCtrl) {
                     height += measure(childCtrl);
