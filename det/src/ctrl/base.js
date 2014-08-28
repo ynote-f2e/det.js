@@ -5,14 +5,16 @@
 det.BaseCtrl = (function (EventSupport, Model) {
     'use strict';
 
-    return EventSupport.derive(function (model) {
+    return EventSupport.derive(function (model, factory) {
         EventSupport.call(this);
         this.model = model;
+        this.factory = factory;
         this.selected = false;
         this.attached = false;
         this.parentCtrl = null;
         this.children = [];
         this.features = [];
+        this.refreshChildren();
     }, {
 
         /**
@@ -35,7 +37,6 @@ det.BaseCtrl = (function (EventSupport, Model) {
             this.features.forEach(function (feature) {
                 feature.active(this);
             }.bind(this));
-            this.refreshChildren();
             this.children.forEach(function (childCtrl) {
                 childCtrl.attach();
             });
@@ -43,11 +44,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
 
         /* 根据模型构造 ctrl 节点 */
         createChild : function (model) {
-            var diagram = this.getDiagram();
-            if (!diagram) {
-                return null;
-            }
-            return diagram.getFactory()(model);
+            return this.factory(model);
         },
 
         detach : function () {
@@ -68,6 +65,10 @@ det.BaseCtrl = (function (EventSupport, Model) {
         /* 返回自身的 children 列表 */
         getChildren : function () {
             return this.children;
+        },
+
+        getFactory : function (model) {
+            return this.factory;
         },
 
         /* 返回当前 ctrl 对应的 model 对象 */

@@ -10,11 +10,7 @@ var MindNodeCtrl = (
             Y : 12
         };
 
-        return GraphCtrl.derive(function (model) {
-            GraphCtrl.call(this, model);
-            this.on(BaseCtrl.CHILD_ADD, this.doLayout, this);
-            this.on(BaseCtrl.CHILD_REMOVE, this.doLayout, this);
-        }, {
+        return GraphCtrl.derive({
 
             /**
              * @Override
@@ -31,7 +27,7 @@ var MindNodeCtrl = (
                 this.text.attr({
                     x : PADDING.X,
                     y : this.rect.getBBox().height - PADDING.Y - 4
-                })
+                });
                 return svg.group(this.rect, this.text);
             },
 
@@ -83,6 +79,8 @@ var MindNodeCtrl = (
             onAttach : function () {
                 GraphCtrl.prototype.onAttach.call(this);
                 this.getParent().getModel().bind(this.refreshFigure, this);
+                this.bind(BaseCtrl.CHILD_ADD, this.doLayout, this);
+                this.bind(BaseCtrl.CHILD_REMOVE, this.doLayout, this);
             },
 
             /**
@@ -91,6 +89,8 @@ var MindNodeCtrl = (
             onDetach : function () {
                 GraphCtrl.prototype.onDetach.call(this);
                 this.getParent().getModel().unbind(this.refreshFigure, this);
+                this.unbind(BaseCtrl.CHILD_ADD, this.doLayout);
+                this.unbind(BaseCtrl.CHILD_REMOVE, this.doLayout);
             },
 
             isRoot : function () {

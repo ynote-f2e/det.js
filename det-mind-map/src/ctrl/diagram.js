@@ -26,12 +26,15 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
             });
         },
 
+        render : function () {
+            DiagramCtrl.prototype.render.apply(this, arguments);
+            this.doLayout();
+        },
+
         /**
          * @Override
          * */
-        refreshFigure : function () {
-            this.doLayout();
-        },
+        refreshFigure : function () {},
 
         /**
          * @Override
@@ -42,7 +45,9 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
         },
 
         doLayout : function () {
+            var t1 = new Date().getTime() / 1000;
             this.layout.doLayout();
+            console.log('layout', new Date().getTime() / 1000 - t1);
         },
 
         getRootCtrl : function () {

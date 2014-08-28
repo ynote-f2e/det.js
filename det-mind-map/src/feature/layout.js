@@ -11,21 +11,6 @@ var MindLayout = (function (BaseFeature) {
         onDetach : function () {},
 
         doLayout : function () {
-            this.bufferedLayout();
-        },
-
-        bufferedLayout : function () {
-            if (this.layoutTimeout) {
-                clearTimeout(this.layoutTimeout);
-            }
-            this.layoutTimeout = setTimeout(
-                this.startLayout.bind(this), 0);
-        },
-
-        /**
-         * 只会被根节点的 layout 调用
-         */
-        startLayout : function () {
             var rootCtrl = this.getCtrl().getRootCtrl(),
                 rootFigure = rootCtrl.getFigure(),
                 svgBox = rootCtrl.getSVG().getBBox();
