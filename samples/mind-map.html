@@ -9,6 +9,7 @@
 <p>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
+    <button onclick="alertSelection()">查看选项</button>
 </p>
 </body>
 <script src="../det/src/det.js"></script>
@@ -22,7 +23,6 @@
 <script src="../det/src/ctrl/link.js"></script>
 <script src="../det/src/feature/base.js"></script>
 <script src="../det/src/feature/drag.js"></script>
-<script src="../det/src/feature/select.js"></script>
 <script src="../det-mind-map/src/plugin.js"></script>
 <script src="../det-mind-map/src/cmd/move.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
@@ -30,10 +30,10 @@
 <script src="../det-mind-map/src/model/diagram.js"></script>
 <script src="../det-mind-map/src/model/node.js"></script>
 <script src="../det-mind-map/src/feature/layout.js"></script>
-<script src="../det-mind-map/src/feature/move.js"></script>
+<script src="../det-mind-map/src/feature/select.js"></script>
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
-    var toolkit = det.create(), diagram, rootCtrl;
+    var toolkit = det.create(), diagram, diagramCtrl;
     toolkit.plugin(detMindMap);
     diagram = new detMindMap.MindDiagram({
         title : '我的图',
@@ -97,14 +97,22 @@
             }]
         }
     });
-    rootCtrl = toolkit.render(document.getElementById('diagram'), diagram);
+    diagramCtrl = toolkit.render(document.getElementById('diagram'), diagram);
 
     function undo() {
-        rootCtrl.getCommandStack().undo();
+        diagramCtrl.getCommandStack().undo();
     }
 
     function redo() {
-        rootCtrl.getCommandStack().redo();
+        diagramCtrl.getCommandStack().redo();
+    }
+
+    function alertSelection() {
+        var selection = diagramCtrl.getSelection();
+        if (selection.length == 0) {
+            return;
+        }
+        alert(JSON.stringify(selection[0].getModel().get('text')));
     }
 
 </script>

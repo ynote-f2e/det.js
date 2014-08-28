@@ -33,7 +33,10 @@ var MindNodeCtrl = (
                 'text-anchor' : 'start'
             };
 
-        return GraphCtrl.derive({
+        return GraphCtrl.derive(function (model, factory) {
+            GraphCtrl.call(this, model, factory);
+            this.installFeature(new MindNodeSelection());
+        }, {
 
             /**
              * @Override
@@ -177,10 +180,34 @@ var MindNodeCtrl = (
                 } else {
                     this.line.attr({
                         x1 : x + box.width,
-                        y1 : y + box.height /2,
+                        y1 : y + box.height / 2,
                         x2 : parentBox.x,
                         y2 : parentBox.y + parentBox.height / 2
                     });
+                }
+            },
+
+            onSelect : function () {
+                var paper = this.getSVG().paper,
+                    box = this.getFigure().getBBox();
+                this.selectRect = paper.rect({
+                    x : box.x - 4,
+                    y : box.y - 4,
+                    rx : 8,
+                    ry : 8,
+                    width : box.width + 8,
+                    height : box.height + 8,
+                    fillOpacity : 0,
+                    strokeOpacity : 0.5,
+                    stroke : 'blue',
+                    strokeWidth : '3'
+                });
+            },
+
+            onDeselect : function () {
+                if (this.selectRect) {
+                    this.selectRect.remove();
+                    delete this.selectRect;
                 }
             }
 

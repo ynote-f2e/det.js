@@ -23,6 +23,22 @@ det.DiagramCtrl = (function (GraphCtrl, CommandStack) {
 
         getDiagram : function () {
             return this;
+        },
+
+        getSelection : function () {
+            function collect(children, selection) {
+                if (!children) {
+                    return selection;
+                }
+                children.forEach(function (child) {
+                    if (child.isSelected()) {
+                        selection.push(child);
+                    }
+                    collect(child.getChildren(), selection);
+                });
+                return selection;
+            }
+            return collect([this], []);
         }
 
     });
