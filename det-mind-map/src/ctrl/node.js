@@ -6,9 +6,9 @@ var MindNodeCtrl = (
         'use strict';
 
         var PADDING = {
-            X : 20,
-            Y : 12
-        };
+                X : 20,
+                Y : 12
+            };
 
         return GraphCtrl.derive({
 
@@ -23,7 +23,7 @@ var MindNodeCtrl = (
                 this.rect = paper.rect(0, 0, 0, 0);
                 this.text = paper.text(0, 0, text);
                 this.line = paper.line(0, 0, 0, 0);
-                this.refreshFigure();
+                this.renderProperties();
                 this.text.attr({
                     x : PADDING.X,
                     y : this.rect.getBBox().height - PADDING.Y - 4
@@ -31,10 +31,15 @@ var MindNodeCtrl = (
                 return svg.group(this.rect, this.text);
             },
 
+            refreshFigure : function () {
+                this.renderProperties();
+                this.doLayout();
+            },
+
             /**
              * @Override
              * */
-            refreshFigure : function () {
+            renderProperties : function () {
                 var model = this.getModel(),
                     textNode = this.text.node,
                     width,
@@ -114,6 +119,14 @@ var MindNodeCtrl = (
                 this.getDiagram().doLayout();
             },
 
+            getSize : function () {
+                var box = this.text.getBBox();
+                return {
+                    width : box.width + PADDING.X * 2,
+                    height : box.height + PADDING.Y * 2
+                };
+            },
+
             setXY : function (x, y) {
                 var parentBox,
                     box;
@@ -133,7 +146,7 @@ var MindNodeCtrl = (
                 if (parentBox.x < box.x) {
                     this.line.attr({
                         x1 : x,
-                        y1 : y + box.height /2,
+                        y1 : y + box.height / 2,
                         x2 : parentBox.x + parentBox.width,
                         y2 : parentBox.y + parentBox.height / 2
                     });

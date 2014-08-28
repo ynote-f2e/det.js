@@ -53,8 +53,8 @@ var MindLayout = (function (BaseFeature) {
                         }, 0);
                     layoutNestedRight(childCtrl,
                         (svgBox.width + rootBox.width) / 2 + 50,
-                        (svgBox.height - rightHeight) /2 + relatedTop
-                    );
+                        (svgBox.height - rightHeight) / 2 + relatedTop
+                        );
                 });
 
                 leftChildren.reverse();
@@ -62,13 +62,13 @@ var MindLayout = (function (BaseFeature) {
                 leftChildren.forEach(function (childCtrl, index) {
                     var relatedTop = heights.slice(heights.length - index,
                             heights.length)
-                        .reduce(function (sum, value) {
-                            return sum + value;
-                        }, 0);
+                            .reduce(function (sum, value) {
+                                return sum + value;
+                            }, 0);
                     layoutNestedLeft(childCtrl,
                             (svgBox.width - rootBox.width) / 2 - 50,
-                            (svgBox.height - leftHeight) /2 + relatedTop
-                    );
+                            (svgBox.height - leftHeight) / 2 + relatedTop
+                        );
                 });
             }
 
@@ -104,8 +104,7 @@ var MindLayout = (function (BaseFeature) {
                 var children = childCtrl.getChildren(),
                     height = 0;
                 if (children.length == 0) {
-                    return childCtrl.getFigure()
-                        .getBBox().height + MARGIN;
+                    return childCtrl.getSize().height + MARGIN;
                 }
                 children.forEach(function (childCtrl) {
                     height += measure(childCtrl);
