@@ -5,11 +5,11 @@ var MindNodeCtrl = (
     function (GraphCtrl, BaseCtrl) {
         'use strict';
 
-        Object.prototype.extend = function(obj) {
-            var copy = this.constructor();
-            for (var attr in this) {
-                if (this.hasOwnProperty(attr)) {
-                    copy[attr] = this[attr];
+        function extend(src, obj) {
+            var copy = src.constructor();
+            for (var attr in src) {
+                if (src.hasOwnProperty(attr)) {
+                    copy[attr] = src[attr];
                 }
             }
             for(var attr in obj) {
@@ -19,8 +19,8 @@ var MindNodeCtrl = (
         };
 
         var PADDING = {
-                X : 20,
-                Y : 12
+                X : 10,
+                Y : 6
             },
             DEFAULTRECTATTR = {
                 fill : '#fff',
@@ -31,7 +31,12 @@ var MindNodeCtrl = (
             },
             DEFAULTTEXTATTR = {
                 'text-anchor' : 'start'
+            },
+            DEFAULTLINEATTR = {
+                stroke : "#666",
+                strokeWidth : '1'
             };
+        
 
         return GraphCtrl.derive(function (model, factory) {
             GraphCtrl.call(this, model, factory);
@@ -72,29 +77,27 @@ var MindNodeCtrl = (
                     height,
                     textBox,
                     textAttr,
-                    rectAttr;
+                    rectAttr,
+                    lineAttr;
                 textNode.textContent = model.get('text');
                 
-                textAttr = DEFAULTTEXTATTR.extend(model.data.textAttr);
+                textAttr = extend(DEFAULTTEXTATTR, model.data.textAttr);
                 this.text.attr(textAttr);
 
                 textBox = this.text.getBBox();
                 width = textBox.width + PADDING.X * 2;
                 height = textBox.height + PADDING.Y * 2;
 
-                rectAttr = DEFAULTRECTATTR
-                                .extend({width: width, height: height})
-                                .extend(model.data.rectAttr);
+                rectAttr = extend(extend(DEFAULTRECTATTR, {width: width, height: height}), 
+                                model.data.rectAttr);
                 this.rect.attr(rectAttr);
 
                 if (this.isRoot()) {
                     return;
                 }
 
-                this.line.attr({
-                    stroke : "#666",
-                    strokeWidth : '1'
-                });
+                lineAttr = extend(DEFAULTLINEATTR, model.data.lineAttr);
+                this.line.attr(lineAttr);
             },
 
             /**
