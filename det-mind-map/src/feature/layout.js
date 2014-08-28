@@ -12,14 +12,13 @@ var MindLayout = (function (BaseFeature) {
 
         doLayout : function () {
             var rootCtrl = this.getCtrl().getRootCtrl(),
-                rootFigure = rootCtrl.getFigure(),
                 svgBox = rootCtrl.getSVG().getBBox();
 
             layoutRoot();
             layoutChildren();
 
             function layoutRoot() {
-                var rootBox = rootFigure.getBBox();
+                var rootBox = rootCtrl.rect.getBBox();
                 rootCtrl.setXY((svgBox.width - rootBox.width) / 2,
                     (svgBox.height - rootBox.height) / 2);
             }
