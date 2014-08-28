@@ -121,7 +121,8 @@ det.BaseCtrl = (function (EventSupport, Model) {
                 this.removeChild(childCtrl);
             }.bind(this));
             newModels.forEach(function (model) {
-                this.addChild(this.createChild(model));
+                this.addChild(this.createChild(model),
+                    modelChildren.indexOf(model));
             }.bind(this));
         },
 

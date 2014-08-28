@@ -24,8 +24,8 @@ var MindNode = (function (Model) {
             return this.data[name];
         },
 
-        add : function (node) {
-            this.nodes.push(node);
+        add : function (node, index) {
+            this.nodes.splice(index, 0, node);
             this.triggerChildren();
         },
 
@@ -36,6 +36,10 @@ var MindNode = (function (Model) {
             }
             this.nodes.splice(index, 1);
             this.triggerChildren();
+        },
+
+        getNodes : function () {
+            return this.nodes;
         }
 
     });

@@ -9,7 +9,7 @@
 <p>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
-    <button onclick="alertSelection()">查看选项</button>
+    <button onclick="removeSeletion()">删除选中的节点</button>
 </p>
 </body>
 <script src="../det/src/det.js"></script>
@@ -24,7 +24,8 @@
 <script src="../det/src/feature/base.js"></script>
 <script src="../det/src/feature/drag.js"></script>
 <script src="../det-mind-map/src/plugin.js"></script>
-<script src="../det-mind-map/src/cmd/move.js"></script>
+<script src="../det-mind-map/src/cmd/edit.js"></script>
+<script src="../det-mind-map/src/cmd/remove.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
 <script src="../det-mind-map/src/ctrl/node.js"></script>
 <script src="../det-mind-map/src/model/diagram.js"></script>
@@ -286,12 +287,20 @@
         diagramCtrl.getCommandStack().redo();
     }
 
-    function alertSelection() {
-        var selection = diagramCtrl.getSelection();
+    function removeSeletion() {
+        var selection = diagramCtrl.getSelection(),
+            rootCtrl = diagramCtrl.getRootCtrl();
         if (selection.length == 0) {
             return;
         }
-        alert(JSON.stringify(selection[0].getModel().get('text')));
+        selection = selection[0];
+        if (selection === rootCtrl) {
+            return;
+        }
+        selection.execute(
+            new detMindMap.RemoveCommand(
+                selection.getParent().getModel(),
+                selection.getModel()))
     }
 
 </script>
