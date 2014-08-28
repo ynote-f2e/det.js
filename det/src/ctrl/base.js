@@ -9,7 +9,6 @@ det.BaseCtrl = (function (EventSupport, Model) {
         EventSupport.call(this);
         this.model = model;
         this.factory = factory;
-        this.selected = false;
         this.attached = false;
         this.parentCtrl = null;
         this.children = [];
@@ -48,6 +47,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
         },
 
         detach : function () {
+            this.deselect();
             this.children.forEach(function (childCtrl) {
                 childCtrl.detach();
             });

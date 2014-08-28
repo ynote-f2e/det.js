@@ -1,7 +1,10 @@
 det.GraphCtrl = (function (BaseCtrl) {
     'use strict';
 
-    return BaseCtrl.derive({
+    return BaseCtrl.derive(function (model, factory) {
+        BaseCtrl.call(this, model, factory);
+        this.selected = false;
+    }, {
 
         getDiagram : function () {
             var parentCtrl = this.getParent();
@@ -45,6 +48,24 @@ det.GraphCtrl = (function (BaseCtrl) {
             this.getModel().bindChildren(this.refreshChildren, this);
             this.figure.remove();
         },
+
+        select : function () {
+            this.selected = true;
+            this.onSelect();
+        },
+
+        deselect : function () {
+            this.selected = false;
+            this.onDeselect();
+        },
+
+        isSelected : function () {
+            return this.selected;
+        },
+
+        onSelect : det.noop,
+
+        onDeselect : det.noop,
 
         createFigure : det.noop,
 
