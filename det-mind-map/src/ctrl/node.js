@@ -42,6 +42,7 @@ var MindNodeCtrl = (
         return GraphCtrl.derive(function (model, factory) {
             GraphCtrl.call(this, model, factory);
             this.installFeature(new MindSelection());
+            this.installFeature(new DragMove());
         }, {
 
             /**
@@ -54,7 +55,6 @@ var MindNodeCtrl = (
                     text = model.get('text');
                 this.rect = paper.rect(0, 0, 0, 0);
                 this.text = paper.text(0, 0, text);
-                
 
                 if (this.isSecond()) {
                     this.line = paper.polyline(0, 0, 0, 0);
@@ -163,6 +163,18 @@ var MindNodeCtrl = (
 
             doLayout : function () {
                 this.getDiagram().doLayout();
+            },
+
+            getRect : function () {
+                return this.rect;
+            },
+
+            getLine : function () {
+                return this.line;
+            },
+
+            getText : function () {
+                return this.text;
             },
 
             getBBox : function () {

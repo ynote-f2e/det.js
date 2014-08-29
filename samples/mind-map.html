@@ -26,13 +26,10 @@
     <button onclick="redo()">Redo</button>
     <input id="strokeColor" type="text" name="strokeColor" value="#fff" />
     <button>线条颜色</button>
-
 </div>
 <div class="painter">
     <svg id="diagram" width="800" height="600"></svg>
 </div>
-<p>
-</p>
 </body>
 <script src="jquery.js"></script>
 <script src="jquery.colorPicker.js"></script>
@@ -47,17 +44,24 @@
 <script src="../det/src/ctrl/link.js"></script>
 <script src="../det/src/feature/base.js"></script>
 <script src="../det/src/feature/drag.js"></script>
+<script src="../det/src/util/box.js"></script>
+
 <script src="../det-mind-map/src/plugin.js"></script>
 <script src="../det-mind-map/src/cmd/append.js"></script>
 <script src="../det-mind-map/src/cmd/edit.js"></script>
 <script src="../det-mind-map/src/cmd/setLineColor.js"></script>
 <script src="../det-mind-map/src/cmd/remove.js"></script>
+<script src="../det-mind-map/src/cmd/move.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
 <script src="../det-mind-map/src/ctrl/node.js"></script>
 <script src="../det-mind-map/src/model/diagram.js"></script>
 <script src="../det-mind-map/src/model/node.js"></script>
 <script src="../det-mind-map/src/feature/layout.js"></script>
 <script src="../det-mind-map/src/feature/select.js"></script>
+<script src="../det-mind-map/src/feature/move.js"></script>
+<script src="../det-mind-map/src/style/style.js"></script>
+<script src="../det-mind-map/src/style/rect/underline.js"></script>
+
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
     var toolkit = det.create(), diagram, diagramCtrl;
@@ -435,6 +439,7 @@
     diagramCtrl.bind('select', function (e) {
         var model = e.target.getModel();
         //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
+
         console.log(e.target.getModel().data);
         if (e.target.getModel().data.root) {
             return;
