@@ -31,6 +31,9 @@ var MindNode = (function (Model) {
         },
 
         setLineAttr : function (name, value) {
+            if (this.lineAttr[name] === value) {
+                return;
+            }
             this.lineAttr[name] = value;
             this.trigger();
         },
@@ -40,6 +43,9 @@ var MindNode = (function (Model) {
         },
 
         setRectAttr : function (name, value) {
+            if (this.rectAttr[name] === value) {
+                return;
+            }
             this.rectAttr[name] = value;
             this.trigger();
         },
