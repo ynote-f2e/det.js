@@ -67,6 +67,10 @@ var MindNodeCtrl = (
                     x : PADDING.X,
                     y : this.rect.getBBox().height - PADDING.Y - 2
                 });
+                this.rect.node.addEventListener('click',
+                    this.onMouseEvent.bind(this, 'click'));
+                this.rect.node.addEventListener('contextmenu',
+                    this.onMouseEvent.bind(this, 'contextmenu'));
                 return svg.group(this.rect, this.text, this.line);
             },
 
@@ -143,6 +147,16 @@ var MindNodeCtrl = (
                 return model === diagramCtrl.getModel().getRoot();
             },
 
+            /**
+             * @Override
+             */
+            execute : function (cmd) {
+                var layout = this.getLayout();
+                layout.beginUpdate();
+                GraphCtrl.prototype.execute.call(this, cmd);
+                layout.finishUpdate();
+            },
+
             isSecond : function () {
                 var model = this.getParent().getModel(),
                     diagramCtrl = this.getDiagram();
@@ -162,7 +176,11 @@ var MindNodeCtrl = (
             },
 
             doLayout : function () {
-                this.getDiagram().doLayout();
+                this.getLayout().layout();
+            },
+
+            getLayout : function () {
+                return this.getDiagram().getLayout();
             },
 
             getRect : function () {
@@ -184,6 +202,9 @@ var MindNodeCtrl = (
             setXY : function (x, y) {
                 var parentBox,
                     box;
+                if (this.x === x && this.y === y) {
+                    return;
+                }
                 this.rect.attr({
                     x : x,
                     y : y
@@ -192,6 +213,8 @@ var MindNodeCtrl = (
                     x : x + PADDING.X,
                     y : y + this.rect.getBBox().height - PADDING.Y - 2
                 });
+                this.x = x;
+                this.y = y;
                 if (this.isRoot()) {
                     return;
                 }
@@ -268,6 +291,10 @@ var MindNodeCtrl = (
                     this.selectRect.remove();
                     delete this.selectRect;
                 }
+            },
+
+            onMouseEvent : function (name, e) {
+                this.bubble(name);
             }
 
         });

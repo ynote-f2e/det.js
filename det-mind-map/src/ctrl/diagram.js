@@ -6,7 +6,8 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
 
     return DiagramCtrl.derive(function (model, factory) {
         DiagramCtrl.call(this, model, factory);
-        this.installFeature(this.layout = new MindLayout());
+        this.layout = new MindLayout();
+        this.installFeature(this.layout);
         this.installFeature(new MindSelection());
     }, {
 
@@ -29,7 +30,7 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
 
         render : function () {
             DiagramCtrl.prototype.render.apply(this, arguments);
-            this.doLayout();
+            this.getLayout().layout();
         },
 
         /**
@@ -45,8 +46,8 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
             return [model.root];
         },
 
-        doLayout : function () {
-            this.layout.doLayout();
+        getLayout : function () {
+            return this.layout;
         },
 
         getRootCtrl : function () {

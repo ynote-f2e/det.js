@@ -10,7 +10,7 @@
         .selectInput {
             position: absolute;
         }
-        .line-color, .colorPicker-picker {
+        .line-color, .rect-color, .colorPicker-picker {
             display: inline-block;
         }
     </style>
@@ -25,12 +25,12 @@
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
     <div class="line-color">
-        <input id="lineColor" type="text" name="lineColor" value="#fff" />
+        <input id="lineColor" type="text" name="lineColor" value="#ffffff" />
         <button onclick="clickLine()">线条颜色</button>
     </div>
     <div class="rect-color">
-        <input id="strokeColor" type="text" name="strokeColor" value="#fff" />
-        <button onclick="clickLine()">线条颜色</button>
+        <input id="rectBackground" type="text" name="rectBackground" value="#ffffff" />
+        <button onclick="clickBackground()">填充颜色</button>
     </div>
 </div>
 <div class="painter">
@@ -51,11 +51,13 @@
 <script src="../det/src/feature/base.js"></script>
 <script src="../det/src/feature/drag.js"></script>
 <script src="../det/src/util/box.js"></script>
+<script src="../det/src/cmd/batch.js"></script>
 
 <script src="../det-mind-map/src/plugin.js"></script>
 <script src="../det-mind-map/src/cmd/append.js"></script>
 <script src="../det-mind-map/src/cmd/edit.js"></script>
 <script src="../det-mind-map/src/cmd/setLineColor.js"></script>
+<script src="../det-mind-map/src/cmd/setBackgroundColor.js"></script>
 <script src="../det-mind-map/src/cmd/remove.js"></script>
 <script src="../det-mind-map/src/cmd/move.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
@@ -431,7 +433,8 @@
     }
 
     function setSelectionLineColor(newColor) {
-        var selection = diagramCtrl.getSelection();
+        var selection = diagramCtrl.getSelection(),
+            commands;
         if (selection.length == 0) {
             return;
         }
@@ -439,7 +442,24 @@
         if (selection.getModel().getLineAttr('stroke') === newColor) {
             return;
         }
-        selection.execute(new detMindMap.SetLineColorCommand(
+        commands = [new detMindMap.SetLineColorCommand(
+                selection.getModel(), newColor)];
+        selection.getChildren().forEach(function addCommand(child) {
+            commands.push(new detMindMap.SetLineColorCommand(
+                child.getModel(), newColor));
+            child.getChildren().forEach(addCommand);
+        });
+        selection.execute(new det.BatchCommand(commands));
+    }
+
+    function setSelectionBackgroundColor(newColor) {
+        var selection = diagramCtrl.getSelection(),
+            commands;
+        if (selection.length == 0) {
+            return;
+        }
+        selection = selection[0];
+        selection.execute(new detMindMap.SetBackgroundColorCommand(
             selection.getModel(), newColor));
     }
 
@@ -457,6 +477,9 @@
         }
         $('#lineColor').val(e.target.getModel().getLineAttr('stroke'));
         $('#lineColor').change();
+
+        $('#rectBackground').val(e.target.getModel().getRectAttr('fill'));
+        $('#rectBackground').change();
     });
 
     $('#lineColor').colorPicker({
@@ -464,5 +487,14 @@
             setSelectionLineColor(newColor);
         }
     });
+    $('#rectBackground').colorPicker({
+        onColorChange : function (id, newColor) {
+            setSelectionBackgroundColor(newColor);
+        }
+    });
+    diagramCtrl.bind('contextmenu', function (e) {
+        console.log(e.target.getModel().data);
+    });
+
 </script>
 </html>
