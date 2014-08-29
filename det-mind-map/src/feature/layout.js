@@ -10,6 +10,26 @@ var MindLayout = (function (BaseFeature) {
 
         onDetach : function () {},
 
+        beginUpdate : function () {
+            this.updating = true;
+        },
+
+        finishUpdate : function () {
+            this.updating = false;
+            if (!this.invalid) {
+                return;
+            }
+            this.doLayout();
+        },
+
+        layout : function () {
+            if (this.updating) {
+                this.invalid = true;
+                return;
+            }
+            this.doLayout();
+        },
+
         doLayout : function () {
             var rootCtrl = this.getCtrl().getRootCtrl(),
                 svgBox = rootCtrl.getSVG().getBBox(),
