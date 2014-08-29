@@ -333,11 +333,11 @@
     diagramCtrl = toolkit.render(document.getElementById('diagram'), diagram);
 
     function undo() {
-        diagramCtrl.getCommandStack().undo();
+        diagramCtrl.undo();
     }
 
     function redo() {
-        diagramCtrl.getCommandStack().redo();
+        diagramCtrl.redo();
     }
 
     function removeSeletion() {
