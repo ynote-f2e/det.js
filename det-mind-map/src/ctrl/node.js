@@ -5,40 +5,6 @@ var MindNodeCtrl = (
     function (GraphCtrl, BaseCtrl) {
         'use strict';
 
-        function extend(src, obj) {
-            var copy = src.constructor();
-            for (var attr in src) {
-                if (src.hasOwnProperty(attr)) {
-                    copy[attr] = src[attr];
-                }
-            }
-            for(var attr in obj) {
-                copy[attr] = obj[attr];
-            }
-            return copy;
-        };
-
-        var PADDING = {
-                X : 10,
-                Y : 6
-            },
-            HANDLEWIDTH = 4,
-            DEFAULTRECTATTR = {
-                fill : '#fff',
-                stroke : "#666",
-                strokeWidth : '1',
-                rx : 8,
-                ry : 8
-            },
-            DEFAULTTEXTATTR = {
-                'text-anchor' : 'start'
-            },
-            DEFAULTLINEATTR = {
-                stroke : "#666",
-                strokeWidth : '1'
-            };
-        
-
         return GraphCtrl.derive(function (model, factory) {
             GraphCtrl.call(this, model, factory);
             this.installFeature(new MindSelection());
@@ -54,26 +20,26 @@ var MindNodeCtrl = (
                     model = this.getModel(),
                     text = model.get('text');
                 
-                this.rectStyle = Style.getRect('normal', this);
-
-                this.rect = this.rectStyle.create();
-                this.text = paper.text(0, 0, text);
+                this.rect= Style.getRect('normal', this);
+                this.rect.create();
                 
 
                 if (this.isSecond()) {
-                    this.line = paper.polyline(0, 0, 0, 0);
+                    this.line = Style.getLine('polyline', this);
+                    this.line.create();
                 } else {
-                    this.line = paper.line(0, 0, 0, 0);
+                    this.line = Style.getLine('normal', this);
+                    this.line.create();
                 }
 
                 this.renderProperties();
 
-                this.text.attr({
-                    x : PADDING.X,
-                    y : this.rect.getBBox().height - PADDING.Y - 2
-                });
+                this.rect.getNode().addEventListener('click',
+                    this.onMouseEvent.bind(this, 'click'));
+                this.rect.getNode().addEventListener('contextmenu',
+                    this.onMouseEvent.bind(this, 'contextmenu'));
 
-                return svg.group(this.rect, this.line);
+                return svg.group(this.rect.getFigure(), this.line.getFigure());
             },
 
             refreshFigure : function () {
@@ -86,32 +52,15 @@ var MindNodeCtrl = (
              * */
             renderProperties : function () {
                 var model = this.getModel(),
-                    textNode = this.text.node,
-                    width,
-                    height,
-                    textBox,
-                    textAttr,
-                    rectAttr,
                     lineAttr;
-                textNode.textContent = model.get('text');
-                
-                textAttr = extend(DEFAULTTEXTATTR, model.data.textAttr);
-                this.text.attr(textAttr);
 
-                textBox = this.text.getBBox();
-                width = textBox.width + PADDING.X * 2;
-                height = textBox.height + PADDING.Y * 2;
-
-                rectAttr = extend(extend(DEFAULTRECTATTR, {width: width, height: height}),
-                                model.data.rectAttr);
-                this.rect.attr(rectAttr);
+                this.rect.refresh();
 
                 if (this.isRoot()) {
                     return;
                 }
 
-                lineAttr = extend(DEFAULTLINEATTR, model.data.lineAttr);
-                this.line.attr(lineAttr);
+                this.line.refresh();
             },
 
             /**
@@ -149,6 +98,16 @@ var MindNodeCtrl = (
                 return model === diagramCtrl.getModel().getRoot();
             },
 
+            /**
+             * @Override
+             */
+            execute : function (cmd) {
+                var layout = this.getLayout();
+                layout.beginUpdate();
+                GraphCtrl.prototype.execute.call(this, cmd);
+                layout.finishUpdate();
+            },
+
             isSecond : function () {
                 var model = this.getParent().getModel(),
                     diagramCtrl = this.getDiagram();
@@ -168,19 +127,23 @@ var MindNodeCtrl = (
             },
 
             doLayout : function () {
-                this.getDiagram().doLayout();
+                this.getLayout().layout();
+            },
+
+            getLayout : function () {
+                return this.getDiagram().getLayout();
             },
 
             getRect : function () {
-                return this.rect;
-            },
-
-            getLine : function () {
-                return this.line;
+                return this.rect.getRect();
             },
 
             getText : function () {
-                return this.text;
+                return this.rect.getText();
+            },
+
+            getLine : function () {
+                return this.line.getLine();
             },
 
             getBBox : function () {
@@ -190,66 +153,20 @@ var MindNodeCtrl = (
             setXY : function (x, y) {
                 var parentBox,
                     box;
-                this.rect.attr({
-                    x : x,
-                    y : y
-                });
-                /*this.text.attr({
-                    x : x + PADDING.X,
-                    y : y + this.rect.getBBox().height - PADDING.Y - 2
-                }); */
+                if (this.x === x && this.y === y) {
+                    return;
+                }
+                
+                this.rect.setXY(x, y);
+
+                this.x = x;
+                this.y = y;
+
                 if (this.isRoot()) {
                     return;
                 }
 
-                parentBox = this.getParent().rect.getBBox();
-                box = this.rect.getBBox();
-
-                if (this.isSecond()) {
-                    if (parentBox.x < box.x) {
-                        this.line.attr({
-                            points : parseInt(x) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
-                                    parseInt(x) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                                    parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                                    parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
-                                    parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
-                                    parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
-                        });
-                    } else {
-                        this.line.attr({
-                            points : parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
-                                    parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                                    parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                                    parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
-                                    parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
-                                    parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
-                        });
-                    }
-                } else {
-                    if (parentBox.x < box.x) {
-                        this.line.attr({
-                            x1 : x,
-                            y1 : y + box.height / 2,
-                            x2 : parentBox.x + parentBox.width,
-                            y2 : parentBox.y + parentBox.height / 2
-                        });
-                    } else {
-                        this.line.attr({
-                            x1 : x + box.width,
-                            y1 : y + box.height / 2,
-                            x2 : parentBox.x,
-                            y2 : parentBox.y + parentBox.height / 2
-                        });
-                    }
-                }
-                if (this.selectRect) {
-                    this.selectRect.attr({
-                        x : box.x - 2,
-                        y : box.y - 2,
-                        width : box.width + 4,
-                        height : box.height + 4
-                    });
-                }
+                this.line.setXY(x, y);
             },
 
             onSelect : function () {
@@ -274,6 +191,10 @@ var MindNodeCtrl = (
                     this.selectRect.remove();
                     delete this.selectRect;
                 }
+            },
+
+            onMouseEvent : function (name, e) {
+                this.bubble(name);
             }
 
         });

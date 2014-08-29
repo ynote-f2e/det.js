@@ -32,6 +32,15 @@ Style.getRect = function (style, ctrl) {
     }
     return new Style.rectStyle[style](style, ctrl);
 };
+Style.getLine = function (style, ctrl) {
+    if (!Style.lineStyle[style]) {
+        return;
+    }
+    return new Style.lineStyle[style](style, ctrl);
+}
 Style.registerRect = function (style, styleClass) {
     Style.rectStyle[style] = styleClass;
+}
+Style.registerLine = function (style, styleClass) {
+    Style.lineStyle[style] = styleClass;
 }

@@ -10,22 +10,49 @@ var MindLayout = (function (BaseFeature) {
 
         onDetach : function () {},
 
+        beginUpdate : function () {
+            this.updating = true;
+        },
+
+        finishUpdate : function () {
+            this.updating = false;
+            if (!this.invalid) {
+                return;
+            }
+            this.doLayout();
+        },
+
+        layout : function () {
+            if (this.updating) {
+                this.invalid = true;
+                return;
+            }
+            this.doLayout();
+        },
+
         doLayout : function () {
             var rootCtrl = this.getCtrl().getRootCtrl(),
-                svgBox = rootCtrl.getSVG().getBBox();
+                svgBox = rootCtrl.getSVG().getBBox(),
+                boxes = {};
 
+            fetchBoxNested(rootCtrl);
             layoutRoot();
             layoutChildren();
 
+            function fetchBoxNested(ctrl) {
+                boxes[ctrl.$id()] = ctrl.getBBox();
+                ctrl.getChildren().forEach(fetchBoxNested);
+            }
+
             function layoutRoot() {
-                var rootBox = rootCtrl.getBBox();
+                var rootBox = boxes[rootCtrl.$id()];
                 rootCtrl.setXY((svgBox.width - rootBox.width) / 2,
                     (svgBox.height - rootBox.height) / 2);
             }
 
             function layoutChildren() {
                 var children = rootCtrl.getChildren(),
-                    rootBox = rootCtrl.getBBox(),
+                    rootBox = boxes[rootCtrl.$id()],
                     heights = [],
                     rightChildren,
                     rightHeight,
@@ -77,7 +104,7 @@ var MindLayout = (function (BaseFeature) {
 
             function layoutNestedRight(childCtrl, x, y) {
                 var height = measure(childCtrl),
-                    width = childCtrl.getBBox().width,
+                    width = boxes[childCtrl.$id()].width,
                     children = childCtrl.getChildren();
                 childCtrl.setXY(x, y + height / 2);
                 children.forEach(function (childCtrl) {
@@ -89,7 +116,7 @@ var MindLayout = (function (BaseFeature) {
 
             function layoutNestedLeft(childCtrl, x, y) {
                 var height = measure(childCtrl),
-                    width = childCtrl.getBBox().width,
+                    width = boxes[childCtrl.$id()].width,
                     children = childCtrl.getChildren();
                 childCtrl.setXY(x - width, y + height / 2);
                 children.forEach(function (childCtrl) {
@@ -103,7 +130,7 @@ var MindLayout = (function (BaseFeature) {
                 var children = childCtrl.getChildren(),
                     height = 0;
                 if (children.length == 0) {
-                    return childCtrl.getBBox().height + MARGIN;
+                    return boxes[childCtrl.$id()].height + MARGIN;
                 }
                 children.forEach(function (childCtrl) {
                     height += measure(childCtrl);

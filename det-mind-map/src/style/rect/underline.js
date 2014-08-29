@@ -1,8 +1,7 @@
 var UnderLineStyle = (function (Style) {
 
     return Style.derive(function (style, ctrl) {
-        Style.call(this, ctrl);
-        Style.call(this, style);
+        Style.call(this, style, ctrl);
     }, {
 
         create : function () {
@@ -10,9 +9,18 @@ var UnderLineStyle = (function (Style) {
 
             //return rect;
         },
+        
+        getRect : function () {
+            return this.rect;
+        },
+
+        getText : function () {
+            return this.text;
+        },
 
         getFigure : function () {
-            //return this.rect;
+            var svg = this.ctrl.getSVG()
+            return svg.group(this.rect, this.text);
         },
 
         refresh : function () {
