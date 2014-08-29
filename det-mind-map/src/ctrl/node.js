@@ -67,6 +67,10 @@ var MindNodeCtrl = (
                     x : PADDING.X,
                     y : this.rect.getBBox().height - PADDING.Y - 2
                 });
+                this.rect.node.addEventListener('click',
+                    this.onMouseEvent.bind(this, 'click'));
+                this.rect.node.addEventListener('contextmenu',
+                    this.onMouseEvent.bind(this, 'contextmenu'));
                 return svg.group(this.rect, this.text, this.line);
             },
 
@@ -287,6 +291,10 @@ var MindNodeCtrl = (
                     this.selectRect.remove();
                     delete this.selectRect;
                 }
+            },
+
+            onMouseEvent : function (name, e) {
+                this.bubble(name);
             }
 
         });

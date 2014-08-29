@@ -14,28 +14,16 @@ detMindMap.SetLineColorCommand = (function (det) {
             model.setRectAttr('stroke', color);
         },
 
-        paintChildren : function (model, color) {
-            if (!model) {
-                return;
-            }
-            var node, nodes = [].concat(model.nodes);
-            this.setLineColor(model, color);
-            while (nodes.length) {
-                node = nodes.shift();
-                this.paintChildren(node, color);
-            }
-        },
-
         execute : function () {
-            this.paintChildren(this.model, this.color);
+            this.setLineColor(this.model, this.color);
         },
 
         undo : function () {
-            this.paintChildren(this.model, this.oldColor);
+            this.setLineColor(this.model, this.oldColor);
         },
 
         redo : function () {
-            this.paintChildren(this.model, this.color);
+            this.setLineColor(this.model, this.color);
         }
 
     });

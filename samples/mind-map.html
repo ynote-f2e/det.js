@@ -45,6 +45,7 @@
 <script src="../det/src/feature/base.js"></script>
 <script src="../det/src/feature/drag.js"></script>
 <script src="../det/src/util/box.js"></script>
+<script src="../det/src/cmd/batch.js"></script>
 
 <script src="../det-mind-map/src/plugin.js"></script>
 <script src="../det-mind-map/src/cmd/append.js"></script>
@@ -425,16 +426,19 @@
     }
 
     function setSelectionLineColor(newColor) {
-        var selection = diagramCtrl.getSelection();
+        var selection = diagramCtrl.getSelection(),
+            commands;
         if (selection.length == 0) {
             return;
         }
         selection = selection[0];
-        if (selection.getModel().get('lineAttr').stroke === newColor) {
-            return;
-        }
-        selection.execute(new detMindMap.SetLineColorCommand(
-            selection.getModel(), newColor));
+        commands = [new detMindMap.SetLineColorCommand(
+                selection.getModel(), newColor)];
+        selection.getChildren().forEach(function (child) {
+            commands.push(new detMindMap.SetLineColorCommand(
+                child.getModel(), newColor));
+        });
+        selection.execute(new det.BatchCommand(commands));
     }
     diagramCtrl.bind('select', function (e) {
         var model = e.target.getModel();
@@ -448,10 +452,15 @@
         $('#strokeColor').change();
     });
 
+    diagramCtrl.bind('contextmenu', function (e) {
+        console.log(e.target.getModel().data);
+    });
+
     $('#strokeColor').colorPicker({
         onColorChange : function (id, newColor) {
             setSelectionLineColor(newColor);
         }
     });
+
 </script>
 </html>
