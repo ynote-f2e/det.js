@@ -52,8 +52,12 @@ var MindNodeCtrl = (
                     paper = svg.paper,
                     model = this.getModel(),
                     text = model.get('text');
-                this.rect = paper.rect(0, 0, 0, 0);
+                
+                this.rectStyle = Style.getRect('normal', this);
+
+                this.rect = this.rectStyle.create();
                 this.text = paper.text(0, 0, text);
+                
 
                 if (this.isSecond()) {
                     this.line = paper.polyline(0, 0, 0, 0);
@@ -62,11 +66,13 @@ var MindNodeCtrl = (
                 }
 
                 this.renderProperties();
+
                 this.text.attr({
                     x : PADDING.X,
                     y : this.rect.getBBox().height - PADDING.Y - 2
                 });
-                return svg.group(this.rect, this.text, this.line);
+
+                return svg.group(this.rect, this.line);
             },
 
             refreshFigure : function () {
@@ -95,7 +101,7 @@ var MindNodeCtrl = (
                 width = textBox.width + PADDING.X * 2;
                 height = textBox.height + PADDING.Y * 2;
 
-                rectAttr = extend(extend(DEFAULTRECTATTR, {width: width, height: height}), 
+                rectAttr = extend(extend(DEFAULTRECTATTR, {width: width, height: height}),
                                 model.data.rectAttr);
                 this.rect.attr(rectAttr);
 
@@ -179,10 +185,10 @@ var MindNodeCtrl = (
                     x : x,
                     y : y
                 });
-                this.text.attr({
+                /*this.text.attr({
                     x : x + PADDING.X,
                     y : y + this.rect.getBBox().height - PADDING.Y - 2
-                });
+                }); */
                 if (this.isRoot()) {
                     return;
                 }

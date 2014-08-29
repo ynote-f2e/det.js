@@ -1,7 +1,8 @@
 var UnderLineStyle = (function (Style) {
 
-    return Style.derive(function (ctrl) {
+    return Style.derive(function (style, ctrl) {
         Style.call(this, ctrl);
+        Style.call(this, style);
     }, {
 
         create : function () {
