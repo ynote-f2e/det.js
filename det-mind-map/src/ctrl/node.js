@@ -225,21 +225,19 @@ var MindNodeCtrl = (
                 if (this.isSecond()) {
                     if (parentBox.x < box.x) {
                         this.line.attr({
-                            points : parseInt(x) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
+                            points : 
                                     parseInt(x) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                                    parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
                                     parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
                                     parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
-                                    parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
+                                    parseInt(x) + ',' + parseInt(y + box.height / 2 - 1)
                         });
                     } else {
                         this.line.attr({
-                            points : parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
+                            points : 
                                     parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                                    parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
                                     parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
                                     parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
-                                    parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
+                                    parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 - 1)
                         });
                     }
                 } else {

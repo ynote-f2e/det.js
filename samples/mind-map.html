@@ -350,10 +350,22 @@
         if (selection === rootCtrl) {
             return;
         }
+        var parent = selection.getParent();
+        var children = parent.getChildren();
+        var index = children.indexOf(selection);
         selection.execute(
             new detMindMap.RemoveCommand(
                 selection.getParent().getModel(),
                 selection.getModel()));
+        var model = parent.getModel();
+        if (children.length) {
+            while (!children[index]) {
+                index--;
+            }
+            children[index].select();
+        } else {
+            parent.select();
+        }
     }
 
     function editSelection() {
@@ -388,6 +400,8 @@
 
         inputEl.focus();
         inputEl.on('keydown', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
             if (evt.keyCode && evt.keyCode === 13) {
                 setText();
             }
@@ -467,6 +481,9 @@
         $('.line-color .colorPicker-picker').click();
     }
 
+    function clickBackground() {
+        $('.rect-color .colorPicker-picker').click();
+    }
     diagramCtrl.bind('select', function (e) {
         var model = e.target.getModel();
         //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
@@ -490,6 +507,18 @@
     $('#rectBackground').colorPicker({
         onColorChange : function (id, newColor) {
             setSelectionBackgroundColor(newColor);
+        }
+    });
+    $('body').on('keydown', function (evt) {
+        console.log(evt.keyCode);
+        if (evt.keyCode && evt.keyCode === 13) {
+            appendSelectionBrother();
+        } else if (evt.keyCode && evt.keyCode === 45) {
+            appendSelectionChild();
+        } else if (evt.keyCode && evt.keyCode === 46) {
+            removeSeletion();
+        } else if (evt.keyCode && evt.keyCode === 113) {
+            editSelection();
         }
     });
     diagramCtrl.bind('contextmenu', function (e) {
