@@ -2,16 +2,37 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title></title>
+    <title>det-mind-map</title>
+    <style type="text/css">
+        .painter {
+            position: relative;
+        }
+        .selectInput {
+            position: absolute;
+        }
+        .colorPicker-picker {
+            display: inline-block;
+        }
+    </style>
+    <link rel="stylesheet" href="colorPicker.css">
 </head>
 <body>
-<svg id="diagram" width="800" height="600" style="-webkit-user-select:none;"></svg>
-<p>
+<div class="toolbar">
+    <button class="edit" onclick="editSelection()">编辑</button>
+    <button onclick="removeSeletion()">删除主题</button>
+    <button onclick="appendSelectionBrother()">主题</button>
+    <button onclick="appendSelectionChild()">子主题</button>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
-    <button onclick="removeSeletion()">删除选中的节点</button>
-</p>
+    <input id="strokeColor" type="text" name="strokeColor" value="#fff" />
+    <button>线条颜色</button>
+</div>
+<div class="painter">
+    <svg id="diagram" width="800" height="600"></svg>
+</div>
 </body>
+<script src="jquery.js"></script>
+<script src="jquery.colorPicker.js"></script>
 <script src="../det/src/det.js"></script>
 <script src="../det/src/toolkit.js"></script>
 <script src="../det/src/events.js"></script>
@@ -26,7 +47,9 @@
 <script src="../det/src/util/box.js"></script>
 
 <script src="../det-mind-map/src/plugin.js"></script>
+<script src="../det-mind-map/src/cmd/append.js"></script>
 <script src="../det-mind-map/src/cmd/edit.js"></script>
+<script src="../det-mind-map/src/cmd/setLineColor.js"></script>
 <script src="../det-mind-map/src/cmd/remove.js"></script>
 <script src="../det-mind-map/src/cmd/move.js"></script>
 <script src="../det-mind-map/src/ctrl/diagram.js"></script>
@@ -147,7 +170,17 @@
                     fill : '#8989FF'
                 }
             }, {
-                text : '子主题3'
+                text : '子主题3',
+                rectAttr : {
+                    fill : '#fff',
+                    stroke : "#FF0022",
+                    strokeWidth : '1',
+                },
+                lineAttr : {
+                    stroke : '#FF0022',
+                    strokeWidth : '2',
+                    fill : '#FF0022'
+                }
             }, {
                 text : '子主题4',
                 rectAttr : {
@@ -312,13 +345,113 @@
         selection.execute(
             new detMindMap.RemoveCommand(
                 selection.getParent().getModel(),
-                selection.getModel()))
+                selection.getModel()));
     }
 
+    function editSelection() {
+        var left, top, width, height,
+            selection = diagramCtrl.getSelection(),
+            rootCtrl = diagramCtrl.getRootCtrl();
+        if (selection.length == 0) {
+            return;
+        }
+        selection = selection[0];
+        function setText(evt) {
+            selection.execute(
+                new detMindMap.EditCommand(
+                    selection.getModel(), 'text', inputEl.val()));
+            inputEl.hide();
+        }
+
+        console.log(selection.rect, selection.text);
+        left = selection.rect.getBBox().x;
+        top = selection.rect.getBBox().y;
+        width = selection.rect.getBBox().width;
+        height = selection.rect.getBBox().height;
+
+        var inputEl = $('<input type="text" />');
+        inputEl.appendTo($('.painter'));
+        inputEl.css('left', left + 4);
+        inputEl.css('top', top);
+        inputEl.css('width', width - 8);
+        inputEl.css('height', height - 8);
+        inputEl.addClass('selectInput');
+        inputEl.val(selection.getModel().get('text'));
+
+        inputEl.focus();
+        inputEl.on('keydown', function (evt) {
+            if (evt.keyCode && evt.keyCode === 13) {
+                setText();
+            }
+        });
+        inputEl.on('blur', setText);
+
+    }
+
+    function appendChild(node) {
+        var newModel = new MindNode({
+            text : '子主题',
+            rectAttr : {
+                fill : '#fff',
+                stroke : "#00ccff",
+                strokeWidth : '1',
+            },
+            lineAttr : {
+                stroke : "#00ccff",
+                strokeWidth : '2'
+            }
+        });
+        newModel.set('rectAttr', node.getModel().get('rectAttr'));
+        newModel.set('lineAttr', node.getModel().get('lineAttr'));
+        node.execute(
+            new detMindMap.AppendCommand(
+                node.getModel(), newModel));
+    }
+
+    function appendSelectionChild() {
+        var selection = diagramCtrl.getSelection();
+        if (selection.length == 0) {
+            return;
+        }
+        appendChild(selection[0]);
+    }
+
+    function appendSelectionBrother() {
+        var selection = diagramCtrl.getSelection();
+        if (selection.length == 0) {
+            return;
+        }
+        appendChild(selection[0].getParent());
+    }
+
+    function setSelectionLineColor(newColor) {
+        var selection = diagramCtrl.getSelection();
+        if (selection.length == 0) {
+            return;
+        }
+        selection = selection[0];
+        if (selection.getModel().get('lineAttr').stroke === newColor) {
+            return;
+        }
+        selection.execute(new detMindMap.SetLineColorCommand(
+            selection.getModel(), newColor));
+    }
     diagramCtrl.bind('select', function (e) {
-        //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrli
+        var model = e.target.getModel();
+        //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
+
         console.log(e.target.getModel().data);
+        if (e.target.getModel().data.root) {
+            return;
+        }
+        $('#strokeColor').val(e.target.getModel().get('lineAttr').stroke);
+        $('#strokeColor').change();
     });
 
+    $('#strokeColor').colorPicker({
+        onColorChange : function (id, newColor) {
+            setSelectionLineColor(newColor);
+        }
+    });
 </script>
 </html>
