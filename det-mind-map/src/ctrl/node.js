@@ -19,10 +19,10 @@ var MindNodeCtrl = (
                     paper = svg.paper,
                     model = this.getModel(),
                     text = model.get('text');
-                
+
                 this.rect= Style.getRect('normal', this);
                 this.rect.create();
-                
+
 
                 if (this.isSecond()) {
                     this.line = Style.getLine('polyline', this);
@@ -151,19 +151,10 @@ var MindNodeCtrl = (
             },
 
             setXY : function (x, y) {
-                if (this.x === x && this.y === y) {
-                    return;
-                }
-                
                 this.rect.setXY(x, y);
-
-                this.x = x;
-                this.y = y;
-
                 if (this.isRoot()) {
                     return;
                 }
-
                 this.line.setXY(x, y);
             },
 

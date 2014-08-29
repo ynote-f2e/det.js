@@ -41,7 +41,7 @@ det.Model = (function (EventSupport) {
             }
             listener = name;
             name = det.Model.EVENT_CHANGED;
-            EventSupport.prototype.bind
+            EventSupport.prototype.unbind
                 .call(this, name, listener);
         },
 
