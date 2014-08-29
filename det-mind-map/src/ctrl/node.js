@@ -151,8 +151,6 @@ var MindNodeCtrl = (
             },
 
             setXY : function (x, y) {
-                var parentBox,
-                    box;
                 if (this.x === x && this.y === y) {
                     return;
                 }
