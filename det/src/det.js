@@ -5,6 +5,8 @@ var det = {
 (function () {
     'use strict';
 
+    var idSequence = 0;
+
     /*global define*/
     if (typeof define === 'function' && define.amd) {
         define('det', [], function () {
@@ -15,7 +17,13 @@ var det = {
     }
 
     det.derive = function (constructor, prototype) {
-        return derive(Object, constructor, prototype);
+        return derive(Object, function () {
+            constructor.apply(this, arguments);
+            var id = idSequence++;
+            this.$id = function () {
+                return id;
+            };
+        }, prototype);
     };
 
     function derive(superclass, constructor, prototype, statics) {

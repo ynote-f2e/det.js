@@ -42,6 +42,7 @@ var MindNodeCtrl = (
         return GraphCtrl.derive(function (model, factory) {
             GraphCtrl.call(this, model, factory);
             this.installFeature(new MindSelection());
+            this.installFeature(new DragMove());
         }, {
 
             /**
@@ -166,6 +167,14 @@ var MindNodeCtrl = (
 
             getRect : function () {
                 return this.rect;
+            },
+
+            getLine : function () {
+                return this.line;
+            },
+
+            getText : function () {
+                return this.text;
             },
 
             getBBox : function () {
