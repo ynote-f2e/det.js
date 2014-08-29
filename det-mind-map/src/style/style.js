@@ -17,8 +17,8 @@ var Style = (function (det) {
 
 Style.rectStyle = {};
 Style.lineStyle = {};
-Style.getRect = function (style) {
-    return new Style.rectStyle[style]();
+Style.getRect = function (model, style) {
+    return new Style.rectStyle[style](model);
 };
 Style.registerRect = function (style, styleClass) {
     Style.rectStyle[style] = styleClass;
