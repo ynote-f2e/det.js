@@ -46,6 +46,9 @@ det.GraphCtrl = (function (BaseCtrl) {
         onDetach : function () {
             this.getModel().unbind(this.refresh);
             this.getModel().bindChildren(this.refreshChildren, this);
+            if (this.selected) {
+                this.deselect();
+            }
             this.figure.remove();
         },
 

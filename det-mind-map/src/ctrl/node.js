@@ -22,6 +22,7 @@ var MindNodeCtrl = (
                 X : 10,
                 Y : 6
             },
+            HANDLEWIDTH = 4,
             DEFAULTRECTATTR = {
                 fill : '#fff',
                 stroke : "#666",
@@ -53,13 +54,20 @@ var MindNodeCtrl = (
                     text = model.get('text');
                 this.rect = paper.rect(0, 0, 0, 0);
                 this.text = paper.text(0, 0, text);
-                this.line = paper.line(0, 0, 0, 0);
+                
+
+                if (this.isSecond()) {
+                    this.line = paper.polyline(0, 0, 0, 0);
+                } else {
+                    this.line = paper.line(0, 0, 0, 0);
+                }
+
                 this.renderProperties();
                 this.text.attr({
                     x : PADDING.X,
-                    y : this.rect.getBBox().height - PADDING.Y - 4
+                    y : this.rect.getBBox().height - PADDING.Y - 2
                 });
-                return svg.group(this.rect, this.text);
+                return svg.group(this.rect, this.text, this.line);
             },
 
             refreshFigure : function () {
@@ -113,8 +121,8 @@ var MindNodeCtrl = (
              * */
             onAttach : function () {
                 GraphCtrl.prototype.onAttach.call(this);
-                this.bind(BaseCtrl.CHILD_ADD, this.doLayout, this);
-                this.bind(BaseCtrl.CHILD_REMOVE, this.doLayout, this);
+                this.bind('append', this.doLayout, this);
+                this.bind('remove', this.doLayout, this);
             },
 
             /**
@@ -122,9 +130,8 @@ var MindNodeCtrl = (
              * */
             onDetach : function () {
                 GraphCtrl.prototype.onDetach.call(this);
-                this.line.remove();
-                this.unbind(BaseCtrl.CHILD_ADD, this.doLayout);
-                this.unbind(BaseCtrl.CHILD_REMOVE, this.doLayout);
+                this.unbind('append', this.doLayout);
+                this.unbind('remove', this.doLayout);
             },
 
             isRoot : function () {
@@ -133,6 +140,16 @@ var MindNodeCtrl = (
                 if (!diagramCtrl) {
                     return false;
                 }
+                return model === diagramCtrl.getModel().getRoot();
+            },
+
+            isSecond : function () {
+                var model = this.getParent().getModel(),
+                    diagramCtrl = this.getDiagram();
+                if (!diagramCtrl) {
+                    return false;
+                }
+
                 return model === diagramCtrl.getModel().getRoot();
             },
 
@@ -148,14 +165,6 @@ var MindNodeCtrl = (
                 this.getDiagram().doLayout();
             },
 
-            getSize : function () {
-                var box = this.text.getBBox();
-                return {
-                    width : box.width + PADDING.X * 2,
-                    height : box.height + PADDING.Y * 2
-                };
-            },
-
             setXY : function (x, y) {
                 var parentBox,
                     box;
@@ -165,41 +174,65 @@ var MindNodeCtrl = (
                 });
                 this.text.attr({
                     x : x + PADDING.X,
-                    y : y + this.rect.getBBox().height - PADDING.Y - 4
+                    y : y + this.rect.getBBox().height - PADDING.Y - 2
                 });
                 if (this.isRoot()) {
                     return;
                 }
-                parentBox = this.getParent().getFigure().getBBox();
-                box = this.getFigure().getBBox();
-                if (parentBox.x < box.x) {
-                    this.line.attr({
-                        x1 : x,
-                        y1 : y + box.height / 2,
-                        x2 : parentBox.x + parentBox.width,
-                        y2 : parentBox.y + parentBox.height / 2
-                    });
+
+                parentBox = this.getParent().rect.getBBox();
+                box = this.rect.getBBox();
+
+                if (this.isSecond()) {
+                    if (parentBox.x < box.x) {
+                        this.line.attr({
+                            points : parseInt(x) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
+                                    parseInt(x) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
+                                    parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
+                                    parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
+                                    parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
+                                    parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
+                        });
+                    } else {
+                        this.line.attr({
+                            points : parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
+                                    parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
+                                    parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
+                                    parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
+                                    parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
+                                    parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
+                        });
+                    }
                 } else {
-                    this.line.attr({
-                        x1 : x + box.width,
-                        y1 : y + box.height / 2,
-                        x2 : parentBox.x,
-                        y2 : parentBox.y + parentBox.height / 2
-                    });
+                    if (parentBox.x < box.x) {
+                        this.line.attr({
+                            x1 : x,
+                            y1 : y + box.height / 2,
+                            x2 : parentBox.x + parentBox.width,
+                            y2 : parentBox.y + parentBox.height / 2
+                        });
+                    } else {
+                        this.line.attr({
+                            x1 : x + box.width,
+                            y1 : y + box.height / 2,
+                            x2 : parentBox.x,
+                            y2 : parentBox.y + parentBox.height / 2
+                        });
+                    }
                 }
                 if (this.selectRect) {
                     this.selectRect.attr({
-                        x : box.x - 4,
-                        y : box.y - 4,
-                        width : box.width + 8,
-                        height : box.height + 8
+                        x : box.x - 2,
+                        y : box.y - 2,
+                        width : box.width + 4,
+                        height : box.height + 4
                     });
                 }
             },
 
             onSelect : function () {
                 var paper = this.getSVG().paper,
-                    box = this.getFigure().getBBox();
+                    box = this.rect.getBBox();
                 this.selectRect = paper.rect({
                     x : box.x - 4,
                     y : box.y - 4,

@@ -5,6 +5,26 @@
 det.BaseCtrl = (function (EventSupport, Model) {
     'use strict';
 
+    function Event(name, target, data) {
+        var prop,
+            stopped;
+        this.name = name;
+        for (prop in data) {
+            if (data.hasOwnProperty(prop)) {
+                this[prop] = data[prop];
+            }
+        }
+        function stopPropagation() {
+            stopped = true;
+        }
+        function isPropagationStopped() {
+            return false;
+        }
+        this.target = target;
+        this.stopPropagation = stopPropagation;
+        this.isPropagationStopped = isPropagationStopped;
+    }
+
     return EventSupport.derive(function (model, factory) {
         EventSupport.call(this);
         this.model = model;
@@ -27,7 +47,9 @@ det.BaseCtrl = (function (EventSupport, Model) {
             if (this.attached) {
                 childCtrl.attach();
             }
-            this.trigger(det.BaseCtrl.CHILD_ADD, childCtrl);
+            this.bubbleEvent('append', {
+                child : childCtrl
+            });
         },
 
         attach : function () {
@@ -46,8 +68,25 @@ det.BaseCtrl = (function (EventSupport, Model) {
             return this.factory(model);
         },
 
+        bubbleEvent : function (name, data) {
+            var event = new Event(name, this, data);
+            this.doBubble(name, event);
+        },
+
+        doBubble : function (name, event) {
+            var parent = this.getParent();
+            event.currentTarget = this;
+            this.trigger(name, event);
+            if (event.isPropagationStopped()) {
+                return;
+            }
+            if (!parent) {
+                return;
+            }
+            parent.doBubble(name, event);
+        },
+
         detach : function () {
-            this.deselect();
             this.children.forEach(function (childCtrl) {
                 childCtrl.detach();
             });
@@ -136,7 +175,9 @@ det.BaseCtrl = (function (EventSupport, Model) {
             }
             childCtrl.setParent(null);
             this.children.splice(pos, 1);
-            this.trigger(det.BaseCtrl.CHILD_REMOVE, childCtrl);
+            this.bubbleEvent('remove', {
+                child : childCtrl
+            });
         },
 
         setParent : function (parentCtrl) {
@@ -192,9 +233,6 @@ det.BaseCtrl = (function (EventSupport, Model) {
          */
         refreshFigure : det.noop
 
-    }, {
-        CHILD_ADD : 'childadd',
-        CHILD_REMOVE : 'childremove'
     });
 
 }(det.EventSupport, det.Model));
