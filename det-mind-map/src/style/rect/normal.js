@@ -42,6 +42,7 @@ var NormalRectStyle = (function (Style) {
 
             this.rect = rect;
             this.text = text;
+            this.figure = svg.group(this.rect, this.text);
         },
 
         getRect : function () {
@@ -53,8 +54,7 @@ var NormalRectStyle = (function (Style) {
         },
 
         getFigure : function () {
-            var svg = this.ctrl.getSVG()
-            return svg.group(this.rect, this.text);
+            return this.figure;
         },
 
         refresh : function () {

@@ -34,10 +34,8 @@ var MindNodeCtrl = (
 
                 this.renderProperties();
 
-                this.rect.getNode().addEventListener('click',
-                    this.onMouseEvent.bind(this, 'click'));
-                this.rect.getNode().addEventListener('contextmenu',
-                    this.onMouseEvent.bind(this, 'contextmenu'));
+                this.rect.getFigure().click(this.onMouseEvent.bind(this, 'click'))
+                    .mouseup(this.onMouseEvent.bind(this, 'mouseup'));
 
                 return svg.group(this.rect.getFigure(), this.line.getFigure());
             },
@@ -168,7 +166,7 @@ var MindNodeCtrl = (
                     ry : 8,
                     width : box.width + 8,
                     height : box.height + 8,
-                    fillOpacity : 0,
+                    fill : 'none',
                     strokeOpacity : 0.5,
                     stroke : 'blue',
                     strokeWidth : '3'
@@ -183,7 +181,11 @@ var MindNodeCtrl = (
             },
 
             onMouseEvent : function (name, e) {
-                this.bubble(name);
+                if (name === 'click') {
+                    this.bubble(name);
+                } else if (name == 'mouseup' && e.button === 2) {
+                    this.bubble('contextmenu');
+                }
             }
 
         });

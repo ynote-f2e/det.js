@@ -7,7 +7,7 @@ var UnderLineStyle = (function (Style) {
         create : function () {
             var ctrl = this.getCtrl();
 
-            //return rect;
+            //this.figure = svg.group();
         },
         
         getRect : function () {
@@ -19,8 +19,7 @@ var UnderLineStyle = (function (Style) {
         },
 
         getFigure : function () {
-            var svg = this.ctrl.getSVG()
-            return svg.group(this.rect, this.text);
+            return this.figure;
         },
 
         refresh : function () {
