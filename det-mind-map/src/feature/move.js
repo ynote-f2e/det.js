@@ -1,5 +1,5 @@
 
-var DragMove =  (function (DragFeature, MoveCommand) {
+var DragMove =  (function (DragFeature, MoveCommand, Box) {
     'use strict';
 
     return DragFeature.derive({
@@ -90,27 +90,14 @@ var DragMove =  (function (DragFeature, MoveCommand) {
                     return;
                 }
                 if (child !== ctrl.getParent()) {
-                    dist = getDistance(box, childBox);
-                    if (minDist > dist && dist < 250) {
+                    dist = Box.distance(box, childBox);
+                    if (minDist > dist && dist < 150) {
                         nearest = child;
                         nearestBox = childBox;
                         minDist = dist;
                     }
                 }
                 child.getChildren().forEach(nestedCompare);
-            }
-
-            function getDistance(box1, box2) {
-                var c1 = {
-                        x : box1.x + box1.width / 2,
-                        y : box1.y + box1.height / 2
-                    },
-                    c2 = {
-                        x : box2.x + box2.width / 2,
-                        y : box2.y + box2.height / 2
-                    }
-                return Math.sqrt(Math.pow(c1.x - c2.x, 2) +
-                    Math.pow(c1.y - c2.y, 2))
             }
         },
 
@@ -135,7 +122,8 @@ var DragMove =  (function (DragFeature, MoveCommand) {
         },
 
         drawHint : function(fromBox, toBox) {
-            var paper = this.getCtrl().getSVG();
+            var paper = this.getCtrl().getSVG(),
+                lineAttr;
             if (!this.hintRect) {
                 this.hintRect = paper.rect({
                     rx : 8,
@@ -152,53 +140,23 @@ var DragMove =  (function (DragFeature, MoveCommand) {
                 width : toBox.width + 8,
                 height : toBox.height + 8
             });
-            if (!this.hintLine) {
-                this.hintLine = paper.line(0, 0, 0, 0);
-                this.hintLine.attr({
-                    strokeOpacity : 0.5,
-                    stroke : 'red',
-                    strokeWidth : '3'
-                });
-            }
-            if (fromBox.y + fromBox.height < toBox.y) {
-                this.hintLine.attr({
-                    x1 : fromBox.x + fromBox.width / 2,
-                    y1 : fromBox.y + fromBox.height,
-                    x2 : toBox.x + toBox.width / 2,
-                    y2 : toBox.y - 5
-                });
-            } else if (toBox.y + toBox.height < fromBox.y) {
-                this.hintLine.attr({
-                    x1 : fromBox.x + fromBox.width / 2,
-                    y1 : fromBox.y,
-                    x2 : toBox.x + toBox.width / 2,
-                    y2 : toBox.y + toBox.height + 5
-                });
-            }else {
-                if (fromBox.x > toBox.x + toBox.width) {
+            lineAttr = Box.connect(fromBox, toBox);
+            if (lineAttr) {
+                if (!this.hintLine) {
+                    this.hintLine = paper.line(0, 0, 0, 0);
                     this.hintLine.attr({
-                        x1 : fromBox.x,
-                        y1 : fromBox.y + fromBox.height /2,
-                        x2 : toBox.x + toBox.width + 5,
-                        y2 : toBox.y + toBox.height / 2
-                    });
-                } else if (fromBox.x + fromBox.width < toBox.x) {
-                    this.hintLine.attr({
-                        x1 : fromBox.x + fromBox.width,
-                        y1 : fromBox.y + fromBox.height /2,
-                        x2 : toBox.x - 5,
-                        y2 : toBox.y + toBox.height / 2
-                    });
-                } else {
-                    this.hintLine.attr({
-                        x1 : 0,
-                        y1 : 0,
-                        x2 : 0,
-                        y2 : 0
+                        strokeOpacity : 0.5,
+                        stroke : 'red',
+                        strokeWidth : '3'
                     });
                 }
+                this.hintLine.attr(lineAttr);
+            } else {
+                if (this.hintLine) {
+                    this.hintLine.remove();
+                    this.hintLine = null;
+                }
             }
-
         },
 
         clearHint : function() {
@@ -215,4 +173,4 @@ var DragMove =  (function (DragFeature, MoveCommand) {
     });
 
 
-}(det.DragFeature, detMindMap.MoveCommand));
+}(det.DragFeature, detMindMap.MoveCommand, det.Box));
