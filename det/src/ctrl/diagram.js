@@ -39,6 +39,15 @@ det.DiagramCtrl = (function (GraphCtrl, CommandStack) {
                 return selection;
             }
             return collect([this], []);
+        },
+
+        undo : function () {
+            this.getCommandStack().undo();
+            this.layout.finishUpdate();
+        },
+
+        redo : function () {
+            this.getCommandStack().redo();
         }
 
     });

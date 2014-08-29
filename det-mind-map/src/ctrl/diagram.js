@@ -52,7 +52,20 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
 
         getRootCtrl : function () {
             return this.children[0];
+        },
+
+        undo : function () {
+            this.layout.beginUpdate();
+            DiagramCtrl.prototype.undo.call(this);
+            this.layout.finishUpdate();
+        },
+
+        redo : function () {
+            this.layout.beginUpdate();
+            DiagramCtrl.prototype.redo.call(this);
+            this.layout.finishUpdate();
         }
+
     });
 
 }(det.DiagramCtrl));
