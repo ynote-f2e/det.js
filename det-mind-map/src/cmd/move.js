@@ -16,8 +16,8 @@ detMindMap.MoveCommand = (function (det) {
         },
 
         undo : function () {
-            this.model.add(this.model, this.index);
-            this.parent.remove(this.model);
+            this.newParent.remove(this.model);
+            this.parent.add(this.model, this.index);
         },
 
         redo : function () {
