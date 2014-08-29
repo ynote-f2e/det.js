@@ -9,13 +9,9 @@ detMindMap.SetLineColorCommand = (function (det) {
     }, {
 
         setLineColor : function (model, color) {
-            var lineAttr = {}.extend(model.get('lineAttr'));
-            lineAttr.stroke = color;
-            lineAttr.fill = color;
-            var rectAttr = {}.extend(model.get('rectAttr'));
-            rectAttr.stroke = color;
-            model.set('lineAttr', lineAttr);
-            model.set('rectAttr', rectAttr);
+            model.setLineAttr('stroke', color);
+            model.setLineAttr('fill', color);
+            model.setRectAttr('stroke', color);
         },
 
         paintChildren : function (model, color) {

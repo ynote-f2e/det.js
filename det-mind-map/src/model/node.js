@@ -27,26 +27,26 @@ var MindNode = (function (Model) {
         },
 
         getLineAttr : function (name) {
-            return this.lineAttr[name];
+            return this.data.lineAttr[name];
         },
 
         setLineAttr : function (name, value) {
-            if (this.lineAttr[name] === value) {
+            if (this.data.lineAttr[name] === value) {
                 return;
             }
-            this.lineAttr[name] = value;
+            this.data.lineAttr[name] = value;
             this.trigger();
         },
 
         getRectAttr : function (name) {
-            return this.rectAttr[name];
+            return this.data.rectAttr[name];
         },
 
         setRectAttr : function (name, value) {
-            if (this.rectAttr[name] === value) {
+            if (this.data.rectAttr[name] === value) {
                 return;
             }
-            this.rectAttr[name] = value;
+            this.data.rectAttr[name] = value;
             this.trigger();
         },
 
