@@ -157,7 +157,7 @@ var MindLayout = (function (BaseFeature) {
                         leftTotal += heights[j];
                     }
                 }
-                return i;
+                return i + 1;
             }
         }
 
