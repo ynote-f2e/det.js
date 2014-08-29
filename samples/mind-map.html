@@ -436,6 +436,9 @@
             return;
         }
         appendChild(selection[0]);
+        selection[0].deselect();
+        var children = selection[0].getChildren();
+        children[children.length - 1].select();
     }
 
     function appendSelectionBrother() {
@@ -444,6 +447,9 @@
             return;
         }
         appendChild(selection[0].getParent());
+        selection[0].deselect();
+        var children = selection[0].getParent().getChildren();
+        children[children.length - 1].select();
     }
 
     function setSelectionLineColor(newColor) {
@@ -511,14 +517,22 @@
     });
     $('body').on('keydown', function (evt) {
         console.log(evt.keyCode);
-        if (evt.keyCode && evt.keyCode === 13) {
+        if (evt.keyCode && evt.keyCode === 13) {        //enter
             appendSelectionBrother();
-        } else if (evt.keyCode && evt.keyCode === 45) {
+        } else if (evt.keyCode && evt.keyCode === 45) { //ins
             appendSelectionChild();
-        } else if (evt.keyCode && evt.keyCode === 46) {
+        } else if (evt.keyCode && evt.keyCode === 46) { //del
             removeSeletion();
-        } else if (evt.keyCode && evt.keyCode === 113) {
+        } else if (evt.keyCode && evt.keyCode === 113) {//F2
             editSelection();
+        } else if (evt.keyCode && evt.keyCode === 37) { //left
+            // editSelection();
+        } else if (evt.keyCode && evt.keyCode === 38) { //up
+            // editSelection();
+        } else if (evt.keyCode && evt.keyCode === 39) { //right
+            // editSelection();
+        } else if (evt.keyCode && evt.keyCode === 40) { //down
+            // editSelection();
         }
     });
     diagramCtrl.bind('contextmenu', function (e) {
