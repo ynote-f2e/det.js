@@ -8,6 +8,8 @@ var Style = (function (det) {
             return this.ctrl;
         },
 
+        getFigure : det.noop,
+
         create : det.noop,
         refresh : det.noop
 

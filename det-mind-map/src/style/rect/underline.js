@@ -10,6 +10,10 @@ var UnderLineStyle = (function (Style) {
             //return rect;
         },
 
+        getFigure : function () {
+            //return this.rect;
+        },
+
         refresh : function () {
             var ctrl = this.getCtrl();
         }
