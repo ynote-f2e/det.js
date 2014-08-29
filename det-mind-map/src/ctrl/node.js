@@ -18,7 +18,8 @@ var MindNodeCtrl = (
                 var svg = this.getSVG(),
                     paper = svg.paper,
                     model = this.getModel(),
-                    text = model.get('text');
+                    text = model.get('text'),
+                    node;
 
                 this.rect= Style.getRect('normal', this);
                 this.rect.create();
@@ -34,9 +35,13 @@ var MindNodeCtrl = (
 
                 this.renderProperties();
 
-                this.rect.getFigure().click(this.onMouseEvent.bind(this, 'click'))
-                    .mouseup(this.onMouseEvent.bind(this, 'mouseup'));
-
+                node = this.rect.getFigure().node;
+                node.addEventListener('click',
+                    this.bubbleEvent.bind(this, 'click'));
+                node.addEventListener('contextmenu',
+                    this.bubbleEvent.bind(this, 'contextmenu'));
+                node.addEventListener('dblclick',
+                    this.bubbleEvent.bind(this, 'dblclick'));
                 return svg.group(this.rect.getFigure(), this.line.getFigure());
             },
 
@@ -180,11 +185,10 @@ var MindNodeCtrl = (
                 }
             },
 
-            onMouseEvent : function (name, e) {
-                if (name === 'click') {
-                    this.bubble(name);
-                } else if (name == 'mouseup' && e.button === 2) {
-                    this.bubble('contextmenu');
+            bubbleEvent : function (name, e) {
+                var event = this.bubble(name);
+                if (event.isDefaultPrevented()) {
+                    e.preventDefault();
                 }
             }
 

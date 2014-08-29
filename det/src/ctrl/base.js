@@ -7,7 +7,8 @@ det.BaseCtrl = (function (EventSupport, Model) {
 
     function Event(name, target, data) {
         var prop,
-            stopped;
+            stopped,
+            prevented;
         this.name = name;
         for (prop in data) {
             if (data.hasOwnProperty(prop)) {
@@ -20,9 +21,17 @@ det.BaseCtrl = (function (EventSupport, Model) {
         function isPropagationStopped() {
             return false;
         }
+        function preventDefault() {
+            prevented = true;
+        }
+        function isDefaultPrevented() {
+            return prevented;
+        }
         this.target = target;
         this.stopPropagation = stopPropagation;
         this.isPropagationStopped = isPropagationStopped;
+        this.preventDefault = preventDefault;
+        this.isDefaultPrevented = isDefaultPrevented;
     }
 
     return EventSupport.derive(function (model, factory) {
@@ -71,6 +80,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
         bubble : function (name, data) {
             var event = new Event(name, this, data || {});
             this.handleBubble(name, event);
+            return event;
         },
 
         handleBubble : function (name, event) {

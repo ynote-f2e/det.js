@@ -537,7 +537,13 @@
         }
     });
     diagramCtrl.bind('contextmenu', function (e) {
-        console.log(e.target.getModel().data);
+        if (e.target.getModel() instanceof MindNode) {
+            e.preventDefault();
+        }
+        //show context menu
+    });
+    diagramCtrl.bind('dblclick', function (e) {
+        //maybe open text editor
     });
 
 </script>
