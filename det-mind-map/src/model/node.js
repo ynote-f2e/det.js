@@ -10,6 +10,8 @@ var MindNode = (function (Model) {
         this.nodes = (data.nodes || []).map(function (node) {
             return new MindNode(node);
         });
+        this.data.lineAttr = this.data.lineAttr || {};
+        this.data.rectAttr = this.data.rectAttr || {};
     }, {
         set : function (name, value) {
             var originValue = this.data[name];
@@ -22,6 +24,24 @@ var MindNode = (function (Model) {
 
         get : function (name) {
             return this.data[name];
+        },
+
+        getLineAttr : function (name) {
+            return this.lineAttr[name];
+        },
+
+        setLineAttr : function (name, value) {
+            this.lineAttr[name] = value;
+            this.trigger();
+        },
+
+        getRectAttr : function (name) {
+            return this.rectAttr[name];
+        },
+
+        setRectAttr : function (name, value) {
+            this.rectAttr[name] = value;
+            this.trigger();
         },
 
         add : function (node, index) {
