@@ -434,9 +434,10 @@
         selection = selection[0];
         commands = [new detMindMap.SetLineColorCommand(
                 selection.getModel(), newColor)];
-        selection.getChildren().forEach(function (child) {
+        selection.getChildren().forEach(function addCommand(child) {
             commands.push(new detMindMap.SetLineColorCommand(
                 child.getModel(), newColor));
+            child.getChildren().forEach(addCommand);
         });
         selection.execute(new det.BatchCommand(commands));
     }
