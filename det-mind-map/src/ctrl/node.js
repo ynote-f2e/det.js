@@ -54,7 +54,6 @@ var MindNodeCtrl = (
                     text = model.get('text');
                 this.rect = paper.rect(0, 0, 0, 0);
                 this.text = paper.text(0, 0, text);
-                
 
                 if (this.isSecond()) {
                     this.line = paper.polyline(0, 0, 0, 0);
@@ -163,6 +162,10 @@ var MindNodeCtrl = (
 
             doLayout : function () {
                 this.getDiagram().doLayout();
+            },
+
+            getRect : function () {
+                return this.rect;
             },
 
             getBBox : function () {

@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-<svg id="diagram" width="800" height="600"></svg>
+<svg id="diagram" width="800" height="600" style="-webkit-user-select:none;"></svg>
 <p>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
@@ -23,6 +23,7 @@
 <script src="../det/src/ctrl/link.js"></script>
 <script src="../det/src/feature/base.js"></script>
 <script src="../det/src/feature/drag.js"></script>
+
 <script src="../det-mind-map/src/plugin.js"></script>
 <script src="../det-mind-map/src/cmd/edit.js"></script>
 <script src="../det-mind-map/src/cmd/remove.js"></script>
@@ -32,6 +33,9 @@
 <script src="../det-mind-map/src/model/node.js"></script>
 <script src="../det-mind-map/src/feature/layout.js"></script>
 <script src="../det-mind-map/src/feature/select.js"></script>
+<script src="../det-mind-map/src/style/style.js"></script>
+<script src="../det-mind-map/src/style/rect/underline.js"></script>
+
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
     var toolkit = det.create(), diagram, diagramCtrl;
@@ -309,7 +313,7 @@
     }
 
     diagramCtrl.bind('select', function (e) {
-        //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
+        //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrli
         console.log(e.target.getModel().data);
     });
 
