@@ -8,10 +8,10 @@ det.GraphCtrl = (function (BaseCtrl) {
 
         getDiagram : function () {
             var parentCtrl = this.getParent();
-            if (!this.parentCtrl) {
+            if (!parentCtrl) {
                 return null;
             }
-            return this.parentCtrl.getDiagram();
+            return parentCtrl.getDiagram();
         },
 
         getFigure : function () {
@@ -53,13 +53,21 @@ det.GraphCtrl = (function (BaseCtrl) {
         },
 
         select : function () {
+            if(this.selected) {
+                return;
+            }
             this.selected = true;
             this.onSelect();
+            this.bubble('select');
         },
 
         deselect : function () {
+            if(!this.selected) {
+                return;
+            }
             this.selected = false;
             this.onDeselect();
+            this.bubble('deselect');
         },
 
         isSelected : function () {

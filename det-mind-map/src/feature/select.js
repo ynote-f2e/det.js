@@ -22,10 +22,13 @@ var MindSelection = (function (BaseFeature) {
         select : function () {
             var ctrl = this.getCtrl(),
                 selection = ctrl.getDiagram().getSelection();
-            selection.forEach(function (ctrl) {
-                ctrl.deselect();
-            });
             ctrl.select();
+            selection.forEach(function (selected) {
+                if (selected === ctrl) {
+                    return;
+                }
+                selected.deselect();
+            });
         }
 
     });

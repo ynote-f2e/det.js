@@ -47,7 +47,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
             if (this.attached) {
                 childCtrl.attach();
             }
-            this.bubbleEvent('append', {
+            this.bubble('append', {
                 child : childCtrl
             });
         },
@@ -68,12 +68,12 @@ det.BaseCtrl = (function (EventSupport, Model) {
             return this.factory(model);
         },
 
-        bubbleEvent : function (name, data) {
-            var event = new Event(name, this, data);
-            this.doBubble(name, event);
+        bubble : function (name, data) {
+            var event = new Event(name, this, data || {});
+            this.handleBubble(name, event);
         },
 
-        doBubble : function (name, event) {
+        handleBubble : function (name, event) {
             var parent = this.getParent();
             event.currentTarget = this;
             this.trigger(name, event);
@@ -83,7 +83,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
             if (!parent) {
                 return;
             }
-            parent.doBubble(name, event);
+            parent.handleBubble(name, event);
         },
 
         detach : function () {
@@ -175,7 +175,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
             }
             childCtrl.setParent(null);
             this.children.splice(pos, 1);
-            this.bubbleEvent('remove', {
+            this.bubble('remove', {
                 child : childCtrl
             });
         },

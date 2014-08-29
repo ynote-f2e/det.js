@@ -165,6 +165,10 @@ var MindNodeCtrl = (
                 this.getDiagram().doLayout();
             },
 
+            getBBox : function () {
+                return this.rect.getBBox();
+            },
+
             setXY : function (x, y) {
                 var parentBox,
                     box;

@@ -18,14 +18,14 @@ var MindLayout = (function (BaseFeature) {
             layoutChildren();
 
             function layoutRoot() {
-                var rootBox = rootCtrl.rect.getBBox();
+                var rootBox = rootCtrl.getBBox();
                 rootCtrl.setXY((svgBox.width - rootBox.width) / 2,
                     (svgBox.height - rootBox.height) / 2);
             }
 
             function layoutChildren() {
                 var children = rootCtrl.getChildren(),
-                    rootBox = rootCtrl.rect.getBBox(),
+                    rootBox = rootCtrl.getBBox(),
                     heights = [],
                     rightChildren,
                     rightHeight,
@@ -77,7 +77,7 @@ var MindLayout = (function (BaseFeature) {
 
             function layoutNestedRight(childCtrl, x, y) {
                 var height = measure(childCtrl),
-                    width = childCtrl.rect.getBBox().width,
+                    width = childCtrl.getBBox().width,
                     children = childCtrl.getChildren();
                 childCtrl.setXY(x, y + height / 2);
                 children.forEach(function (childCtrl) {
@@ -89,7 +89,7 @@ var MindLayout = (function (BaseFeature) {
 
             function layoutNestedLeft(childCtrl, x, y) {
                 var height = measure(childCtrl),
-                    width = childCtrl.rect.getBBox().width,
+                    width = childCtrl.getBBox().width,
                     children = childCtrl.getChildren();
                 childCtrl.setXY(x - width, y + height / 2);
                 children.forEach(function (childCtrl) {
@@ -103,7 +103,7 @@ var MindLayout = (function (BaseFeature) {
                 var children = childCtrl.getChildren(),
                     height = 0;
                 if (children.length == 0) {
-                    return childCtrl.rect.getBBox().height + MARGIN;
+                    return childCtrl.getBBox().height + MARGIN;
                 }
                 children.forEach(function (childCtrl) {
                     height += measure(childCtrl);

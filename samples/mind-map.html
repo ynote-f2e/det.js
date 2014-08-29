@@ -308,5 +308,10 @@
                 selection.getModel()))
     }
 
+    diagramCtrl.bind('select', function (e) {
+        //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
+        console.log(e.target.getModel().data);
+    });
+
 </script>
 </html>
