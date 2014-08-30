@@ -1,16 +1,5 @@
 var NormalLineStyle = (function (Style) {
-    function extend(src, obj) {
-            var copy = src.constructor();
-            for (var attr in src) {
-                if (src.hasOwnProperty(attr)) {
-                    copy[attr] = src[attr];
-                }
-            }
-            for(var attr in obj) {
-                copy[attr] = obj[attr];
-            }
-            return copy;
-        };
+
     var DEFAULTLINEATTR = {
             stroke : "#666",
             strokeWidth : '1'
@@ -41,34 +30,64 @@ var NormalLineStyle = (function (Style) {
                 model = ctrl.getModel(),
                 lineAttr;
 
-            lineAttr = extend(DEFAULTLINEATTR, model.data.lineAttr);
+            lineAttr = this.extend(DEFAULTLINEATTR, model.get('lineAttr'));
             this.line.attr(lineAttr);
         },
 
         setXY : function (x, y) {
             var ctrl = this.ctrl,
                 parentBox,
-                box;
+                box,
+                parentRectStyle,
+                rectStyle;
 
             parentBox = ctrl.getParent().rect.getBBox();
             box = ctrl.rect.getBBox();
+
+            parentRectStyle = ctrl.getParent().rect.getName();
+            rectStyle = ctrl.rect.getName();
+
             if (parentBox.x < box.x) {
-                this.line.attr({
-                    x1 : x,
-                    y1 : y + box.height / 2,
-                    x2 : parentBox.x + parentBox.width,
-                    y2 : parentBox.y + parentBox.height / 2
-                });
+                if (parentRectStyle === 'normal' && rectStyle === 'normal') {
+
+                } else if (parentRectStyle === 'normal' && rectStyle === 'underline') {
+                    this.line.attr({
+                        x1 : x,
+                        y1 : y + box.height,
+                        x2 : parentBox.x + parentBox.width,
+                        y2 : parentBox.y + parentBox.height / 2
+                    });
+                } else if (parentRectStyle === 'underline' && rectStyle === 'underline') {
+                    this.line.attr({
+                        x1 : x,
+                        y1 : y + box.height,
+                        x2 : parentBox.x + parentBox.width,
+                        y2 : parentBox.y + parentBox.height
+                    });
+                } else {
+
+                }
             } else {
-                this.line.attr({
-                    x1 : x + box.width,
-                    y1 : y + box.height / 2,
-                    x2 : parentBox.x,
-                    y2 : parentBox.y + parentBox.height / 2
-                });
+                if (parentRectStyle === 'normal' && rectStyle === 'normal') {
+
+                } else if (parentRectStyle === 'normal' && rectStyle === 'underline') {
+                    this.line.attr({
+                        x1 : x + box.width,
+                        y1 : y + box.height,
+                        x2 : parentBox.x,
+                        y2 : parentBox.y + parentBox.height / 2
+                    });
+                } else if (parentRectStyle === 'underline' && rectStyle === 'underline') {
+                    this.line.attr({
+                        x1 : x + box.width,
+                        y1 : y + box.height,
+                        x2 : parentBox.x,
+                        y2 : parentBox.y + parentBox.height
+                    });
+                } else {
+
+                }
             }
-
-
         }
 
     });

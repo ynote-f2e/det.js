@@ -13,6 +13,19 @@ var Style = (function (det) {
             return this.ctrl;
         },
 
+        extend : function(src, obj) {
+            var copy = src.constructor();
+            for (var attr in src) {
+                if (src.hasOwnProperty(attr)) {
+                    copy[attr] = src[attr];
+                }
+            }
+            for(var attr in obj) {
+                copy[attr] = obj[attr];
+            }
+            return copy;
+        },
+        
         getFigure : det.noop,
 
         create : det.noop,

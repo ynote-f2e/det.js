@@ -1,18 +1,5 @@
 var NormalRectStyle = (function (Style) {
 
-    function extend(src, obj) {
-            var copy = src.constructor();
-            for (var attr in src) {
-                if (src.hasOwnProperty(attr)) {
-                    copy[attr] = src[attr];
-                }
-            }
-            for(var attr in obj) {
-                copy[attr] = obj[attr];
-            }
-            return copy;
-        };
-        
     var PADDING = {
                 X : 10,
                 Y : 6
@@ -70,15 +57,15 @@ var NormalRectStyle = (function (Style) {
 
             textNode.textContent = model.get('text');
                 
-            textAttr = extend(DEFAULTTEXTATTR, model.data.textAttr);
+            textAttr = this.extend(DEFAULTTEXTATTR, model.get('textAttr'));
             this.text.attr(textAttr);
 
             textBox = this.text.getBBox();
             width = textBox.width + PADDING.X * 2;
             height = textBox.height + PADDING.Y * 2;
 
-            rectAttr = extend(extend(DEFAULTRECTATTR, {width: width, height: height}),
-                            model.data.rectAttr);
+            rectAttr = this.extend(this.extend(DEFAULTRECTATTR, {width: width, height: height}),
+                            model.get('rectAttr'));
 
             this.rect.attr(rectAttr);
         },
@@ -108,18 +95,8 @@ var NormalRectStyle = (function (Style) {
             }
         },
 
-        setAttr : function (attr) {
-            var ctrl = this.ctrl;
-
-            this.rect.attr(attr);
-        },
-
-        getNode : function() {
-            return this.rect.node;
-        },
-
         getBBox : function () {
-            return this.rect.getBBox();
+            return this.figure.getBBox();
         }
 
     });

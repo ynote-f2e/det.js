@@ -21,14 +21,19 @@ var MindNodeCtrl = (
                     text = model.get('text'),
                     node;
 
-                this.rect= Style.getRect('normal', this);
-                this.rect.create();
+                if (this.isRoot() || this.isSecond()) {
+                    this.rect= Style.getRect('normal', this);
+                    this.rect.create();
+                } else {
+                    this.rect= Style.getRect('underline', this);
+                    this.rect.create();
+                }
+                
 
 
                 if (this.isSecond()) {
                     this.line = Style.getLine('polyline', this);
                     this.line.create();
-                    //this.line.getFigure().insertAfter(this.getParent().rect.getRect());
                 } else {
                     this.line = Style.getLine('normal', this);
                     this.line.create();
