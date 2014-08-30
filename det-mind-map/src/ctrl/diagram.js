@@ -28,7 +28,7 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
                 y : 0,
                 width : viewWidth,
                 height : viewHeight,
-                fill : '#eeeef6'
+                fill : '#f3f3f3'
             });
         },
 

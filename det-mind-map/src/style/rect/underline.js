@@ -11,7 +11,7 @@ var UnderLineStyle = (function (Style) {
         },
         DEFAULTLINEATTR = {
             stroke : '#000',
-            strokeWidth : '2'
+            strokeWidth : '3'
         },
         DEFAULTTEXTATTR = {
             'text-anchor' : 'start'

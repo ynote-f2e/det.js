@@ -2,8 +2,10 @@ var NormalLineStyle = (function (Style) {
 
     var DEFAULTLINEATTR = {
             stroke : "#666",
-            strokeWidth : '1'
-        };
+            strokeWidth : '3',
+            fill : 'none'
+        },
+        HANDLEWIDTH = 8;
 
 
     return Style.derive(function (style, ctrl) {
@@ -14,7 +16,8 @@ var NormalLineStyle = (function (Style) {
             var svg = this.ctrl.getSVG(),
                 paper = svg.paper;
 
-            this.line = paper.line(0, 0, 0, 0);
+            //this.line = paper.line(0, 0, 0, 0);
+            this.line = paper.polyline(0, 0, 0, 0);
         },
 
         getLine : function () {
@@ -52,17 +55,15 @@ var NormalLineStyle = (function (Style) {
 
                 } else if (parentRectStyle === 'normal' && rectStyle === 'underline') {
                     this.line.attr({
-                        x1 : x,
-                        y1 : y + box.height,
-                        x2 : parentBox.x + parentBox.width,
-                        y2 : parentBox.y + parentBox.height / 2
+                        points : (x) + ',' + (y + box.height) + ',' +
+                            (parentBox.x + parentBox.width + HANDLEWIDTH) + ',' + (parentBox.y + parentBox.height / 2) + ',' +
+                            (parentBox.x + parentBox.width) + ',' + (parentBox.y + parentBox.height / 2)
                     });
                 } else if (parentRectStyle === 'underline' && rectStyle === 'underline') {
                     this.line.attr({
-                        x1 : x,
-                        y1 : y + box.height,
-                        x2 : parentBox.x + parentBox.width,
-                        y2 : parentBox.y + parentBox.height
+                        points : (x) + ',' + (y + box.height) + ',' +
+                            (parentBox.x + parentBox.width + HANDLEWIDTH) + ',' + (parentBox.y + parentBox.height) + ',' +
+                            (parentBox.x + parentBox.width) + ',' + (parentBox.y + parentBox.height)
                     });
                 } else {
 
@@ -72,17 +73,15 @@ var NormalLineStyle = (function (Style) {
 
                 } else if (parentRectStyle === 'normal' && rectStyle === 'underline') {
                     this.line.attr({
-                        x1 : x + box.width,
-                        y1 : y + box.height,
-                        x2 : parentBox.x,
-                        y2 : parentBox.y + parentBox.height / 2
+                        points : (x + box.width) + ',' + (y + box.height) + ',' +
+                            (parentBox.x - HANDLEWIDTH) + ',' + (parentBox.y + parentBox.height / 2) + ',' +
+                            (parentBox.x) + ',' + (parentBox.y + parentBox.height / 2)
                     });
                 } else if (parentRectStyle === 'underline' && rectStyle === 'underline') {
                     this.line.attr({
-                        x1 : x + box.width,
-                        y1 : y + box.height,
-                        x2 : parentBox.x,
-                        y2 : parentBox.y + parentBox.height
+                        points : (x + box.width) + ',' + (y + box.height) + ',' +
+                            (parentBox.x - HANDLEWIDTH) + ',' + (parentBox.y + parentBox.height) + ',' +
+                            (parentBox.x) + ',' + (parentBox.y + parentBox.height)
                     });
                 } else {
 
