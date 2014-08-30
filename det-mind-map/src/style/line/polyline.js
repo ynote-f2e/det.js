@@ -26,6 +26,8 @@ var PolylineLineStyle = (function (Style) {
                 paper = svg.paper;
 
             this.line = paper.polyline(0, 0, 0, 0);
+
+            this.line.insertBefore(this.ctrl.getParent().rect.getRect());
         },
 
         getLine : function () {
@@ -56,21 +58,19 @@ var PolylineLineStyle = (function (Style) {
                 this.line.attr({
                     points : parseInt(x) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
                             parseInt(x) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                            parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                            parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
-                            parseInt(parentBox.x + parentBox.width) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
-                            parseInt(x - HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
+                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
+                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5)
                 });
             } else {
                 this.line.attr({
                     points : parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
                             parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                            parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                            parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
-                            parseInt(parentBox.x) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5) + ',' +
-                            parseInt(x + box.width + HANDLEWIDTH) + ',' + parseInt(y + box.height / 2 - 1)
+                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
+                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5)
                 });
             }
+
+            this.line.insertBefore(ctrl.getParent().rect.getFigure());
         }
 
     });

@@ -12,6 +12,7 @@ var NormalRectStyle = (function (Style) {
             }
             return copy;
         };
+        
     var PADDING = {
                 X : 10,
                 Y : 6

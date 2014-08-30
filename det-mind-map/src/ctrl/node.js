@@ -28,6 +28,7 @@ var MindNodeCtrl = (
                 if (this.isSecond()) {
                     this.line = Style.getLine('polyline', this);
                     this.line.create();
+                    //this.line.getFigure().insertAfter(this.getParent().rect.getRect());
                 } else {
                     this.line = Style.getLine('normal', this);
                     this.line.create();
