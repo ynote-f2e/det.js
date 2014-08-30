@@ -104,6 +104,12 @@
         }
         .context-menu {
             position: absolute;
+            z-index: 9999;
+            font-size: 12px;
+            list-style: none;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+            background-clip: padding-box;
+            font-family: "Microsoft Yahei";
             display: none;
             padding: 0;
             min-width: 70px;
@@ -704,23 +710,19 @@
             selection.getModel(), newColor));
     }
 
-    function showSelectionContextMenu() {
+    function showSelectionContextMenu(x, y) {
         var selection = diagramCtrl.getSelection(),
             commands;
         if (selection.length == 0) {
             return;
         }
         selection = selection[0];
-        var left = parseInt(selection.rect.getBBox().x, 10);
-        var top = parseInt(selection.rect.getBBox().y, 10);
-        var width = selection.rect.getBBox().width;
-        var height = selection.rect.getBBox().height;
         $('.context-menu').css('display', 'inline-block');
-        $('.context-menu').css('left', left + width);
-        if (top + $('.context-menu').height() > $('.painter').height()) {
-            $('.context-menu').css('top', top - $('.context-menu').height());
+        $('.context-menu').css('left', x);
+        if (y + $('.context-menu').height() > $('.painter').height()) {
+            $('.context-menu').css('top', y - $('.context-menu').height());
         } else {
-            $('.context-menu').css('top', top + 20);
+            $('.context-menu').css('top', y);
         }
         $('.context-menu').blur(function () {
             $(this).hide();
@@ -741,6 +743,13 @@
         if(e && e.hasOwnProperty('originalEvent')) { 
             $('.btn-fill-color .colorPicker-picker').click();
         }
+    }
+
+    function calcMenuX(x) {
+        return x - $('.painter').offset().left;
+    }
+    function calcMenuY(y) {
+        return y - $('.painter').offset().top;
     }
     diagramCtrl.bind('select', function (e) {
         var model = e.target.getModel();
@@ -830,7 +839,7 @@
         if (e.target.getModel() instanceof MindNode) {
             console.log(e.target.getModel());
             e.preventDefault();
-            showSelectionContextMenu();
+            showSelectionContextMenu(calcMenuX(e.pageX), calcMenuY(e.pageY));
         }
     });
     diagramCtrl.bind('dblclick', function (e) {
