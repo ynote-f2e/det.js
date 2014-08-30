@@ -8,7 +8,11 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
         DiagramCtrl.call(this, model, factory);
         this.layout = new MindLayout();
         this.installFeature(this.layout);
-        this.installFeature(new MindSelection());
+        this.installFeature(new (MindSelection.derive({
+            getBody : function () {
+                return this.getFigure();
+            }.bind(this)
+        })));
     }, {
 
         /**
