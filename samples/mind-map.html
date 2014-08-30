@@ -7,45 +7,23 @@
     <style type="text/css">
         html,body,p,span,div {margin: 0; padding: 0;}
         html,body {
-            font-size: 12px;
+            font-size: 14px;
         }
         #mindMap {
             width: 800px;
         }
         .painter {
             position: relative;
-            margin: 5px 0;
-        }
-        .selectInput {
-            position: absolute;
-            margin: 3px 1px;
-            border: none;
-        }
-        .colorPicker-picker {
-            display: inline-block;
-        }
-        .context-menu {
-            position: absolute;
-            display: none;
-            padding: 0;
-            min-width: 100px;
-            background: #fff;
-            border-radius: 5px;
-        }
-        .context-menu .menu-item {
-            display: block;
-            padding: 0;
-            min-height: 20px;
-            padding: 5px 5px;
-        }
-        .context-menu .menu-item:hover {
-            background: #E2D1F7;
+            margin: 35px 0;
         }
         .toolbar {
-            margin: 0px;
-            padding: 5px;
+            position: fixed;
+            top: 0;
+            z-index: 10;
+            padding: 5px 0;
+            width: 800px;
             font-size: 0;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #ddd;
             background: #f2f2f2;
         }
         .toolbar .toolbar-btn {
@@ -114,6 +92,35 @@
             width: 20px;
             border: none;
             color: #bbb;
+        }
+        .selectInput {
+            position: absolute;
+            margin: 3px 1px;
+            border: none;
+            min-height: 18px;
+        }
+        .colorPicker-picker {
+            display: inline-block;
+        }
+        .context-menu {
+            position: absolute;
+            display: none;
+            padding: 0;
+            min-width: 70px;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .context-menu .menu-item {
+            display: block;
+            padding: 0;
+            min-height: 20px;
+            padding: 5px 5px;
+            text-align: center;
+            line-height: 20px;
+            border-radius: 3px;
+        }
+        .context-menu .menu-item:hover {
+            background: #E2D1F7;
         }
     </style>
 </head>
@@ -206,7 +213,7 @@
 <script>
 
     var contextmenuTemp = '<ul class="context-menu">' +
-        '<li class="menu-item" onclick="appendSelectionChild()">插入子主题</li>' +
+        '<li class="menu-item" onclick="appendSelectionChild()">插入</li>' +
         '<li class="menu-item" onclick="editSelection()">编辑</li>' +
         '<li class="menu-item" onclick="removeSeletion()">删除</li>' +
         '</ul>';
@@ -223,10 +230,11 @@
             rectAttr : {
                 fill : '#99ccff',
                 stroke : "#979b9e",
-                strokeWidth : '1',
+                strokeWidth : '2',
             },
             textAttr : {
-                'font-size' : '25px'
+                'font-size' : '25px',
+                'font-weight' : 'bold'
             },
             nodes : [{
                 text : '子主题1',
@@ -236,7 +244,7 @@
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#ffcc00",
-                    strokeWidth : '1',
+                    strokeWidth : '2',
                 },
                 lineAttr : {
                     stroke : '#ffcc00',
@@ -306,7 +314,7 @@
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#8989FF",
-                    strokeWidth : '1',
+                    strokeWidth : '2',
                 },
                 lineAttr : {
                     stroke : '#8989FF',
@@ -320,7 +328,7 @@
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#FF0022",
-                    strokeWidth : '1',
+                    strokeWidth : '2',
                 },
                 lineAttr : {
                     stroke : '#FF0022',
@@ -376,7 +384,7 @@
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#ff00ff",
-                    strokeWidth : '1',
+                    strokeWidth : '2',
                 },
                 lineAttr : {
                     stroke : "#ff00ff",
@@ -418,7 +426,7 @@
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#00ccff",
-                    strokeWidth : '1',
+                    strokeWidth : '2',
                 },
                 lineAttr : {
                     stroke : "#00ccff",
@@ -518,8 +526,12 @@
         var inputEl = $('<input type="text" />');
         inputEl.appendTo($('.painter'));
         inputEl.css('left', left + 4);
-        inputEl.css('top', top);
-        inputEl.css('width', width - 8);
+        if (selection.isRoot() || selection.isSecond()){
+            inputEl.css('top', top);
+        } else {
+            inputEl.css('top', top - 4);
+        }
+        inputEl.css('width', width - 4);
         inputEl.css('height', height - 8);
         inputEl.addClass('selectInput');
         inputEl.val(selection.getModel().get('text'));
@@ -546,7 +558,7 @@
             rectAttr : {
                 fill : '#fff',
                 stroke : color,
-                strokeWidth : '1',
+                strokeWidth : '2',
             },
             lineAttr : {
                 fill : color,
@@ -606,14 +618,38 @@
         fontWeight = selection.getModel().getTextAttr('font-weight');
         if (!fontWeight || fontWeight === 'normal') {
             fontWeight = 'bold';
-            $('.icon.bold').addClass('selected');
+            $('.btn-bold').addClass('selected');
         } else {
             fontWeight = null;
-            $('.icon.bold').removeClass('selected');
+            $('.btn-bold').removeClass('selected');
         }
         commands = new detMindMap.SetTextAttrCommand(selection.getModel(),
             'font-weight', fontWeight);
         selection.execute(commands);
+    }
+
+    function changeSelectionFontStyle() {
+        var selection = diagramCtrl.getSelection(),
+            commands, fontStyle;
+        if (selection.length == 0) {
+            return;
+        }
+        selection = selection[0];
+        if (selection.getModel().data.root) {
+            return;
+        }
+        fontStyle = selection.getModel().getTextAttr('font-style');
+        if (!fontStyle || fontStyle === 'normal') {
+            fontStyle = 'italic';
+            $('.btn-italic').addClass('selected');
+        } else {
+            fontStyle = null;
+            $('.btn-italic').removeClass('selected');
+        }
+        commands = new detMindMap.SetTextAttrCommand(selection.getModel(),
+            'font-style', fontStyle);
+        selection.execute(commands);
+
     }
     function setSelectionFontColor(newColor) {
         var selection = diagramCtrl.getSelection(),
@@ -717,11 +753,15 @@
             $('#fontColor').change();
         }
         if (model.getTextAttr('font-weight')) {
-            $('.icon.bold').addClass('selected');
+            $('.btn-bold').addClass('selected');
         } else {
-            $('.icon.bold').removeClass('selected');
+            $('.btn-bold').removeClass('selected');
         }
-
+        if (model.getTextAttr('font-style')) {
+            $('.btn-italic').addClass('selected');
+        } else {
+            $('.btn-italic').removeClass('selected');
+        }
         $('#lineColor').val(model.getLineAttr('stroke'));
         $('#lineColor').change();
 
@@ -750,6 +790,7 @@
         if (evt.keyCode && evt.keyCode === 13) {        //enter
             appendSelectionBrother();
         } else if (evt.keyCode && evt.keyCode === 9) { //tab
+            evt.preventDefault();
             appendSelectionChild();
         } else if (evt.keyCode && evt.keyCode === 45) { //ins
             appendSelectionChild();
@@ -765,6 +806,14 @@
             // move to right subject
         } else if (evt.keyCode && evt.keyCode === 40) { //down
             // move to down subject
+        } else if (evt.keyCode && evt.keyCode === 66 && evt.ctrlKey) { //ctrl+b
+            changeSelectionFontWeight();
+        } else if (evt.keyCode && evt.keyCode === 73 && evt.ctrlKey) { //ctrl+i
+            changeSelectionFontStyle();
+        } else if (evt.keyCode && evt.keyCode === 89 && evt.ctrlKey) { //ctrl+y
+            redo();
+        } else if (evt.keyCode && evt.keyCode === 90 && evt.ctrlKey) { //ctrl+z
+            undo();
         }
     });
     $('body').on('click', function () {

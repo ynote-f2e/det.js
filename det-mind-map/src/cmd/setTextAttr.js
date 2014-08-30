@@ -9,7 +9,7 @@ detMindMap.SetTextAttrCommand = (function (det) {
     }, {
 
         execute : function () {
-            this.original = this.model.getTextAttr(this.name) || '#000';
+            this.original = this.model.getTextAttr(this.name);
             this.model.setTextAttr(this.name, this.value);
         },
 
