@@ -3,14 +3,16 @@
 <head>
     <meta charset='utf-8'>
     <title>det-mind-map</title>
+    <link rel="stylesheet" href="colorPicker.css">
     <style type="text/css">
         .painter {
             position: relative;
+            margin: 10px 0;
         }
         .selectInput {
             position: absolute;
         }
-        .line-color, .rect-color, .colorPicker-picker {
+        .colorPicker-picker {
             display: inline-block;
         }
         .context-menu {
@@ -30,12 +32,88 @@
         .context-menu .menu-item:hover {
             background: #E2D1F7;
         }
+        .toolbar {
+            margin: 0px;
+            padding: 5px;
+            font-size: 0;
+            border-bottom: 1px solid #f0f0f0;
+            background: #f2f2f2;
+        }
+        .toolbar .icon {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin: 0px 5px;
+            cursor: pointer;
+            font-size: 12px;
+            background: url(sprite.png) no-repeat;
+        }
+        .toolbar .text {
+            display: inline-block;
+            margin: 0px 5px;
+            padding: 0 5px;
+            vertical-align: top;
+            line-height: 20px;
+            font-size: 12px;
+            font-family: '微软雅黑';
+            height: 20px;
+        }
+        .toolbar .icon:hover, .toolbar .text:hover {
+            background-color: #d5e1f2;
+        }
+        .toolbar .undo {
+            background-position: 0px -20px;
+        }
+        .toolbar .redo {
+            background-position: -20px 0px;
+        }
+        .toolbar .remove {
+            background-position: 0px -500px;
+        }
+        .toolbar .bold {
+            background-position: -20px -40px;
+        }
+        .toolbar .italic {
+            background-position: -0px -60px;
+        }
+        .toolbar .font-color {
+            background-position: -0px -80px;
+        }
+        .toolbar .line-color {
+            background-position: -0px -160px;
+        }
+        .toolbar .fill-color {
+            background-position: -20px -140px;
+        }
+        div.colorPicker-picker {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            height: 3px;
+            width: 20px;
+            border: none;
+            color: #bbb;
+        }
     </style>
-    <link rel="stylesheet" href="colorPicker.css">
 </head>
 <body>
 <div class="toolbar">
-    <button class="edit" onclick="editSelection()">编辑</button>
+    <i class="icon undo" title="撤销(CTRL+Z)"></i>
+    <i class="icon redo" title="重做(CTRL+Y)"></i>
+    <i class="icon remove" title="删除主题(Del)"></i>
+    <i class="icon bold" title="粗体(CTRL+B)"></i>
+    <i class="icon italic" title="斜体(CTRL+I)"></i>
+    <i class="icon font-color" title="文字颜色"></i>
+    <i class="icon line-color" title="线条颜色">
+        <input id="lineColor" type="text" name="lineColor" value="#eeeef6" />
+    </i>
+    <i class="icon fill-color" title="填充颜色" onclick="clickBackground()">
+        <input id="rectBackground" type="text" name="rectBackground" value="#eeeef6" />
+    </i>
+    <span class="text">插入主题</span>
+    <span class="text">插入子主题</span>
+    <!-- <button class="edit" onclick="editSelection()">编辑</button>
     <button onclick="removeSeletion()">删除主题</button>
     <button onclick="appendSelectionBrother()">主题</button>
     <button onclick="appendSelectionChild()">子主题</button>
@@ -48,7 +126,7 @@
     <div class="rect-color">
         <input id="rectBackground" type="text" name="rectBackground" value="#ffffff" />
         <button onclick="clickBackground()">填充颜色</button>
-    </div>
+    </div> -->
 </div>
 <div class="painter">
     <svg id="diagram" width="800" height="600"></svg>
@@ -408,7 +486,7 @@
             selection.execute(
                 new detMindMap.EditCommand(
                     selection.getModel(), 'text', inputEl.val()));
-            inputEl.hide();
+            inputEl.remove();
         }
 
         console.log(selection.rect, selection.text);
@@ -533,12 +611,16 @@
         });
     }
 
-    function clickLine() {
-        $('.line-color .colorPicker-picker').click();
+    function clickLine(e) {
+        if(e && e.hasOwnProperty('originalEvent')) {
+            $('.line-color .colorPicker-picker').click();
+        }
     }
 
-    function clickBackground() {
-        $('.rect-color .colorPicker-picker').click();
+    function clickBackground(e) {
+        if(e && e.hasOwnProperty('originalEvent')) { 
+            $('.fill-color .colorPicker-picker').click();
+        }
     }
     diagramCtrl.bind('select', function (e) {
         var model = e.target.getModel();
@@ -588,6 +670,11 @@
     })
     $('.painter').contextmenu(function (evt) {
         evt.preventDefault();
+    });
+    $('.line-color').click(clickLine);
+    $('.fill-color').click(clickBackground);
+    $('.colorPicker-picker').click(function (e) {
+        e.stopPropagation();
     });
     diagramCtrl.bind('contextmenu', function (e) {
         //show context menu
