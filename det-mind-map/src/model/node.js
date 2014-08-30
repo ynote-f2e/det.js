@@ -26,6 +26,18 @@ var MindNode = (function (Model) {
             return this.data[name];
         },
 
+        getTextAttr : function (name) {
+            return this.data.textAttr[name];
+        },
+
+        setTextAttr : function (name, value) {
+            if (this.data.textAttr[name] === value) {
+                return;
+            }
+            this.data.textAttr[name] = value;
+            this.trigger();
+        },
+
         getLineAttr : function (name) {
             return this.data.lineAttr[name];
         },
