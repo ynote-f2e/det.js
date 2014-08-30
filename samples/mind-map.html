@@ -5,12 +5,21 @@
     <title>det-mind-map</title>
     <link rel="stylesheet" href="colorPicker.css">
     <style type="text/css">
+        html,body,p,span,div {margin: 0; padding: 0;}
+        html,body {
+            font-size: 12px;
+        }
+        #mindMap {
+            width: 800px;
+        }
         .painter {
             position: relative;
-            margin: 10px 0;
+            margin: 5px 0;
         }
         .selectInput {
             position: absolute;
+            margin: 3px 1px;
+            border: none;
         }
         .colorPicker-picker {
             display: inline-block;
@@ -39,13 +48,24 @@
             border-bottom: 1px solid #f0f0f0;
             background: #f2f2f2;
         }
+        .toolbar .toolbar-btn {
+            position: relative;
+            display: inline-block;
+            margin: 0px 5px;
+            padding: 2px;
+            border-radius: 3px;
+            vertical-align: top;
+        }
+        .toolbar .toolbar-btn:hover,
+        .toolbar .toolbar-btn.selected {
+            background-color: #d5e1f2;
+            cursor: pointer;
+        }
         .toolbar .icon {
             position: relative;
             display: inline-block;
             width: 20px;
             height: 20px;
-            margin: 0px 5px;
-            cursor: pointer;
             font-size: 12px;
             background: url(sprite.png) no-repeat;
         }
@@ -53,14 +73,14 @@
             display: inline-block;
             margin: 0px 5px;
             padding: 0 5px;
-            vertical-align: top;
             line-height: 20px;
             font-size: 12px;
             font-family: '微软雅黑';
             height: 20px;
         }
-        .toolbar .icon:hover, .toolbar .text:hover {
-            background-color: #d5e1f2;
+        .toolbar .dropdown {
+            width: 10px;
+            background-position: -3px -40px;
         }
         .toolbar .undo {
             background-position: 0px -20px;
@@ -88,8 +108,8 @@
         }
         div.colorPicker-picker {
             position: absolute;
-            left: 0px;
-            bottom: 0px;
+            left: 2px;
+            bottom: 2px;
             height: 3px;
             width: 20px;
             border: none;
@@ -98,39 +118,52 @@
     </style>
 </head>
 <body>
-<div class="toolbar">
-    <i class="icon undo" title="撤销(CTRL+Z)"></i>
-    <i class="icon redo" title="重做(CTRL+Y)"></i>
-    <i class="icon remove" title="删除主题(Del)"></i>
-    <i class="icon bold" title="粗体(CTRL+B)"></i>
-    <i class="icon italic" title="斜体(CTRL+I)"></i>
-    <i class="icon font-color" title="文字颜色"></i>
-    <i class="icon line-color" title="线条颜色">
-        <input id="lineColor" type="text" name="lineColor" value="#eeeef6" />
-    </i>
-    <i class="icon fill-color" title="填充颜色" onclick="clickBackground()">
-        <input id="rectBackground" type="text" name="rectBackground" value="#eeeef6" />
-    </i>
-    <span class="text">插入主题</span>
-    <span class="text">插入子主题</span>
-    <!-- <button class="edit" onclick="editSelection()">编辑</button>
-    <button onclick="removeSeletion()">删除主题</button>
-    <button onclick="appendSelectionBrother()">主题</button>
-    <button onclick="appendSelectionChild()">子主题</button>
-    <button onclick="undo()">Undo</button>
-    <button onclick="redo()">Redo</button>
-    <div class="line-color">
-        <input id="lineColor" type="text" name="lineColor" value="#ffffff" />
-        <button onclick="clickLine()">线条颜色</button>
+    <div id="mindMap">
+        <div class="toolbar">
+            <div class="toolbar-btn btn-undo" title="撤销(CTRL+Z)" onclick="undo()">
+                <i class="icon undo"></i>
+            </div>
+            <div class="toolbar-btn btn-redo" title="重做(CTRL+Y)" onclick="redo()">
+                <i class="icon redo"></i>
+            </div>
+            <div class="toolbar-btn btn-remove" title="删除主题(Del)" onclick="removeSeletion()">
+                <i class="icon remove"></i>
+            </div>
+            <div class="toolbar-btn btn-bold" title="粗体(CTRL+B)" onclick="changeSelectionFontWeight()">
+                <i class="icon bold"></i>
+            </div>
+            <div class="toolbar-btn btn-italic" title="斜体(CTRL+I)" onclick="changeSelectionFontStyle()">
+                <i class="icon italic"></i>
+            </div>
+            <div class="toolbar-btn btn-font-color" title="文字颜色">
+                <i class="icon font-color">
+                </i>
+                <input id="fontColor" type="text" name="fontColor" value="#000" />
+                <i class="icon dropdown"></i>
+            </div>
+            <div class="toolbar-btn btn-line-color" title="线条颜色">
+                <i class="icon line-color">
+                </i>
+                <input id="lineColor" type="text" name="lineColor" value="#fff" />
+                <i class="icon dropdown"></i>
+            </div>
+            <div class="toolbar-btn btn-fill-color" title="填充颜色">
+                <i class="icon fill-color">
+                </i>
+                <input id="rectBackground" type="text" name="rectBackground" value="#fff" />
+                <i class="icon dropdown"></i>
+            </div>
+            <div class="toolbar-btn btn-insert-bro" title="(Enter)" onclick="appendSelectionBrother()">
+                <span class="text">插入主题</span>
+            </div>
+            <div class="toolbar-btn btn-insert-son" title="(Ins/Tab)" onclick="appendSelectionChild()">
+                <span class="text">插入子主题</span>
+            </div>
+        </div>
+        <div class="painter">
+            <svg id="diagram" width="800" height="600"></svg>
+        </div>
     </div>
-    <div class="rect-color">
-        <input id="rectBackground" type="text" name="rectBackground" value="#ffffff" />
-        <button onclick="clickBackground()">填充颜色</button>
-    </div> -->
-</div>
-<div class="painter">
-    <svg id="diagram" width="800" height="600"></svg>
-</div>
 </body>
 <script src="jquery.js"></script>
 <script src="jquery.colorPicker.js"></script>
@@ -152,6 +185,7 @@
 <script src="../det-mind-map/src/cmd/append.js"></script>
 <script src="../det-mind-map/src/cmd/edit.js"></script>
 <script src="../det-mind-map/src/cmd/setLineColor.js"></script>
+<script src="../det-mind-map/src/cmd/setTextAttr.js"></script>
 <script src="../det-mind-map/src/cmd/setBackgroundColor.js"></script>
 <script src="../det-mind-map/src/cmd/remove.js"></script>
 <script src="../det-mind-map/src/cmd/move.js"></script>
@@ -178,6 +212,8 @@
         '</ul>';
     var menu = $(contextmenuTemp);
     menu.appendTo($('.painter'));
+
+    var colorBoxs = ['FF0000', 'FF9900', '00CCFF', '3366FF', 'FF00FF', '00FF00', '00FFFF', 'FFCC00', 'FF99CC', '800080'];
     var toolkit = det.create(), diagram, diagramCtrl;
     toolkit.plugin(detMindMap);
     diagram = new detMindMap.MindDiagram({
@@ -194,6 +230,9 @@
             },
             nodes : [{
                 text : '子主题1',
+                textAttr : {
+                    'font-size' : '16px'
+                },
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#ffcc00",
@@ -267,6 +306,9 @@
                 }]
             }, {
                 text : '子主题2',
+                textAttr : {
+                    'font-size' : '16px'
+                },
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#8989FF",
@@ -279,6 +321,9 @@
                 }
             }, {
                 text : '子主题3',
+                textAttr : {
+                    'font-size' : '16px'
+                },
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#FF0022",
@@ -291,6 +336,9 @@
                 }
             }, {
                 text : '子主题4',
+                textAttr : {
+                    'font-size' : '16px'
+                },
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#00cc00",
@@ -334,6 +382,9 @@
                 }]
             }, {
                 text : '子主题5',
+                textAttr : {
+                    'font-size' : '16px'
+                },
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#ff00ff",
@@ -377,6 +428,9 @@
                 }]
             }, {
                 text : '子主题6',
+                textAttr : {
+                    'font-size' : '16px'
+                },
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#00ccff",
@@ -448,6 +502,7 @@
             new detMindMap.RemoveCommand(
                 selection.getParent().getModel(),
                 selection.getModel()));
+
         var model = parent.getModel();
         if (children.length) {
             while (!children[index]) {
@@ -500,21 +555,31 @@
 
     }
 
+    function getColorBox() {
+        return '#' + 
+            colorBoxs[parseInt(Math.random() * 10, 10)];
+    }
     function appendChild(node) {
+        var color = getColorBox();
         var newModel = new MindNode({
             text : '子主题',
             rectAttr : {
                 fill : '#fff',
-                stroke : "#00ccff",
+                stroke : color,
                 strokeWidth : '1',
             },
             lineAttr : {
-                stroke : "#00ccff",
+                fill : color,
+                stroke : color,
                 strokeWidth : '2'
             }
         });
-        newModel.set('rectAttr', node.getModel().get('rectAttr'));
-        newModel.set('lineAttr', node.getModel().get('lineAttr'));
+        if (node.isRoot()) {
+            newModel.setTextAttr('font-size', '16px');
+        } else {
+            newModel.set('rectAttr', node.getModel().get('rectAttr'));
+            newModel.set('lineAttr', node.getModel().get('lineAttr'));
+        }
         node.execute(
             new detMindMap.AppendCommand(
                 node.getModel(), newModel));
@@ -526,20 +591,63 @@
             return;
         }
         appendChild(selection[0]);
+        //select new subject
         selection[0].deselect();
         var children = selection[0].getChildren();
         children[children.length - 1].select();
     }
 
     function appendSelectionBrother() {
-        var selection = diagramCtrl.getSelection();
+        var selection = diagramCtrl.getSelection(),
+            rootCtrl = diagramCtrl.getRootCtrl();
         if (selection.length == 0) {
             return;
         }
+        if (selection[0] === rootCtrl) {
+            return;
+        }
         appendChild(selection[0].getParent());
+        //select new subject
         selection[0].deselect();
         var children = selection[0].getParent().getChildren();
         children[children.length - 1].select();
+    }
+
+    function changeSelectionFontWeight() {
+        var selection = diagramCtrl.getSelection(),
+            commands, fontWeight;
+        if (selection.length == 0) {
+            return;
+        }
+        selection = selection[0];
+        if (selection.getModel().data.root) {
+            return;
+        }
+        fontWeight = selection.getModel().getTextAttr('font-weight');
+        if (!fontWeight || fontWeight === 'normal') {
+            fontWeight = 'bold';
+            $('.icon.bold').addClass('selected');
+        } else {
+            fontWeight = null;
+            $('.icon.bold').removeClass('selected');
+        }
+        commands = new detMindMap.SetTextAttrCommand(selection.getModel(),
+            'font-weight', fontWeight);
+        selection.execute(commands);
+    }
+    function setSelectionFontColor(newColor) {
+        var selection = diagramCtrl.getSelection(),
+            commands;
+        if (selection.length == 0) {
+            return;
+        }
+        selection = selection[0];
+        if (selection.getModel().data.root) {
+            return;
+        }
+        commands = new detMindMap.SetTextAttrCommand(selection.getModel(),
+            'fill', newColor);
+        selection.execute(commands);
     }
 
     function setSelectionLineColor(newColor) {
@@ -549,7 +657,11 @@
             return;
         }
         selection = selection[0];
-        if (selection.getModel().getLineAttr('stroke') === newColor) {
+        if (selection.getModel().data.root) {
+            return;
+        }
+        if (!selection.getModel().getLineAttr('stroke') ||
+                selection.getModel().getLineAttr('stroke') === newColor) {
             return;
         }
         commands = [new detMindMap.SetLineColorCommand(
@@ -569,6 +681,9 @@
             return;
         }
         selection = selection[0];
+        if (selection.getModel().data.root) {
+            return;
+        }
         selection.execute(new detMindMap.SetBackgroundColorCommand(
             selection.getModel(), newColor));
     }
@@ -598,28 +713,48 @@
 
     function clickLine(e) {
         if(e && e.hasOwnProperty('originalEvent')) {
-            $('.line-color .colorPicker-picker').click();
+            $('.btn-line-color .colorPicker-picker').click();
         }
     }
-
+    function clickFontColor(e) {
+        if(e && e.hasOwnProperty('originalEvent')) {
+            $('.btn-font-color .colorPicker-picker').click();
+        }
+    }
     function clickBackground(e) {
         if(e && e.hasOwnProperty('originalEvent')) { 
-            $('.fill-color .colorPicker-picker').click();
+            $('.btn-fill-color .colorPicker-picker').click();
         }
     }
     diagramCtrl.bind('select', function (e) {
         var model = e.target.getModel();
         //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
-        if (e.target.getModel().data.root) {
+        if (model.data.root) {
             return;
         }
-        $('#lineColor').val(e.target.getModel().getLineAttr('stroke'));
+        if (model.getTextAttr('fill')) {
+            $('#fontColor').val(model.getTextAttr('fill'));
+            $('#fontColor').change();
+        }
+        if (model.getTextAttr('font-weight')) {
+            $('.icon.bold').addClass('selected');
+        } else {
+            $('.icon.bold').removeClass('selected');
+        }
+
+        $('#lineColor').val(model.getLineAttr('stroke'));
         $('#lineColor').change();
 
-        $('#rectBackground').val(e.target.getModel().getRectAttr('fill'));
+        $('#rectBackground').val(model.getRectAttr('fill'));
         $('#rectBackground').change();
+
     });
 
+    $('#fontColor').colorPicker({
+        onColorChange : function (id, newColor) {
+            setSelectionFontColor(newColor);
+        }
+    });
     $('#lineColor').colorPicker({
         onColorChange : function (id, newColor) {
             setSelectionLineColor(newColor);
@@ -634,6 +769,8 @@
         console.log(evt.keyCode);
         if (evt.keyCode && evt.keyCode === 13) {        //enter
             appendSelectionBrother();
+        } else if (evt.keyCode && evt.keyCode === 9) { //tab
+            appendSelectionChild();
         } else if (evt.keyCode && evt.keyCode === 45) { //ins
             appendSelectionChild();
         } else if (evt.keyCode && evt.keyCode === 46) { //del
@@ -656,11 +793,9 @@
     $('.painter').contextmenu(function (evt) {
         evt.preventDefault();
     });
-    $('.line-color').click(clickLine);
-    $('.fill-color').click(clickBackground);
-    $('.colorPicker-picker').click(function (e) {
-        e.stopPropagation();
-    });
+    $('.btn-font-color').click(clickFontColor);
+    $('.btn-line-color').click(clickLine);
+    $('.btn-fill-color').click(clickBackground);
     diagramCtrl.bind('contextmenu', function (e) {
         //show context menu
         if (e.target.getModel() instanceof MindNode) {

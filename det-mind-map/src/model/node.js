@@ -27,10 +27,16 @@ var MindNode = (function (Model) {
         },
 
         getTextAttr : function (name) {
-            return this.data.textAttr[name];
+            if (this.data.textAttr) {
+                return this.data.textAttr[name];
+            }
+            return null;
         },
 
         setTextAttr : function (name, value) {
+            if (!this.data.textAttr) {
+                this.data.textAttr = {};
+            }
             if (this.data.textAttr[name] === value) {
                 return;
             }
@@ -39,7 +45,10 @@ var MindNode = (function (Model) {
         },
 
         getLineAttr : function (name) {
-            return this.data.lineAttr[name];
+            if (this.data.lineAttr) {
+                return this.data.lineAttr[name];
+            }
+            return null;
         },
 
         setLineAttr : function (name, value) {
@@ -51,7 +60,10 @@ var MindNode = (function (Model) {
         },
 
         getRectAttr : function (name) {
-            return this.data.rectAttr[name];
+            if (this.data.rectAttr) {
+                return this.data.rectAttr[name];
+            }
+            return null;
         },
 
         setRectAttr : function (name, value) {
