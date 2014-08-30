@@ -13,6 +13,23 @@
         .line-color, .rect-color, .colorPicker-picker {
             display: inline-block;
         }
+        .context-menu {
+            position: absolute;
+            display: none;
+            padding: 0;
+            min-width: 100px;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .context-menu .menu-item {
+            display: block;
+            padding: 0;
+            min-height: 20px;
+            padding: 5px 5px;
+        }
+        .context-menu .menu-item:hover {
+            background: #E2D1F7;
+        }
     </style>
     <link rel="stylesheet" href="colorPicker.css">
 </head>
@@ -75,6 +92,14 @@
 
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
+
+    var contextmenuTemp = '<ul class="context-menu">' +
+        '<li class="menu-item" onclick="appendSelectionChild()">插入子主题</li>' +
+        '<li class="menu-item" onclick="editSelection()">编辑</li>' +
+        '<li class="menu-item" onclick="removeSeletion()">删除</li>' +
+        '</ul>';
+    var menu = $(contextmenuTemp);
+    menu.appendTo($('.painter'));
     var toolkit = det.create(), diagram, diagramCtrl;
     toolkit.plugin(detMindMap);
     diagram = new detMindMap.MindDiagram({
@@ -485,6 +510,29 @@
             selection.getModel(), newColor));
     }
 
+    function showSelectionContextMenu() {
+        var selection = diagramCtrl.getSelection(),
+            commands;
+        if (selection.length == 0) {
+            return;
+        }
+        selection = selection[0];
+        var left = parseInt(selection.rect.getBBox().x, 10);
+        var top = parseInt(selection.rect.getBBox().y, 10);
+        var width = selection.rect.getBBox().width;
+        var height = selection.rect.getBBox().height;
+        $('.context-menu').css('display', 'inline-block');
+        $('.context-menu').css('left', left + width);
+        if (top + $('.context-menu').height() > $('.painter').height()) {
+            $('.context-menu').css('top', top - $('.context-menu').height());
+        } else {
+            $('.context-menu').css('top', top + 20);
+        }
+        $('.context-menu').blur(function () {
+            $(this).hide();
+        });
+    }
+
     function clickLine() {
         $('.line-color .colorPicker-picker').click();
     }
@@ -526,23 +574,32 @@
         } else if (evt.keyCode && evt.keyCode === 113) {//F2
             editSelection();
         } else if (evt.keyCode && evt.keyCode === 37) { //left
-            // editSelection();
+            // move to left subject
         } else if (evt.keyCode && evt.keyCode === 38) { //up
-            // editSelection();
+            // move to up subject
         } else if (evt.keyCode && evt.keyCode === 39) { //right
-            // editSelection();
+            // move to right subject
         } else if (evt.keyCode && evt.keyCode === 40) { //down
-            // editSelection();
+            // move to down subject
         }
     });
+    $('body').on('click', function () {
+        $('.context-menu').hide();
+    })
+    $('.painter').contextmenu(function (evt) {
+        evt.preventDefault();
+    });
     diagramCtrl.bind('contextmenu', function (e) {
-        if (e.target.getModel() instanceof MindNode) {
-            e.preventDefault();
-        }
         //show context menu
+        if (e.target.getModel() instanceof MindNode) {
+            console.log(e.target.getModel());
+            e.preventDefault();
+            showSelectionContextMenu();
+        }
     });
     diagramCtrl.bind('dblclick', function (e) {
         //maybe open text editor
+        editSelection();
     });
 
 </script>

@@ -192,7 +192,11 @@ var MindNodeCtrl = (
             },
 
             bubbleEvent : function (name, e) {
-                var event = this.bubble(name);
+                var event = this.bubble(name, {
+                    pageX : e.pageX,
+                    pageY :e.pageY,
+                    button : e.button
+                });
                 if (event.isDefaultPrevented()) {
                     e.preventDefault();
                 }
