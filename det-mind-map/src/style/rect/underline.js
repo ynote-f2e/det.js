@@ -11,7 +11,7 @@ var UnderLineStyle = (function (Style) {
         },
         DEFAULTLINEATTR = {
             stroke : '#000',
-            strokeWidth : 1
+            strokeWidth : '2'
         },
         DEFAULTTEXTATTR = {
             'text-anchor' : 'start'
@@ -39,7 +39,7 @@ var UnderLineStyle = (function (Style) {
             this.rect = rect;
             this.text = text;
             this.line = line;
-            this.figure = svg.group(this.rect, this.text);
+            this.figure = svg.group(this.rect, this.line, this.text);
         },
         
         getRect : function () {

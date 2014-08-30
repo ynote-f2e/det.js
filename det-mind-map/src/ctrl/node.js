@@ -7,7 +7,11 @@ var MindNodeCtrl = (
 
         return GraphCtrl.derive(function (model, factory) {
             GraphCtrl.call(this, model, factory);
-            this.installFeature(new MindSelection());
+            this.installFeature(new (MindSelection.derive({
+                getBody : function () {
+                    return this.rect.getFigure();
+                }.bind(this)
+            })));
             this.installFeature(new DragMove());
         }, {
 
@@ -29,8 +33,6 @@ var MindNodeCtrl = (
                     this.rect.create();
                 }
                 
-
-
                 if (this.isSecond()) {
                     this.line = Style.getLine('polyline', this);
                     this.line.create();
@@ -171,14 +173,14 @@ var MindNodeCtrl = (
                 var paper = this.getSVG().paper,
                     box = this.rect.getBBox();
                 this.selectRect = paper.rect({
-                    x : box.x - 4,
-                    y : box.y - 4,
-                    rx : 8,
-                    ry : 8,
-                    width : box.width + 8,
-                    height : box.height + 8,
+                    x : box.x - 3,
+                    y : box.y - 3,
+                    rx : 6,
+                    ry : 6,
+                    width : box.width + 6,
+                    height : box.height + 6,
                     fill : 'none',
-                    strokeOpacity : 0.5,
+                    strokeOpacity : 0.4,
                     stroke : 'blue',
                     strokeWidth : '3'
                 });
