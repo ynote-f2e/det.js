@@ -403,7 +403,6 @@
 
         inputEl.focus();
         inputEl.on('keydown', function (evt) {
-            evt.preventDefault();
             evt.stopPropagation();
             if (evt.keyCode && evt.keyCode === 13) {
                 setText();
