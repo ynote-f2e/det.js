@@ -29,8 +29,6 @@ var MindNodeCtrl = (
                     this.rect.create();
                 }
                 
-
-
                 if (this.isSecond()) {
                     this.line = Style.getLine('polyline', this);
                     this.line.create();
