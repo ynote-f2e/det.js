@@ -28,6 +28,7 @@ var MindNodeCtrl = (
                 if (this.isSecond()) {
                     this.line = Style.getLine('polyline', this);
                     this.line.create();
+                    //this.line.getFigure().insertAfter(this.getParent().rect.getRect());
                 } else {
                     this.line = Style.getLine('normal', this);
                     this.line.create();
@@ -186,7 +187,11 @@ var MindNodeCtrl = (
             },
 
             bubbleEvent : function (name, e) {
-                var event = this.bubble(name);
+                var event = this.bubble(name, {
+                    pageX : e.pageX,
+                    pageY :e.pageY,
+                    button : e.button
+                });
                 if (event.isDefaultPrevented()) {
                     e.preventDefault();
                 }
