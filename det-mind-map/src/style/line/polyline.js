@@ -4,7 +4,7 @@ var PolylineLineStyle = (function (Style) {
             stroke : "#666",
             strokeWidth : '1'
         },
-        HANDLEWIDTH = 4;
+        HANDLEWIDTH = 8;
 
     return Style.derive(function (style, ctrl) {
         Style.call(this, style, ctrl);
@@ -44,17 +44,21 @@ var PolylineLineStyle = (function (Style) {
 
             if (parentBox.x < box.x) {
                 this.line.attr({
-                    points : parseInt(x) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
-                            parseInt(x) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
-                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5)
+                    points : (x) + ',' + (y + box.height / 2 - 1.5) + ',' +
+                            (x) + ',' + (y + box.height / 2 + 1.5) + ',' +
+                            (x - HANDLEWIDTH) + ',' + (y + box.height / 2 + 1.5) + ',' +
+                            (parentBox.x + parentBox.width / 2) + ',' + (parentBox.y + parentBox.height / 2 + 7) + ',' +
+                            (parentBox.x + parentBox.width / 2) + ',' + (parentBox.y + parentBox.height / 2 - 7) + ',' +
+                            (x - HANDLEWIDTH) + ',' + (y + box.height / 2 - 1.5)
                 });
             } else {
                 this.line.attr({
-                    points : parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 - 1) + ',' +
-                            parseInt(x + box.width) + ',' + parseInt(y + box.height / 2 + 1) + ',' +
-                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 + 5) + ',' +
-                            parseInt(parentBox.x + parentBox.width / 2) + ',' + parseInt(parentBox.y + parentBox.height / 2 - 5)
+                    points : (x + box.width) + ',' + (y + box.height / 2 - 1.5) + ',' +
+                            (x + box.width) + ',' + (y + box.height / 2 + 1.5) + ',' +
+                            (x + box.width + HANDLEWIDTH) + ',' + (y + box.height / 2 + 1.5) + ',' +
+                            (parentBox.x + parentBox.width / 2) + ',' + (parentBox.y + parentBox.height / 2 + 7) + ',' +
+                            (parentBox.x + parentBox.width / 2) + ',' + (parentBox.y + parentBox.height / 2 - 7) + ',' +
+                            (x + box.width + HANDLEWIDTH) + ',' + (y + box.height / 2 - 1.5)
                 });
             }
 
