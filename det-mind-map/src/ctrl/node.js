@@ -29,7 +29,14 @@ var MindNodeCtrl = (
                     text = model.get('text'),
                     node;
 
-                if (this.isRoot() || this.isSecond()) {
+                //start from 0
+                if (this.isRoot()){
+                    this.depth = 0;
+                } else {
+                    this.depth = this.getParent().depth + 1;
+                }
+
+                if (this.getDepth() === 0 || this.getDepth() === 1) {
                     this.rect= Style.getRect('normal', this);
                     this.rect.create();
                 } else {
@@ -37,7 +44,7 @@ var MindNodeCtrl = (
                     this.rect.create();
                 }
 
-                if (this.isSecond()) {
+                if (this.getDepth() <= 1) {
                     this.line = Style.getLine('polyline', this);
                     this.line.create();
                 } else {
@@ -112,6 +119,10 @@ var MindNodeCtrl = (
                     return false;
                 }
                 return model === diagramCtrl.getModel().getRoot();
+            },
+
+            getDepth : function () {
+                return this.depth;
             },
 
             /**
