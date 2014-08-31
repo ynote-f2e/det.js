@@ -1,4 +1,4 @@
-var PolylineLineStyle = (function (Style) {
+var FirstLevelLineStyle = (function (Style) {
 
     var DEFAULTLINEATTR = {
             stroke : "#666",
@@ -69,4 +69,4 @@ var PolylineLineStyle = (function (Style) {
 
 }(Style));
 
-Style.registerLine('polyline', PolylineLineStyle);
+Style.registerLine('firstLevel', FirstLevelLineStyle);

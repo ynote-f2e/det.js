@@ -216,8 +216,9 @@
 <script src="../det-mind-map/src/style/style.js"></script>
 <script src="../det-mind-map/src/style/rect/normal.js"></script>
 <script src="../det-mind-map/src/style/rect/underline.js"></script>
-<script src="../det-mind-map/src/style/line/normal.js"></script>
-<script src="../det-mind-map/src/style/line/polyline.js"></script>
+<script src="../det-mind-map/src/style/line/firstLevel.js"></script>
+<script src="../det-mind-map/src/style/line/secondLevel.js"></script>
+<script src="../det-mind-map/src/style/line/otherLevel.js"></script>
 
 <script src="../bower_components/Snap.svg/dist/snap.svg.js"></script>
 <script>
@@ -459,7 +460,35 @@
                     },
                     lineAttr : {
                         stroke : "#00ccff"
-                    }
+                    },
+                    nodes : [{
+                        text : '子主题1',
+                        rectAttr : {
+                            fill : '#fff',
+                            stroke : "#00ccff"
+                        },
+                        lineAttr : {
+                            stroke : "#00ccff"
+                        }
+                    }, {
+                        text : '子主题2',
+                        rectAttr : {
+                            fill : '#fff',
+                            stroke : "#00ccff"
+                        },
+                        lineAttr : {
+                            stroke : "#00ccff"
+                        }
+                    }, {
+                        text : '子主题3',
+                        rectAttr : {
+                            fill : '#fff',
+                            stroke : "#00ccff"
+                        },
+                        lineAttr : {
+                            stroke : "#00ccff"
+                        }
+                    }]
                 }, {
                     text : '子主题6-3',
                     rectAttr : {

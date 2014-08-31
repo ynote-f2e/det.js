@@ -10,8 +10,7 @@ var UnderLineStyle = (function (Style) {
             ry : 8
         },
         DEFAULTLINEATTR = {
-            stroke : '#000',
-            strokeWidth : '3'
+            stroke : '#000'
         },
         DEFAULTTEXTATTR = {
             'text-anchor' : 'start'
@@ -63,7 +62,9 @@ var UnderLineStyle = (function (Style) {
                 textBox,
                 textAttr,
                 rectAttr,
-                lineAttr;
+                lineAttr,
+                depth,
+                strokeWidth;
 
             textNode.textContent = model.get('text');
                 
@@ -78,7 +79,12 @@ var UnderLineStyle = (function (Style) {
 
             this.rect.attr(rectAttr);
 
-            lineAttr = this.extend(DEFAULTLINEATTR, model.get('rectAttr'));
+            depth = ctrl.getDepth();
+            strokeWidth = depth > 3 ? 1 : depth > 2 ? 2 : 3;
+
+            lineAttr = this.extend(this.extend(DEFAULTLINEATTR, 
+                                        {strokeWidth: strokeWidth}),
+                                    model.get('rectAttr'));
 
             this.line.attr(lineAttr);
         },

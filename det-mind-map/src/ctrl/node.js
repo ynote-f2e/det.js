@@ -45,10 +45,13 @@ var MindNodeCtrl = (
                 }
 
                 if (this.getDepth() <= 1) {
-                    this.line = Style.getLine('polyline', this);
+                    this.line = Style.getLine('firstLevel', this);
+                    this.line.create();
+                } else if (this.getDepth() === 2){
+                    this.line = Style.getLine('secondLevel', this);
                     this.line.create();
                 } else {
-                    this.line = Style.getLine('normal', this);
+                    this.line = Style.getLine('otherLevel', this);
                     this.line.create();
                 }
 
