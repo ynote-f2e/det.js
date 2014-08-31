@@ -33,7 +33,9 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
         },
 
         render : function () {
+            //this.getLayout().beginUpdate();
             DiagramCtrl.prototype.render.apply(this, arguments);
+            //this.getLayout().finishUpdate();
             this.getLayout().layout();
         },
 

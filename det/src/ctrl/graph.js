@@ -1,8 +1,8 @@
 det.GraphCtrl = (function (BaseCtrl) {
     'use strict';
 
-    return BaseCtrl.derive(function (model, factory) {
-        BaseCtrl.call(this, model, factory);
+    return BaseCtrl.derive(function (model, toolkit) {
+        BaseCtrl.call(this, model, toolkit);
         this.selected = false;
     }, {
 

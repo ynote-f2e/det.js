@@ -7,6 +7,10 @@ var MindNodeCtrl = (
 
         return GraphCtrl.derive(function (model, factory) {
             GraphCtrl.call(this, model, factory);
+            this.pos = {
+                x : 0,
+                y : 0
+            };
             this.installFeature(new (MindSelection.derive({
                 getBody : function () {
                     return this.rect.getFigure();
@@ -32,7 +36,7 @@ var MindNodeCtrl = (
                     this.rect= Style.getRect('underline', this);
                     this.rect.create();
                 }
-                
+
                 if (this.isSecond()) {
                     this.line = Style.getLine('polyline', this);
                     this.line.create();
@@ -50,6 +54,7 @@ var MindNodeCtrl = (
                     this.bubbleEvent.bind(this, 'contextmenu'));
                 node.addEventListener('dblclick',
                     this.bubbleEvent.bind(this, 'dblclick'));
+
                 return svg.group(this.rect.getFigure(), this.line.getFigure());
             },
 

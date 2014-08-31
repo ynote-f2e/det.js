@@ -6,20 +6,24 @@ var MindLayout = (function (BaseFeature) {
 
     return BaseFeature.derive({
 
+        updating : 0,
+
         onAttach : function () {},
 
         onDetach : function () {},
 
         beginUpdate : function () {
-            this.updating = true;
+            this.updating ++;
         },
 
         finishUpdate : function () {
-            this.updating = false;
+            this.updating --;
             if (!this.invalid) {
                 return;
             }
-            this.doLayout();
+            if (this.updating === 0) {
+                this.doLayout();
+            }
         },
 
         layout : function () {

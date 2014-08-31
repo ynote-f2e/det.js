@@ -34,10 +34,10 @@ det.BaseCtrl = (function (EventSupport, Model) {
         this.isDefaultPrevented = isDefaultPrevented;
     }
 
-    return EventSupport.derive(function (model, factory) {
+    return EventSupport.derive(function (model, toolkit) {
         EventSupport.call(this);
         this.model = model;
-        this.factory = factory;
+        this.toolkit = toolkit;
         this.attached = false;
         this.parentCtrl = null;
         this.children = [];
@@ -74,7 +74,8 @@ det.BaseCtrl = (function (EventSupport, Model) {
 
         /* 根据模型构造 ctrl 节点 */
         createChild : function (model) {
-            return this.factory(model);
+            return this.toolkit.getCtrlFactory()
+                .create(model);
         },
 
         bubble : function (name, data) {
@@ -116,13 +117,13 @@ det.BaseCtrl = (function (EventSupport, Model) {
             return this.children;
         },
 
-        getFactory : function (model) {
-            return this.factory;
-        },
-
         /* 返回当前 ctrl 对应的 model 对象 */
         getModel : function () {
             return this.model;
+        },
+
+        getToolkit : function () {
+            return this.toolkit;
         },
 
         getParent : function () {
@@ -201,11 +202,6 @@ det.BaseCtrl = (function (EventSupport, Model) {
             }
             this.features.splice(index, 1);
         },
-
-        /**
-         * 将一个请求转换为一个 command ，包括 exec undo redo 方法
-         */
-        createCommand : det.noop,
 
         /**
          * 返回根节点的 ctrl

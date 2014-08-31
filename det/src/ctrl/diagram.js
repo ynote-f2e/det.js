@@ -1,8 +1,8 @@
 det.DiagramCtrl = (function (GraphCtrl, CommandStack) {
     'use strict';
 
-    return GraphCtrl.derive(function (model, factory) {
-        GraphCtrl.call(this, model, factory);
+    return GraphCtrl.derive(function (model, toolkit) {
+        GraphCtrl.call(this, model, toolkit);
         this.stack = new CommandStack();
     }, {
 

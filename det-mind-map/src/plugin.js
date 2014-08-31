@@ -4,8 +4,10 @@ var detMindMap;
     'use strict';
 
     detMindMap = function (toolkit) {
-        toolkit.factory(MindDiagram, MindDiagramCtrl);
-        toolkit.factory(MindNode, MindNodeCtrl);
+        var ctrlFactory = toolkit.getCtrlFactory(),
+            filterFactory = toolkit.getFilterFactory();
+        ctrlFactory.register(MindDiagram, MindDiagramCtrl);
+        ctrlFactory.register(MindNode, MindNodeCtrl);
     };
 
     /*global define*/
