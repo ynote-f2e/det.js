@@ -1,7 +1,6 @@
 var OtherLeveLLineStyle = (function (Style) {
 
     var DEFAULTLINEATTR = {
-            stroke : "#666",
             fill : 'none'
         };
 

@@ -1,7 +1,6 @@
 var FirstLevelLineStyle = (function (Style) {
 
     var DEFAULTLINEATTR = {
-            stroke : "#666",
             strokeWidth : '1'
         },
         HANDLEWIDTH = 8;
@@ -30,7 +29,7 @@ var FirstLevelLineStyle = (function (Style) {
                 model = ctrl.getModel(),
                 lineAttr;
 
-            lineAttr = this.extend(DEFAULTLINEATTR, model.data.lineAttr);
+            lineAttr = this.extend(model.get('lineAttr'), DEFAULTLINEATTR);
             this.line.attr(lineAttr);
         },
 

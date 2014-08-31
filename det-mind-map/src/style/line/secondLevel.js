@@ -1,11 +1,10 @@
 var SecondLevelLineStyle = (function (Style) {
 
     var DEFAULTLINEATTR = {
-            stroke : "#666",
             strokeWidth : '3',
             fill : 'none'
         },
-        HANDLEWIDTH = 8;
+        HANDLEWIDTH = 4;
 
 
     return Style.derive(function (style, ctrl) {
@@ -33,7 +32,7 @@ var SecondLevelLineStyle = (function (Style) {
                 model = ctrl.getModel(),
                 lineAttr;
 
-            lineAttr = this.extend(DEFAULTLINEATTR, model.get('lineAttr'));
+            lineAttr = this.extend(model.get('lineAttr'), DEFAULTLINEATTR);
             this.line.attr(lineAttr);
         },
 
