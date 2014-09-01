@@ -43,7 +43,6 @@ det.DiagramCtrl = (function (GraphCtrl, CommandStack) {
 
         undo : function () {
             this.getCommandStack().undo();
-            this.layout.finishUpdate();
         },
 
         redo : function () {
