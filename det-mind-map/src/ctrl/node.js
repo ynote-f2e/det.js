@@ -113,6 +113,7 @@ var MindNodeCtrl = (
                 GraphCtrl.prototype.onDetach.call(this);
                 this.unbind('append', this.doLayout);
                 this.unbind('remove', this.doLayout);
+                this.line.getFigure().remove();
             },
 
             isRoot : function () {

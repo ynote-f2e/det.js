@@ -8,8 +8,7 @@ detMindMap.AppendCommand = (function (det) {
     }, {
 
         execute : function () {
-            this.index = this.model.getNodes()
-                .indexOf(this.childModel) + 1;
+            this.index = this.model.getNodes().length;
             this.model.add(this.childModel, this.index);
         },
 
