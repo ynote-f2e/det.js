@@ -44,7 +44,7 @@ var MindLayout = (function (BaseFeature) {
             layoutChildren();
 
             function fetchBoxNested(ctrl) {
-                boxes[ctrl.$id()] = ctrl.getBBox();
+                boxes[ctrl.$id()] = ctrl.getRect().getBBox();
                 ctrl.getChildren().forEach(fetchBoxNested);
             }
 

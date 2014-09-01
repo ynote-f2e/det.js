@@ -38,6 +38,7 @@ var UnderLineStyle = (function (Style) {
             this.rect = rect;
             this.text = text;
             this.line = line;
+
             this.figure = svg.group(this.rect, this.line, this.text);
         },
         
