@@ -21,7 +21,7 @@
             top: 0;
             z-index: 10;
             padding: 5px 0;
-            width: 800px;
+            width: 1200px;
             font-size: 0;
             border-bottom: 1px solid #ddd;
             background: #f2f2f2;
@@ -174,7 +174,7 @@
             </div>
         </div>
         <div class="painter">
-            <svg id="diagram" width="800" height="600"></svg>
+            <svg id="diagram" width="1200" height="600"></svg>
         </div>
     </div>
 </body>
@@ -353,7 +353,7 @@
                 rectAttr : {
                     fill : '#fff',
                     stroke : "#00cc00",
-                    strokeWidth : '1',
+                    strokeWidth : '2',
                 },
                 lineAttr : {
                     stroke : "#00cc00",
@@ -596,13 +596,11 @@
             text : '子主题',
             rectAttr : {
                 fill : '#fff',
-                stroke : color,
-                strokeWidth : '2',
+                stroke : color
             },
             lineAttr : {
                 fill : color,
-                stroke : color,
-                strokeWidth : '2'
+                stroke : color
             }
         });
         if (node.isRoot()) {
@@ -784,101 +782,119 @@
     function calcMenuY(y) {
         return y - $('.painter').offset().top;
     }
-    diagramCtrl.bind('select', function (e) {
-        var model = e.target.getModel();
-        //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
-        if (model.data.root) {
+
+    function selectUpNode() {
+        var parent,
+            selection = diagramCtrl.getSelection(),
+            rootCtrl = diagramCtrl.getRootCtrl();
+        if (selection.length == 0) {
             return;
         }
-        if (model.getTextAttr('fill')) {
-            $('#fontColor').val(model.getTextAttr('fill'));
-            $('#fontColor').change();
+        if (selection[0] === rootCtrl) {
+            return;
         }
-        if (model.getTextAttr('font-weight')) {
-            $('.btn-bold').addClass('selected');
-        } else {
-            $('.btn-bold').removeClass('selected');
-        }
-        if (model.getTextAttr('font-style')) {
-            $('.btn-italic').addClass('selected');
-        } else {
-            $('.btn-italic').removeClass('selected');
-        }
-        $('#lineColor').val(model.getLineAttr('stroke'));
-        $('#lineColor').change();
+        selection = selection[0];
+    }
 
-        $('#rectBackground').val(model.getRectAttr('fill'));
-        $('#rectBackground').change();
+    function bindEvents() {
+        diagramCtrl.bind('select', function (e) {
+            var model = e.target.getModel();
+            //e.target 表示被选择的 ctrl， e.currentTarget 表示绑定事件的 ctrl
+            if (model.data.root) {
+                return;
+            }
+            if (model.getTextAttr('fill')) {
+                $('#fontColor').val(model.getTextAttr('fill'));
+                $('#fontColor').change();
+            }
+            if (model.getTextAttr('font-weight')) {
+                $('.btn-bold').addClass('selected');
+            } else {
+                $('.btn-bold').removeClass('selected');
+            }
+            if (model.getTextAttr('font-style')) {
+                $('.btn-italic').addClass('selected');
+            } else {
+                $('.btn-italic').removeClass('selected');
+            }
+            $('#lineColor').val(model.getLineAttr('stroke'));
+            $('#lineColor').change();
+            $('#rectBackground').val(model.getRectAttr('fill'));
+            $('#rectBackground').change();
+        });
 
-    });
-
-    $('#fontColor').colorPicker({
-        onColorChange : function (id, newColor) {
-            setSelectionFontColor(newColor);
-        }
-    });
-    $('#lineColor').colorPicker({
-        onColorChange : function (id, newColor) {
-            setSelectionLineColor(newColor);
-        }
-    });
-    $('#rectBackground').colorPicker({
-        onColorChange : function (id, newColor) {
-            setSelectionBackgroundColor(newColor);
-        }
-    });
-    $('body').on('keydown', function (evt) {
-        console.log(evt.keyCode);
-        if (evt.keyCode && evt.keyCode === 13) {        //enter
-            appendSelectionBrother();
-        } else if (evt.keyCode && evt.keyCode === 9) { //tab
-            evt.preventDefault();
-            appendSelectionChild();
-        } else if (evt.keyCode && evt.keyCode === 45) { //ins
-            appendSelectionChild();
-        } else if (evt.keyCode && evt.keyCode === 46) { //del
-            removeSeletion();
-        } else if (evt.keyCode && evt.keyCode === 113) {//F2
+        diagramCtrl.bind('contextmenu', function (e) {
+            //show context menu
+            if (e.target.getModel() instanceof MindNode) {
+                console.log(e.target.getModel());
+                e.preventDefault();
+                showSelectionContextMenu(calcMenuX(e.pageX), calcMenuY(e.pageY));
+            }
+        });
+        diagramCtrl.bind('dblclick', function (e) {
+            //maybe open text editor
             editSelection();
-        } else if (evt.keyCode && evt.keyCode === 37) { //left
-            // move to left subject
-        } else if (evt.keyCode && evt.keyCode === 38) { //up
-            // move to up subject
-        } else if (evt.keyCode && evt.keyCode === 39) { //right
-            // move to right subject
-        } else if (evt.keyCode && evt.keyCode === 40) { //down
-            // move to down subject
-        } else if (evt.keyCode && evt.keyCode === 66 && evt.ctrlKey) { //ctrl+b
-            changeSelectionFontWeight();
-        } else if (evt.keyCode && evt.keyCode === 73 && evt.ctrlKey) { //ctrl+i
-            changeSelectionFontStyle();
-        } else if (evt.keyCode && evt.keyCode === 89 && evt.ctrlKey) { //ctrl+y
-            redo();
-        } else if (evt.keyCode && evt.keyCode === 90 && evt.ctrlKey) { //ctrl+z
-            undo();
-        }
-    });
-    $('body').on('click', function () {
-        $('.context-menu').hide();
-    })
-    $('.painter').contextmenu(function (evt) {
-        evt.preventDefault();
-    });
-    $('.btn-font-color').click(clickFontColor);
-    $('.btn-line-color').click(clickLine);
-    $('.btn-fill-color').click(clickBackground);
-    diagramCtrl.bind('contextmenu', function (e) {
-        //show context menu
-        if (e.target.getModel() instanceof MindNode) {
-            console.log(e.target.getModel());
-            e.preventDefault();
-            showSelectionContextMenu(calcMenuX(e.pageX), calcMenuY(e.pageY));
-        }
-    });
-    diagramCtrl.bind('dblclick', function (e) {
-        //maybe open text editor
-        editSelection();
-    });
+        });
+        $('.painter').contextmenu(function (evt) {
+            evt.preventDefault();
+        });
 
+        $('#fontColor').colorPicker({
+            onColorChange : function (id, newColor) {
+                setSelectionFontColor(newColor);
+            }
+        });
+        $('#lineColor').colorPicker({
+            onColorChange : function (id, newColor) {
+                setSelectionLineColor(newColor);
+            }
+        });
+        $('#rectBackground').colorPicker({
+            onColorChange : function (id, newColor) {
+                setSelectionBackgroundColor(newColor);
+            }
+        });
+        $('.btn-font-color').click(clickFontColor);
+        $('.btn-line-color').click(clickLine);
+        $('.btn-fill-color').click(clickBackground);
+
+        $('body').on('keydown', function (evt) {
+            console.log(evt.keyCode);
+            if (evt.keyCode && evt.keyCode === 13) {        //enter
+                appendSelectionBrother();
+            } else if (evt.keyCode && evt.keyCode === 9) { //tab
+                evt.preventDefault();
+                appendSelectionChild();
+            } else if (evt.keyCode && evt.keyCode === 45) { //ins
+                appendSelectionChild();
+            } else if (evt.keyCode && evt.keyCode === 46) { //del
+                removeSeletion();
+            } else if (evt.keyCode && evt.keyCode === 113) {//F2
+                editSelection();
+            } else if (evt.keyCode && evt.keyCode === 37) { //left
+                // move to left subject
+            } else if (evt.keyCode && evt.keyCode === 38) { //up
+                // move to up subject
+                // selectUpNode();
+            } else if (evt.keyCode && evt.keyCode === 39) { //right
+                // move to right subject
+            } else if (evt.keyCode && evt.keyCode === 40) { //down
+                // move to down subject
+            } else if (evt.keyCode && evt.keyCode === 66 && evt.ctrlKey) { //ctrl+b
+                changeSelectionFontWeight();
+            } else if (evt.keyCode && evt.keyCode === 73 && evt.ctrlKey) { //ctrl+i
+                changeSelectionFontStyle();
+            } else if (evt.keyCode && evt.keyCode === 89 && evt.ctrlKey) { //ctrl+y
+                redo();
+            } else if (evt.keyCode && evt.keyCode === 90 && evt.ctrlKey) { //ctrl+z
+                undo();
+            }
+        });
+        $('body').on('click', function () {
+            $('.context-menu').hide();
+        });
+    }
+
+    bindEvents();
 </script>
 </html>

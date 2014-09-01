@@ -82,9 +82,8 @@ var UnderLineStyle = (function (Style) {
             depth = ctrl.getDepth();
             strokeWidth = depth > 3 ? 1 : depth > 2 ? 2 : 3;
 
-            lineAttr = this.extend(this.extend(DEFAULTLINEATTR, 
-                                        model.get('rectAttr')),
-                                    {strokeWidth: strokeWidth});
+            lineAttr = this.extend(this.extend(DEFAULTLINEATTR,
+                model.get('rectAttr')),{strokeWidth: strokeWidth});
 
             this.line.attr(lineAttr);
         },
