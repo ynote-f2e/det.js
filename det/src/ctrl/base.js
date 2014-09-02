@@ -19,7 +19,7 @@ det.BaseCtrl = (function (EventSupport, Model) {
             stopped = true;
         }
         function isPropagationStopped() {
-            return false;
+            return stopped;
         }
         function preventDefault() {
             prevented = true;
