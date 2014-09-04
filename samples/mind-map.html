@@ -323,7 +323,9 @@
             colorBoxs[parseInt(Math.random() * 10, 10)];
     }
     function appendChild(node) {
-        var color = getColorBox();
+        var color = getColorBox(),
+            rectAttr = {},
+            lineAttr = {};
         var newModel = new MindNode({
             text : '子主题',
             rectAttr : {
@@ -338,8 +340,10 @@
         if (node.isRoot()) {
             newModel.setTextAttr('font-size', '16px');
         } else {
-            newModel.set('rectAttr', node.getModel().get('rectAttr'));
-            newModel.set('lineAttr', node.getModel().get('lineAttr'));
+            det.mixin(rectAttr, node.getModel().get('rectAttr'));
+            newModel.set('rectAttr', rectAttr);
+            det.mixin(lineAttr, node.getModel().get('lineAttr'));
+            newModel.set('lineAttr', lineAttr);
         }
         node.execute(
             new detMindMap.AppendCommand(
