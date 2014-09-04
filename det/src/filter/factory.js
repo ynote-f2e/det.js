@@ -1,5 +1,7 @@
 var FilterFactory = (function (det) {
 
+    'use strict';
+
     return det.derive(function () {
         this.filters = {};
     }, {
@@ -9,9 +11,9 @@ var FilterFactory = (function (det) {
         },
 
         create : function (ctrl, name) {
-            return new this.filters[name];
+            return new (this.filters[name])();
         }
 
-    })
+    });
 
-}(det))
+}(det));

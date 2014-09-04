@@ -9,6 +9,7 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
         this.layout = new MindLayout();
         this.installFeature(this.layout);
         this.installFeature(new (MindSelection.derive({
+            highight : false,
             getBody : function () {
                 return this.getFigure();
             }.bind(this)
@@ -20,16 +21,14 @@ var MindDiagramCtrl = (function (DiagramCtrl) {
          * */
         createFigure : function () {
             var svg = this.getSVG(),
-                paper = svg.paper,
-                viewWidth = svg.node.offsetWidth,
-                viewHeight = svg.node.offsetHeight;
-            return paper.rect({
+                paper = svg.paper;
+            return svg.group(paper.rect({
                 x : 0,
                 y : 0,
-                width : viewWidth,
-                height : viewHeight,
-                fill : '#f3f3f3'
-            });
+                width : '100%',
+                height : '100%',
+                fill : this.getModel().get('bgColor') || '#fff'
+            }));
         },
 
         render : function () {

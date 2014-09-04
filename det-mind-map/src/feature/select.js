@@ -26,9 +26,10 @@ var MindSelection = (function (BaseFeature) {
 
         },
 
-        select : function () {
+        select : function (e) {
             var ctrl = this.getCtrl(),
                 selection = ctrl.getDiagram().getSelection();
+            e.stopPropagation();
             ctrl.select();
             if (this.highlight) {
                 this.highlight.remove();
@@ -43,9 +44,13 @@ var MindSelection = (function (BaseFeature) {
 
         onHover : function () {
             var ctrl = this.getCtrl(),
+                figure = ctrl.getFigure(),
                 paper = ctrl.getSVG().paper,
                 box = this.getBody().getBBox();
             if (ctrl.isSelected()) {
+                return;
+            }
+            if (!this.highlight) {
                 return;
             }
             this.highlight = paper.rect({
@@ -60,6 +65,7 @@ var MindSelection = (function (BaseFeature) {
                 stroke : 'blue',
                 strokeWidth : '3'
             });
+            figure.append(this.highlight);
         },
 
         unHover : function () {

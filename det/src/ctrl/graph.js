@@ -15,8 +15,13 @@ det.GraphCtrl = (function (BaseCtrl) {
         },
 
         getFigure : function () {
+            var diagram;
             if (!this.figure) {
                 this.figure = this.createFigure();
+            }
+            diagram = this.getDiagram();
+            if (diagram !== this) {
+                diagram.getFigure().append(this.figure);
             }
             return this.figure;
         },

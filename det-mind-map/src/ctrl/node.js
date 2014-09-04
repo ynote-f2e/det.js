@@ -12,6 +12,7 @@ var MindNodeCtrl = (
                 y : 0
             };
             this.installFeature(new (MindSelection.derive({
+                highlight : true,
                 getBody : function () {
                     return this.rect.getFigure();
                 }.bind(this)
@@ -204,6 +205,7 @@ var MindNodeCtrl = (
                     stroke : 'blue',
                     strokeWidth : '3'
                 });
+                this.getFigure().append(this.selectRect);
             },
 
             onDeselect : function () {
