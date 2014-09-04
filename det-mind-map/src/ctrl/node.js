@@ -17,7 +17,11 @@ var MindNodeCtrl = (
                     return this.rect.getFigure();
                 }.bind(this)
             })));
-            this.installFeature(new DragMove());
+            this.installFeature(new (DragMove.derive({
+                getFigure : function () {
+                    return this.rect.getFigure();
+                }.bind(this)
+            })));
         }, {
 
             /**

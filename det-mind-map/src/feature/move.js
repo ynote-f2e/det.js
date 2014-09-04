@@ -9,7 +9,6 @@ var DragMove =  (function (DragFeature, MoveCommand, Box) {
                     (Math.abs(offsetX) > 5 ||
                         Math.abs(offsetY) > 5)) {
                 this.initDragMove();
-                return;
             } else if (this.proxy) {
                 this.targating(offsetX, offsetY);
             }

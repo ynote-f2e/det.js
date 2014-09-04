@@ -6,23 +6,25 @@ var MindSelection = (function (BaseFeature) {
         getBody : det.noop,
 
         onAttach : function () {
-            var figure = this.getBody();
+            this.figure =this.getBody();
             if (!this.binded) {
                 this.select = this.select.bind(this);
                 this.onHover = this.onHover.bind(this);
                 this.unHover = this.unHover.bind(this);
                 this.binded = true;
             }
-            figure.mousedown(this.select);
-            figure.mouseover(this.onHover);
-            figure.mouseout(this.unHover);
+            this.figure.mousedown(this.select);
+            this.figure.mouseover(this.onHover);
+            this.figure.mouseout(this.unHover);
         },
 
         onDetach : function () {
-            var figure = this.getBody();
-            figure.unmousedown(this.select);
-            figure.unmouseover(this.onHover);
-            figure.unmouseout(this.unHover);
+            if (!this.figure) {
+                return;
+            }
+            this.figure.unmousedown(this.select);
+            this.figure.unmouseover(this.onHover);
+            this.figure.unmouseout(this.unHover);
 
         },
 

@@ -4,19 +4,19 @@ det.DragFeature = (function (BaseFeature) {
 
     return BaseFeature.derive({
 
-        dx : 0,
-
-        dy : 0,
+        getFigure : det.abstract,
 
         onAttach : function () {
-            var figure = this.getCtrl().getFigure();
-            figure.drag(this.onDragMove.bind(this),
+            this.figure = this.getFigure();
+            this.figure.drag(this.onDragMove.bind(this),
                 this.onDragStart.bind(this), this.onDragEnd.bind(this));
         },
 
         onDetach : function () {
-            var figure = this.getCtrl().getFigure();
-            figure.undrag();
+            if (!this.figure) {
+                return;
+            }
+            this.figure.undrag();
         },
 
         onDragStart : det.noop,

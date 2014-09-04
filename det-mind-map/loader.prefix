@@ -1,0 +1,11 @@
+(function (factory) {
+    'use strict';
+
+    /*global define*/
+    if (typeof define === 'function' && define.amd) {
+        define(['det'], factory);
+    } else {
+        window.detMindMap = factory(window.det);
+    }
+
+}(function (det) {

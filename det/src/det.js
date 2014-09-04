@@ -56,5 +56,9 @@ var det = {
 
     det.noop = function noop() {};
 
+    det.abstract = function abstractMethod() {
+        throw 'Subclass must implements this method.';
+    };
+
 }());
 
