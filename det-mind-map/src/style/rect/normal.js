@@ -81,7 +81,7 @@ var NormalRectStyle = (function (Style) {
 
             this.text.attr({
                 x : x + PADDING.X,
-                y : y + this.rect.getBBox().height - PADDING.Y - 2
+                y : y + this.rect.getBBox().height - PADDING.Y - 5
             });
 
             if (ctrl.selectRect) {
